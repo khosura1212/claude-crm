@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Client Success — CRM Konsultan ISO</title>
+<style>
+:root{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D7A4F;--green-dim:rgba(45,122,79,.12);--blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);--orange:#C47A20;--orange-dim:rgba(196,122,32,.12);--red:#C03030;--red-dim:rgba(192,48,48,.12);}
+@media(prefers-color-scheme:dark){:root{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3DAF72;--green-dim:rgba(61,175,114,.12);--blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);--orange:#E09030;--orange-dim:rgba(224,144,48,.12);--red:#E05050;--red-dim:rgba(224,80,80,.12);}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{padding:24px 40px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--accent);text-decoration:none;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);padding:5px 12px;border-radius:3px;}
+.back-link:hover{background:var(--accent-dim);}
+.header-text h1{font-family:"Palatino Linotype",Palatino,serif;font-size:1.5rem;font-weight:normal;}
+.header-text p{font-size:.75rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+.tab-bar{display:flex;padding:20px 40px 0;border-bottom:1px solid var(--border);gap:4px;}
+.tab-btn{background:none;border:none;padding:10px 20px;font-family:inherit;font-size:.82rem;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;padding:28px 40px;}
+.tab-content.active{display:block;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px;}
+.kpi-card .kv{font-family:"Palatino Linotype",Palatino,serif;font-size:1.7rem;}
+.kpi-card .kl{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-top:4px;}
+.toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.btn{background:none;border:1px solid var(--border);color:var(--text-2);padding:7px 14px;border-radius:3px;font-size:.82rem;cursor:pointer;font-family:inherit;transition:background .15s;}
+.btn:hover{background:var(--surface-2);}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-accent:hover{opacity:.9;}
+.btn-sm{padding:4px 10px;font-size:.74rem;}
+.client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.client-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px;}
+.client-name{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;margin-bottom:6px;}
+.client-meta{font-size:.74rem;color:var(--text-3);line-height:1.6;margin-bottom:12px;}
+.health-bar-wrap{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:6px;}
+.health-bar{height:100%;border-radius:4px;transition:width .4s;}
+.health-label{font-size:.72rem;color:var(--text-3);margin-bottom:10px;}
+.cert-badges{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.cert-badge{font-size:.68rem;padding:2px 8px;border-radius:2px;background:var(--green-dim);color:var(--green);}
+.cert-badge.expiring{background:var(--orange-dim);color:var(--orange);}
+.cert-badge.expired{background:var(--red-dim);color:var(--red);}
+.card-actions{display:flex;gap:6px;margin-top:10px;}
+.section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:14px;}
+.checkin-list{background:var(--surface);border:1px solid var(--border);border-radius:4px;}
+.checkin-row{padding:12px 18px;border-bottom:1px solid var(--border);font-size:.83rem;display:flex;gap:12px;align-items:flex-start;}
+.checkin-row:last-child{border-bottom:none;}
+.checkin-date{font-size:.72rem;color:var(--text-3);white-space:nowrap;margin-top:2px;}
+.referral-list{background:var(--surface);border:1px solid var(--border);border-radius:4px;}
+.referral-row{padding:12px 18px;border-bottom:1px solid var(--border);font-size:.83rem;display:flex;align-items:center;gap:12px;}
+.referral-row:last-child{border-bottom:none;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:28px;max-width:540px;width:90%;max-height:85vh;overflow-y:auto;}
+.modal h2{font-family:"Palatino Linotype",Palatino,serif;font-size:1.2rem;font-weight:normal;margin-bottom:18px;}
+.form-row{margin-bottom:14px;}
+.form-row label{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;}
+.form-row input,.form-row select,.form-row textarea{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:3px;font-size:.85rem;font-family:inherit;}
+.form-row textarea{height:70px;resize:vertical;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-link" href="index.html">← CRM</a>
+  <div class="header-text"><h1>Client Success</h1><p>MOD-10 · Health Score · Check-in · Sertifikasi · Referral</p></div>
+</header>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="sw('clients')">Klien</button>
+  <button class="tab-btn" onclick="sw('checkins')">Check-in Log</button>
+  <button class="tab-btn" onclick="sw('referrals')">Referral</button>
+</div>
+
+<div class="tab-content active" id="tab-clients">
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="toolbar">
+    <button class="btn btn-accent" style="margin-left:auto" onclick="openAddClient()">+ Tambah Klien</button>
+  </div>
+  <div class="client-grid" id="clientGrid"></div>
+</div>
+
+<div class="tab-content" id="tab-checkins">
+  <p class="section-title">Log Check-in Klien</p>
+  <div class="toolbar">
+    <button class="btn btn-accent" onclick="openCheckinModal()">+ Log Check-in</button>
+  </div>
+  <div class="checkin-list" id="checkinList"></div>
+</div>
+
+<div class="tab-content" id="tab-referrals">
+  <p class="section-title">Program Referral</p>
+  <div class="toolbar">
+    <button class="btn btn-accent" onclick="openReferralModal()">+ Catat Referral</button>
+  </div>
+  <div class="referral-list" id="referralList"></div>
+</div>
+
+<div class="modal-overlay" id="clientModal">
+  <div class="modal">
+    <h2 id="clientModalTitle">Tambah Klien</h2>
+    <div class="form-row"><label>Nama Perusahaan</label><input id="cName" placeholder="PT Sinar Nusantara"/></div>
+    <div class="form-row"><label>Industri</label><input id="cIndustry" placeholder="Manufacturing, IT, Healthcare…"/></div>
+    <div class="form-row"><label>Standar ISO (pisah koma)</label><input id="cStd" placeholder="ISO 9001, ISO 14001"/></div>
+    <div class="form-row"><label>Tanggal Sertifikasi</label><input id="cCertDate" type="date"/></div>
+    <div class="form-row"><label>Tanggal Expiry Sertifikat</label><input id="cExpiry" type="date"/></div>
+    <div class="form-row"><label>Health Score (0-100)</label><input id="cHealth" type="number" min="0" max="100" placeholder="80"/></div>
+    <div class="form-row"><label>PIC Klien</label><input id="cPIC" placeholder="Budi Santoso, Quality Manager"/></div>
+    <div class="form-row"><label>Catatan</label><textarea id="cNote" placeholder="Informasi tambahan…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAll()">Batal</button>
+      <button class="btn btn-accent" onclick="saveClient()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="checkinModal">
+  <div class="modal">
+    <h2>Log Check-in</h2>
+    <div class="form-row"><label>Klien</label>
+      <select id="ciClient"></select>
+    </div>
+    <div class="form-row"><label>Tanggal</label><input id="ciDate" type="date"/></div>
+    <div class="form-row"><label>Metode</label>
+      <select id="ciMethod"><option>Email</option><option>WhatsApp</option><option>Meeting Online</option><option>Kunjungan</option><option>Telepon</option></select>
+    </div>
+    <div class="form-row"><label>Catatan</label><textarea id="ciNote" placeholder="Topik, isu, action item…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAll()">Batal</button>
+      <button class="btn btn-accent" onclick="saveCheckin()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="referralModal">
+  <div class="modal">
+    <h2>Catat Referral</h2>
+    <div class="form-row"><label>Referrer (Klien yang Mereferral)</label>
+      <select id="rfClient"></select>
+    </div>
+    <div class="form-row"><label>Referral Baru (Nama Perusahaan)</label><input id="rfNew" placeholder="PT Berkah Abadi"/></div>
+    <div class="form-row"><label>Kontak Referral</label><input id="rfContact" placeholder="0812-xxx-xxx"/></div>
+    <div class="form-row"><label>Status</label>
+      <select id="rfStatus"><option>Dihubungi</option><option>Konversi</option><option>Tidak Jadi</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAll()">Batal</button>
+      <button class="btn btn-accent" onclick="saveReferral()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<footer>Client Success · MOD-10 · CRM Konsultan ISO · arafarnusa.com</footer>
+<script>
+const KEY_C='crm_clients',KEY_CI='crm_checkins',KEY_RF='crm_referrals';
+let editClientIdx=null;
+
+const SEED_C=[
+  {name:'PT Sinar Nusantara',industry:'Retail / E-Commerce',std:['ISO 9001'],certDate:'2026-09-30',expiry:'2029-09-30',health:85,pic:'Budi Santoso',note:'Klien aktif — proyek berjalan'},
+  {name:'CV Teknologi Maju',industry:'IT / Software',std:['ISO 27001'],certDate:'2026-12-31',expiry:'2029-12-31',health:70,pic:'Indra Kurniawan',note:'Proyek berjalan'},
+  {name:'PT Indah Hijau',industry:'Agriculture',std:['ISO 14001'],certDate:'',expiry:'',health:45,pic:'Sri Wahyuni',note:'Proyek on hold'},
+  {name:'PT Aman Sentosa',industry:'Manufacturing',std:['ISO 9001','ISO 45001'],certDate:'2025-03-15',expiry:'2028-03-15',health:92,pic:'Ahmad Fauzi',note:'Klien lama — surveillance audit tahun ini'},
+];
+const SEED_CI=[
+  {client:'PT Aman Sentosa',date:'2026-07-20',method:'Email',note:'Reminder surveillance audit. Klien konfirmasi siap.'},
+  {client:'PT Sinar Nusantara',date:'2026-08-01',method:'Meeting Online',note:'Review progress implementasi. Action: selesaikan prosedur minggu depan.'},
+  {client:'CV Teknologi Maju',date:'2026-08-10',method:'WhatsApp',note:'Follow-up dokumen SoA. Klien butuh 2 minggu lagi.'},
+];
+const SEED_RF=[
+  {referrer:'PT Aman Sentosa',newClient:'PT Berkah Abadi',contact:'0812-9876-5432',status:'Dihubungi'},
+  {referrer:'PT Sinar Nusantara',newClient:'CV Maju Bersama',contact:'0811-1234-5678',status:'Konversi'},
+];
+
+function loadC(){try{return JSON.parse(localStorage.getItem(KEY_C)||'null')||(localStorage.setItem(KEY_C,JSON.stringify(SEED_C)),SEED_C);}catch(_){return SEED_C;}}
+function loadCI(){try{return JSON.parse(localStorage.getItem(KEY_CI)||'null')||(localStorage.setItem(KEY_CI,JSON.stringify(SEED_CI)),SEED_CI);}catch(_){return SEED_CI;}}
+function loadRF(){try{return JSON.parse(localStorage.getItem(KEY_RF)||'null')||(localStorage.setItem(KEY_RF,JSON.stringify(SEED_RF)),SEED_RF);}catch(_){return SEED_RF;}}
+function saveC(d){localStorage.setItem(KEY_C,JSON.stringify(d));}
+function saveCI(d){localStorage.setItem(KEY_CI,JSON.stringify(d));}
+function saveRF(d){localStorage.setItem(KEY_RF,JSON.stringify(d));}
+
+function healthColor(h){return h>=80?'var(--green)':h>=60?'var(--orange)':'var(--red)';}
+function expiryStatus(d){if(!d)return{cls:'cert-badge',label:'Belum Tersertifikasi'};const dd=Math.ceil((new Date(d)-new Date())/86400000);if(dd<0)return{cls:'cert-badge expired',label:'Expired'};if(dd<90)return{cls:'cert-badge expiring',label:'Expiry '+dd+'d'};return{cls:'cert-badge',label:'Valid'};}
+
+function renderKPI(){
+  const clients=loadC();
+  const active=clients.filter(c=>c.certDate).length;
+  const avgHealth=clients.length?Math.round(clients.reduce((s,c)=>s+(+c.health||0),0)/clients.length):0;
+  const expiring=clients.filter(c=>{if(!c.expiry)return false;const dd=Math.ceil((new Date(c.expiry)-new Date())/86400000);return dd>=0&&dd<90;}).length;
+  document.getElementById('kpiGrid').innerHTML=`
+    <div class="kpi-card"><div class="kv">${clients.length}</div><div class="kl">Total Klien</div></div>
+    <div class="kpi-card"><div class="kv" style="color:var(--green)">${active}</div><div class="kl">Tersertifikasi</div></div>
+    <div class="kpi-card"><div class="kv" style="color:${healthColor(avgHealth)}">${avgHealth}</div><div class="kl">Avg Health Score</div></div>
+    <div class="kpi-card"><div class="kv" style="color:var(--orange)">${expiring}</div><div class="kl">Expiry &lt;90 Hari</div></div>
+  `;
+}
+
+function renderClients(){
+  const clients=loadC();
+  document.getElementById('clientGrid').innerHTML=clients.map((c,i)=>{
+    const es=expiryStatus(c.expiry);
+    const h=+c.health||0;
+    return`<div class="client-card">
+      <div class="client-name">${c.name}</div>
+      <div class="client-meta">${c.industry||'—'} · ${c.pic||'—'}<br>${c.std&&c.std.length?c.std.join(', '):'Belum ada standar'}</div>
+      <div class="health-bar-wrap"><div class="health-bar" style="width:${h}%;background:${healthColor(h)}"></div></div>
+      <div class="health-label">Health Score: <strong>${h}</strong>/100</div>
+      <div class="cert-badges">
+        ${(c.std||[]).map(s=>`<span class="${es.cls}">${s} · ${es.label}</span>`).join('')}
+      </div>
+      ${c.note?`<div style="font-size:.74rem;color:var(--text-3);margin-bottom:8px">${c.note}</div>`:''}
+      <div class="card-actions">
+        <button class="btn btn-sm" onclick="editClient(${i})">Edit</button>
+        <button class="btn btn-sm" onclick="quickCheckin('${c.name}')">Check-in</button>
+        <button class="btn btn-sm" onclick="deleteClient(${i})" style="color:var(--red)">Hapus</button>
+      </div>
+    </div>`;
+  }).join('')||'<div style="padding:40px;text-align:center;color:var(--text-3)">Belum ada klien.</div>';
+}
+
+function renderCheckins(){
+  const checkins=loadCI().slice().reverse();
+  const el=document.getElementById('checkinList');
+  if(!checkins.length){el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text-3)">Belum ada check-in.</div>';return;}
+  el.innerHTML=checkins.map(ci=>`<div class="checkin-row">
+    <div class="checkin-date">${new Date(ci.date).toLocaleDateString('id-ID')}<br>${ci.method}</div>
+    <div>
+      <div style="font-size:.85rem;font-weight:normal">${ci.client}</div>
+      <div style="font-size:.8rem;color:var(--text-2);margin-top:4px">${ci.note}</div>
+    </div>
+  </div>`).join('');
+}
+
+function renderReferrals(){
+  const refs=loadRF();
+  const el=document.getElementById('referralList');
+  if(!refs.length){el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text-3)">Belum ada referral.</div>';return;}
+  el.innerHTML=refs.map(r=>`<div class="referral-row">
+    <div style="flex:1">
+      <div style="font-size:.85rem">${r.newClient}</div>
+      <div style="font-size:.72rem;color:var(--text-3)">Direferral oleh ${r.referrer} · ${r.contact}</div>
+    </div>
+    <span style="font-size:.72rem;padding:2px 8px;border-radius:2px;background:${r.status==='Konversi'?'var(--green-dim)':r.status==='Tidak Jadi'?'var(--red-dim)':'var(--orange-dim)'};color:${r.status==='Konversi'?'var(--green)':r.status==='Tidak Jadi'?'var(--red)':'var(--orange)'}">${r.status}</span>
+  </div>`).join('');
+}
+
+function openAddClient(){editClientIdx=null;document.getElementById('clientModalTitle').textContent='Tambah Klien';['cName','cIndustry','cStd','cCertDate','cExpiry','cNote','cPIC'].forEach(id=>document.getElementById(id).value='');document.getElementById('cHealth').value='80';document.getElementById('clientModal').classList.add('open');}
+function editClient(i){editClientIdx=i;const c=loadC()[i];document.getElementById('clientModalTitle').textContent='Edit Klien';document.getElementById('cName').value=c.name||'';document.getElementById('cIndustry').value=c.industry||'';document.getElementById('cStd').value=(c.std||[]).join(', ');document.getElementById('cCertDate').value=c.certDate||'';document.getElementById('cExpiry').value=c.expiry||'';document.getElementById('cHealth').value=c.health||80;document.getElementById('cPIC').value=c.pic||'';document.getElementById('cNote').value=c.note||'';document.getElementById('clientModal').classList.add('open');}
+function deleteClient(i){if(!confirm('Hapus klien ini?'))return;const d=loadC();d.splice(i,1);saveC(d);renderKPI();renderClients();}
+function saveClient(){
+  const clients=loadC();
+  const c={name:document.getElementById('cName').value.trim()||'Klien Baru',industry:document.getElementById('cIndustry').value.trim(),std:document.getElementById('cStd').value.split(',').map(s=>s.trim()).filter(Boolean),certDate:document.getElementById('cCertDate').value,expiry:document.getElementById('cExpiry').value,health:+document.getElementById('cHealth').value||80,pic:document.getElementById('cPIC').value.trim(),note:document.getElementById('cNote').value.trim()};
+  if(editClientIdx!==null)clients[editClientIdx]=c;else clients.unshift(c);
+  saveC(clients);closeAll();renderKPI();renderClients();
+}
+function openCheckinModal(){populateClientSelects();document.getElementById('ciDate').value=new Date().toISOString().split('T')[0];document.getElementById('ciNote').value='';document.getElementById('checkinModal').classList.add('open');}
+function quickCheckin(name){populateClientSelects();document.getElementById('ciClient').value=name;document.getElementById('ciDate').value=new Date().toISOString().split('T')[0];document.getElementById('ciNote').value='';document.getElementById('checkinModal').classList.add('open');}
+function saveCheckin(){const ci=loadCI();ci.push({client:document.getElementById('ciClient').value,date:document.getElementById('ciDate').value,method:document.getElementById('ciMethod').value,note:document.getElementById('ciNote').value.trim()});saveCI(ci);closeAll();renderCheckins();}
+function openReferralModal(){populateClientSelects();document.getElementById('rfNew').value='';document.getElementById('rfContact').value='';document.getElementById('referralModal').classList.add('open');}
+function saveReferral(){const rf=loadRF();rf.push({referrer:document.getElementById('rfClient').value,newClient:document.getElementById('rfNew').value.trim()||'Referral Baru',contact:document.getElementById('rfContact').value.trim(),status:document.getElementById('rfStatus').value});saveRF(rf);closeAll();renderReferrals();}
+function populateClientSelects(){const opts=loadC().map(c=>`<option>${c.name}</option>`).join('');document.getElementById('ciClient').innerHTML=opts;document.getElementById('rfClient').innerHTML=opts;}
+function closeAll(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));}
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)closeAll();}));
+function sw(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  ['clients','checkins','referrals'].forEach((t,i)=>document.querySelectorAll('.tab-btn')[i]?.classList[t===id?'add':'remove']('active'));
+  if(id==='checkins')renderCheckins();
+  if(id==='referrals')renderReferrals();
+}
+renderKPI();renderClients();
+</script>
+</body></html>
