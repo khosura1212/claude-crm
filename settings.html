@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Settings — CRM Konsultan ISO</title>
+<style>
+:root{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D7A4F;--green-dim:rgba(45,122,79,.12);--blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);--orange:#C47A20;--orange-dim:rgba(196,122,32,.12);--red:#C03030;--red-dim:rgba(192,48,48,.12);}
+@media(prefers-color-scheme:dark){:root{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3DAF72;--green-dim:rgba(61,175,114,.12);--blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);--orange:#E09030;--orange-dim:rgba(224,144,48,.12);--red:#E05050;--red-dim:rgba(224,80,80,.12);}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{padding:24px 40px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--accent);text-decoration:none;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);padding:5px 12px;border-radius:3px;}
+.back-link:hover{background:var(--accent-dim);}
+.header-text h1{font-family:"Palatino Linotype",Palatino,serif;font-size:1.5rem;font-weight:normal;}
+.header-text p{font-size:.75rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+.tab-bar{display:flex;padding:20px 40px 0;border-bottom:1px solid var(--border);gap:4px;}
+.tab-btn{background:none;border:none;padding:10px 20px;font-family:inherit;font-size:.82rem;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;padding:28px 40px;}
+.tab-content.active{display:block;}
+.section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:14px;}
+.settings-group{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:20px;max-width:700px;}
+.settings-group h3{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:16px;}
+.setting-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.setting-row:last-child{border-bottom:none;}
+.setting-label{flex:1;}
+.setting-label span{display:block;font-size:.84rem;}
+.setting-label small{font-size:.72rem;color:var(--text-3);}
+.setting-input{display:flex;align-items:center;gap:8px;}
+.setting-input input{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:3px;font-size:.82rem;font-family:inherit;width:260px;}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-green{background:var(--green);}
+.dot-red{background:var(--red);}
+.dot-gray{background:var(--text-3);}
+.btn{background:none;border:1px solid var(--border);color:var(--text-2);padding:7px 14px;border-radius:3px;font-size:.82rem;cursor:pointer;font-family:inherit;transition:background .15s;}
+.btn:hover{background:var(--surface-2);}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-accent:hover{opacity:.9;}
+.btn-sm{padding:4px 10px;font-size:.74rem;}
+.btn-red{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+.status-table{background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:20px;max-width:700px;}
+table{width:100%;border-collapse:collapse;font-size:.82rem;}
+th{text-align:left;padding:9px 14px;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);border-bottom:2px solid var(--border);font-weight:normal;background:var(--surface-2);}
+td{padding:9px 14px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+.data-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+.alert-box{border-radius:4px;padding:12px 16px;margin-bottom:16px;font-size:.83rem;line-height:1.6;}
+.alert-green{background:var(--green-dim);border:1px solid var(--green);color:var(--green);}
+.alert-red{background:var(--red-dim);border:1px solid var(--red);color:var(--red);}
+footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-link" href="index.html">← CRM</a>
+  <div class="header-text"><h1>Settings & Integrations</h1><p>MOD-14 · Webhook · n8n · Data Management</p></div>
+</header>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="sw('integrations')">Integrasi n8n</button>
+  <button class="tab-btn" onclick="sw('profile')">Profil & Konfigurasi</button>
+  <button class="tab-btn" onclick="sw('data')">Manajemen Data</button>
+</div>
+
+<div class="tab-content active" id="tab-integrations">
+  <div id="saveAlert" style="display:none"></div>
+  <div class="settings-group">
+    <h3>Webhook n8n — Alur Kerja Utama</h3>
+    <div class="setting-row">
+      <div class="setting-label"><span>Content Marketing — Tambah Bank Topik</span><small>MOD-03 · menulis topik baru ke Google Sheets via n8n</small></div>
+      <div class="setting-input">
+        <div class="status-dot" id="dot-contentWebhook"></div>
+        <input type="text" id="contentWebhook" placeholder="https://nusantara8n.my.id/webhook/…"/>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-label"><span>Artikel LinkedIn (Jadwal)</span><small>MOD-03 · trigger n8n qsV5PmBlmsxnZDy1 · Senin & Kamis</small></div>
+      <div class="setting-input">
+        <div class="status-dot" id="dot-linkedinScheduledWebhook"></div>
+        <input type="text" id="linkedinScheduledWebhook" placeholder="https://nusantara8n.my.id/webhook/…"/>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-label"><span>Artikel LinkedIn (Manual)</span><small>MOD-03 · trigger dari Telegram ke LinkedIn</small></div>
+      <div class="setting-input">
+        <div class="status-dot" id="dot-linkedinManualWebhook"></div>
+        <input type="text" id="linkedinManualWebhook" placeholder="https://nusantara8n.my.id/webhook/…"/>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-label"><span>Carousel LinkedIn</span><small>MOD-03 · Infografis LinkedIn via Gemini</small></div>
+      <div class="setting-input">
+        <div class="status-dot" id="dot-carouselWebhook"></div>
+        <input type="text" id="carouselWebhook" placeholder="https://nusantara8n.my.id/webhook/…"/>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-label"><span>Second Brain</span><small>MOD-13 · URL → Jina AI → Claude → Google Docs</small></div>
+      <div class="setting-input">
+        <div class="status-dot" id="dot-secondBrainWebhook"></div>
+        <input type="text" id="secondBrainWebhook" placeholder="https://nusantara8n.my.id/webhook/…"/>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-label"><span>Email SMTP (Outreach)</span><small>MOD-05 · kirim email sequence via n8n pt0Pz5zhKxNOX9Nc</small></div>
+      <div class="setting-input">
+        <div class="status-dot" id="dot-smtpWebhook"></div>
+        <input type="text" id="smtpWebhook" placeholder="https://nusantara8n.my.id/webhook/…"/>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-bottom:24px">
+    <button class="btn btn-accent" onclick="saveSettings()">Simpan Semua Webhook</button>
+    <button class="btn" onclick="testAll()">Test Koneksi</button>
+  </div>
+
+  <p class="section-title">Status Workflow n8n</p>
+  <div class="status-table">
+    <table>
+      <thead><tr><th>Workflow</th><th>ID</th><th>Trigger</th><th>Fungsi</th></tr></thead>
+      <tbody>
+        <tr><td>Publish Arafar</td><td style="font-size:.72rem;color:var(--text-3)">oZBX7uwphUWndkTi</td><td>Google Drive</td><td>Artikel → HTML → VPS + LinkedIn</td></tr>
+        <tr><td>LinkedIn Scheduled</td><td style="font-size:.72rem;color:var(--text-3)">qsV5PmBlmsxnZDy1</td><td>Cron: Sen+Kam 07:00</td><td>Bank Topik → generate → LinkedIn</td></tr>
+        <tr><td>LinkedIn from Telegram</td><td style="font-size:.72rem;color:var(--text-3)">24WNdT3qCpQEjFhg</td><td>Telegram</td><td>Topik via Telegram → LinkedIn</td></tr>
+        <tr><td>TSI Audit Plan</td><td style="font-size:.72rem;color:var(--text-3)">bvqkOPP8mPS72el7</td><td>Telegram</td><td>Audit Plan TSI conversational</td></tr>
+        <tr><td>Second Brain</td><td style="font-size:.72rem;color:var(--text-3)">NcmvhaYAPxDGHiKs</td><td>Telegram (URL)</td><td>URL → Jina AI → Claude → Docs</td></tr>
+        <tr><td>Kirim Email SMTP</td><td style="font-size:.72rem;color:var(--text-3)">pt0Pz5zhKxNOX9Nc</td><td>Webhook</td><td>Email sequence outreach</td></tr>
+        <tr><td>LinkedIn Infografis v3</td><td style="font-size:.72rem;color:var(--text-3)">BiNpzwb7PhPp3AUY</td><td>Telegram</td><td>Infografis via Gemini + approval</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-profile">
+  <div class="settings-group">
+    <h3>Profil Bisnis</h3>
+    <div class="setting-row">
+      <div class="setting-label"><span>Nama Konsultan / Perusahaan</span></div>
+      <div class="setting-input"><input type="text" id="bizName" placeholder="arafarnusa.com"/></div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-label"><span>Email</span></div>
+      <div class="setting-input"><input type="email" id="bizEmail" placeholder="kokok.nusantara@gmail.com"/></div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-label"><span>Website</span></div>
+      <div class="setting-input"><input type="text" id="bizWebsite" placeholder="https://arafarnusa.com"/></div>
+    </div>
+  </div>
+
+  <div class="settings-group">
+    <h3>Impartiality Gate — Daftar Klien Konsultasi</h3>
+    <div class="setting-row">
+      <div class="setting-label">
+        <span>Daftar Klien (pisah koma)</span>
+        <small>Digunakan oleh MOD-04, MOD-12 — deteksi konflik impartialitas ISO 17021-1</small>
+      </div>
+    </div>
+    <div style="padding:10px 0">
+      <textarea id="clientList" style="width:100%;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:3px;font-size:.82rem;font-family:inherit;height:80px;resize:vertical" placeholder="PT Sinar Nusantara, CV Teknologi Maju, PT Indah Hijau"></textarea>
+    </div>
+  </div>
+
+  <div class="settings-group">
+    <h3>Google Sheets — Bank Topik</h3>
+    <div class="setting-row">
+      <div class="setting-label"><span>Spreadsheet ID</span><small>ID Google Sheets Bank Topik yang dibaca oleh n8n</small></div>
+      <div class="setting-input"><input type="text" id="sheetsId" placeholder="1XsCYHIIA58BxORAaJUZkQPg8pw3yehF1VONW8DasMOU"/></div>
+    </div>
+  </div>
+
+  <button class="btn btn-accent" onclick="saveProfile()">Simpan Profil</button>
+</div>
+
+<div class="tab-content" id="tab-data">
+  <p class="section-title">Data Tersimpan di localStorage</p>
+  <div id="dataStats" style="margin-bottom:20px"></div>
+  <div class="data-actions">
+    <button class="btn" onclick="exportData()">Export JSON</button>
+    <button class="btn" onclick="importData()">Import JSON</button>
+    <button class="btn btn-red" onclick="clearData()">Reset Semua Data</button>
+  </div>
+  <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(this)"/>
+  <div id="importAlert" style="margin-top:16px"></div>
+</div>
+
+<footer>Settings & Integrations · MOD-14 · CRM Konsultan ISO · arafarnusa.com</footer>
+<script>
+const SETTINGS_KEY='crm_settings';
+const PROFILE_KEY='crm_lead_config';
+
+const WEBHOOK_FIELDS=['contentWebhook','linkedinScheduledWebhook','linkedinManualWebhook','carouselWebhook','secondBrainWebhook','smtpWebhook'];
+
+function loadSettings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');}catch(_){return{};}}
+function saveSettingsRaw(d){localStorage.setItem(SETTINGS_KEY,JSON.stringify(d));}
+function loadProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}');}catch(_){return{};}}
+function saveProfileRaw(d){localStorage.setItem(PROFILE_KEY,JSON.stringify(d));}
+
+function initIntegrations(){
+  const s=loadSettings();
+  WEBHOOK_FIELDS.forEach(f=>{
+    const input=document.getElementById(f);
+    if(input)input.value=s[f]||'';
+    const dot=document.getElementById('dot-'+f);
+    if(dot)dot.className='status-dot '+(s[f]?'dot-green':'dot-gray');
+  });
+}
+
+function saveSettings(){
+  const s=loadSettings();
+  WEBHOOK_FIELDS.forEach(f=>{const input=document.getElementById(f);if(input)s[f]=input.value.trim();});
+  saveSettingsRaw(s);
+  WEBHOOK_FIELDS.forEach(f=>{const dot=document.getElementById('dot-'+f);if(dot){const val=s[f];dot.className='status-dot '+(val?'dot-green':'dot-gray');}});
+  showAlert('saveAlert','✓ Webhook disimpan.','green');
+}
+
+function testAll(){
+  const s=loadSettings();
+  let tested=0;
+  WEBHOOK_FIELDS.forEach(f=>{
+    const url=s[f];if(!url)return;tested++;
+    fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({test:true,source:'crm-settings',ts:new Date().toISOString()})}).then(()=>{document.getElementById('dot-'+f).className='status-dot dot-green';}).catch(()=>{document.getElementById('dot-'+f).className='status-dot dot-red';});
+  });
+  showAlert('saveAlert',tested?`Testing ${tested} webhook…`:'Tidak ada webhook yang dikonfigurasi.', tested?'green':'red');
+}
+
+function initProfile(){
+  const cfg=loadProfile();
+  document.getElementById('bizName').value=cfg.bizName||'arafarnusa.com';
+  document.getElementById('bizEmail').value=cfg.email||'kokok.nusantara@gmail.com';
+  document.getElementById('bizWebsite').value=cfg.website||'https://arafarnusa.com';
+  document.getElementById('clientList').value=cfg.clients||'';
+  const s=loadSettings();
+  document.getElementById('sheetsId').value=s.sheetsId||'1XsCYHIIA58BxORAaJUZkQPg8pw3yehF1VONW8DasMOU';
+}
+
+function saveProfile(){
+  const cfg=loadProfile();
+  cfg.bizName=document.getElementById('bizName').value.trim();
+  cfg.email=document.getElementById('bizEmail').value.trim();
+  cfg.website=document.getElementById('bizWebsite').value.trim();
+  cfg.clients=document.getElementById('clientList').value.trim();
+  saveProfileRaw(cfg);
+  const s=loadSettings();
+  s.sheetsId=document.getElementById('sheetsId').value.trim();
+  saveSettingsRaw(s);
+  alert('✓ Profil disimpan.');
+}
+
+const DATA_KEYS=[
+  {key:'crm_leads_v2',label:'Leads (MOD-04)'},
+  {key:'crm_bank_topik',label:'Bank Topik (MOD-03)'},
+  {key:'crm_outreach',label:'Outreach (MOD-05)'},
+  {key:'crm_proposals',label:'Proposals (MOD-07)'},
+  {key:'crm_documents',label:'Documents (MOD-08)'},
+  {key:'crm_delivery',label:'Delivery (MOD-09)'},
+  {key:'crm_clients',label:'Clients (MOD-10)'},
+  {key:'crm_checkins',label:'Check-ins (MOD-10)'},
+  {key:'crm_referrals',label:'Referrals (MOD-10)'},
+  {key:'crm_audits',label:'Audits (MOD-12)'},
+  {key:'crm_temuan',label:'Temuan Audit (MOD-12)'},
+  {key:'crm_second_brain_log',label:'Second Brain Log (MOD-13)'},
+  {key:SETTINGS_KEY,label:'Settings (MOD-14)'},
+  {key:PROFILE_KEY,label:'Profil & Config'},
+];
+
+function renderDataStats(){
+  const rows=DATA_KEYS.map(d=>{
+    try{const v=JSON.parse(localStorage.getItem(d.key)||'null');const count=Array.isArray(v)?v.length:(v?1:0);return{...d,count,size:Math.round((localStorage.getItem(d.key)||'').length/1024*10)/10};}catch(_){return{...d,count:0,size:0};}
+  });
+  const total=rows.reduce((s,r)=>s+r.size,0);
+  document.getElementById('dataStats').innerHTML=`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:12px;max-width:600px">
+      <table><thead><tr><th>Dataset</th><th>Records</th><th>Size</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr><td>${r.label}</td><td>${r.count}</td><td style="color:var(--text-3)">${r.size} KB</td></tr>`).join('')}
+      <tr style="border-top:2px solid var(--border)"><td style="font-weight:bold">Total</td><td></td><td style="color:var(--accent)">${total.toFixed(1)} KB</td></tr>
+      </tbody></table>
+    </div>`;
+}
+
+function exportData(){
+  const out={};
+  DATA_KEYS.forEach(d=>{try{out[d.key]=JSON.parse(localStorage.getItem(d.key)||'null');}catch(_){}});
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='crm-backup-'+new Date().toISOString().split('T')[0]+'.json';a.click();
+}
+
+function importData(){document.getElementById('importFile').click();}
+function handleImport(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      let imported=0;
+      DATA_KEYS.forEach(d=>{if(data[d.key]!==undefined){localStorage.setItem(d.key,JSON.stringify(data[d.key]));imported++;}});
+      document.getElementById('importAlert').innerHTML=`<div class="alert-box alert-green">✓ Import berhasil: ${imported} dataset dipulihkan.</div>`;
+      renderDataStats();
+    }catch(err){document.getElementById('importAlert').innerHTML='<div class="alert-box" style="background:var(--red-dim);border:1px solid var(--red);color:var(--red)">✗ File tidak valid: '+err.message+'</div>';}
+  };reader.readAsText(file);
+}
+
+function clearData(){
+  if(!confirm('Hapus SEMUA data CRM? Tindakan ini tidak bisa diurungkan.'))return;
+  DATA_KEYS.forEach(d=>localStorage.removeItem(d.key));
+  renderDataStats();
+  alert('Semua data telah dihapus.');
+}
+
+function showAlert(id,msg,type){
+  const el=document.getElementById(id);if(!el)return;
+  el.style.display='block';
+  el.className='alert-box alert-'+type;
+  el.textContent=msg;
+  setTimeout(()=>{el.style.display='none';},3000);
+}
+
+function sw(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  ['integrations','profile','data'].forEach((t,i)=>document.querySelectorAll('.tab-btn')[i]?.classList[t===id?'add':'remove']('active'));
+  if(id==='data')renderDataStats();
+  if(id==='profile')initProfile();
+}
+
+initIntegrations();
+</script>
+</body></html>
