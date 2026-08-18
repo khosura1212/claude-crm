@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Team & Capacity — CRM ISO</title>
+<style>
+:root{
+  --bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CC;--border:#C8BFB0;
+  --text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;
+  --accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);
+  --green:#2D6A3F;--green-dim:rgba(45,106,63,.12);
+  --blue:#1A4F7A;--blue-dim:rgba(26,79,122,.12);
+  --orange:#B86A1E;--orange-dim:rgba(184,106,30,.12);
+  --red:#8A1E2A;--red-dim:rgba(138,30,42,.1);
+  --purple:#5A1A7A;--purple-dim:rgba(90,26,122,.1);
+  --teal:#1A6A5A;--teal-dim:rgba(26,106,90,.1);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0F1820;--surface:#182230;--surface-2:#1F2D40;--border:#2A3A4A;
+  --text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;
+  --accent:#D06528;--accent-dim:rgba(208,101,40,.15);
+  --green:#3A9068;--green-dim:rgba(58,144,104,.15);
+  --blue:#3A80B8;--blue-dim:rgba(58,128,184,.15);
+  --orange:#C08030;--orange-dim:rgba(192,128,48,.15);
+  --red:#C04050;--red-dim:rgba(192,64,80,.12);
+  --purple:#8A50CC;--purple-dim:rgba(138,80,204,.12);
+  --teal:#3AA090;--teal-dim:rgba(58,160,144,.12);
+}}
+:root[data-theme=light]{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CC;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D6A3F;--green-dim:rgba(45,106,63,.12);--blue:#1A4F7A;--blue-dim:rgba(26,79,122,.12);--orange:#B86A1E;--orange-dim:rgba(184,106,30,.12);--red:#8A1E2A;--red-dim:rgba(138,30,42,.1);--purple:#5A1A7A;--purple-dim:rgba(90,26,122,.1);--teal:#1A6A5A;--teal-dim:rgba(26,106,90,.1);}
+:root[data-theme=dark]{--bg:#0F1820;--surface:#182230;--surface-2:#1F2D40;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3A9068;--green-dim:rgba(58,144,104,.15);--blue:#3A80B8;--blue-dim:rgba(58,128,184,.15);--orange:#C08030;--orange-dim:rgba(192,128,48,.15);--red:#C04050;--red-dim:rgba(192,64,80,.12);--purple:#8A50CC;--purple-dim:rgba(138,80,204,.12);--teal:#3AA090;--teal-dim:rgba(58,160,144,.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+.header{padding:24px 32px 16px;border-bottom:3px solid var(--accent);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.header-back{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);padding:5px 10px;border:1px solid var(--border);border-radius:2px;transition:border-color .15s,color .15s;}
+.header-back:hover{border-color:var(--accent);color:var(--accent);}
+.header-main{flex:1;}
+.header-title{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.3rem;font-weight:normal;}
+.header-sub{font-size:.72rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 32px;overflow-x:auto;}
+.tab{padding:12px 18px;font-size:.78rem;letter-spacing:.04em;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s,border-color .15s;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:hover:not(.active){color:var(--text-2);}
+.content{flex:1;padding:24px 32px;}
+.panel{display:none;}
+.panel.active{display:block;}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:14px 16px;}
+.kpi-label{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;}
+.kpi-value{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.5rem;color:var(--text);}
+.kpi-sub{font-size:.7rem;color:var(--text-2);margin-top:3px;}
+.kpi.accent{border-left:3px solid var(--accent);}
+.kpi.green{border-left:3px solid var(--green);}
+.kpi.blue{border-left:3px solid var(--blue);}
+.kpi.orange{border-left:3px solid var(--orange);}
+.kpi.red{border-left:3px solid var(--red);}
+.kpi.teal{border-left:3px solid var(--teal);}
+.section-title{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.btn{font-family:inherit;font-size:.75rem;padding:7px 14px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text-2);cursor:pointer;transition:all .15s;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn.primary:hover{opacity:.9;}
+.btn.danger{border-color:var(--red);color:var(--red);}
+.btn.danger:hover{background:var(--red-dim);}
+.btn.sm{font-size:.68rem;padding:4px 9px;}
+/* Team cards */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.member-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:18px;}
+.member-avatar{width:40px;height:40px;border-radius:50%;background:var(--accent-dim);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.member-header{display:flex;gap:12px;align-items:center;margin-bottom:12px;}
+.member-info{flex:1;min-width:0;}
+.member-name{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:.95rem;font-weight:normal;}
+.member-role{font-size:.72rem;color:var(--text-3);margin-top:2px;}
+.member-email{font-size:.68rem;color:var(--text-3);margin-top:2px;}
+.skill-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;}
+.skill-chip{font-size:.62rem;padding:2px 7px;border-radius:10px;background:var(--blue-dim);color:var(--blue);}
+.capacity-row{margin-bottom:10px;}
+.capacity-label{display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-2);margin-bottom:4px;}
+.capacity-bar-wrap{background:var(--surface-2);border-radius:2px;height:8px;overflow:hidden;}
+.capacity-bar{height:100%;border-radius:2px;transition:width .3s;}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;}
+.status-dot.aktif{background:var(--green);}
+.status-dot.cuti{background:var(--orange);}
+.status-dot.nonaktif{background:var(--text-3);}
+.member-actions{display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.assign-count{font-size:.68rem;color:var(--text-3);margin-top:4px;}
+/* Assignment table */
+.table-wrap{overflow-x:auto;margin-bottom:20px;}
+table.data{width:100%;border-collapse:collapse;font-size:.78rem;}
+table.data th{text-align:left;padding:7px 12px;font-size:.63rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);background:var(--surface);border-bottom:1px solid var(--border);font-weight:normal;white-space:nowrap;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);}
+table.data tr:hover td{background:var(--accent-dim);}
+.badge{display:inline-block;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:10px;}
+.badge.aktif{background:var(--green-dim);color:var(--green);}
+.badge.cuti{background:var(--orange-dim);color:var(--orange);}
+.badge.selesai{background:var(--surface-2);color:var(--text-3);}
+.badge.high{background:var(--red-dim);color:var(--red);}
+.badge.medium{background:var(--orange-dim);color:var(--orange);}
+.badge.low{background:var(--blue-dim);color:var(--blue);}
+/* Capacity chart */
+.cap-chart{display:grid;gap:16px;margin-bottom:20px;}
+.cap-member-row{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:16px;}
+.cap-member-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.cap-member-name{font-size:.85rem;font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-weight:normal;}
+.cap-hours{font-size:.74rem;color:var(--text-2);}
+.cap-bar-wrap{background:var(--surface-2);border-radius:2px;height:14px;overflow:hidden;position:relative;}
+.cap-bar-used{height:100%;border-radius:2px;transition:width .3s;}
+.cap-bar-label{position:absolute;right:8px;top:0;height:100%;display:flex;align-items:center;font-size:.62rem;color:var(--text);}
+.cap-project-list{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;}
+.cap-project-chip{font-size:.65rem;padding:3px 8px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text-2);}
+/* Form */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+.form-group label{font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);}
+.form-group input,.form-group select,.form-group textarea{font-family:inherit;font-size:.82rem;padding:7px 10px;border:1px solid var(--border);border-radius:2px;background:var(--bg);color:var(--text);outline:none;transition:border-color .15s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);}
+.skills-checkboxes{display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;}
+.skills-checkboxes label{display:flex;align-items:center;gap:4px;font-size:.74rem;color:var(--text-2);cursor:pointer;}
+.skills-checkboxes input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:24px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.modal-header h2{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1rem;font-weight:normal;}
+.modal-close{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text-3);padding:0 4px;}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-3);font-size:.82rem;}
+.empty-state .icon{font-size:2.5rem;margin-bottom:12px;display:block;}
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+footer{padding:16px 32px;border-top:1px solid var(--border);font-size:.7rem;color:var(--text-3);}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);font-size:.76rem;padding:10px 18px;border-radius:3px;z-index:2000;opacity:0;transition:opacity .2s;pointer-events:none;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="header">
+  <a class="header-back" href="index.html">← CRM</a>
+  <div class="header-main">
+    <div class="header-title">Team & Capacity Manager</div>
+    <div class="header-sub">MOD-19 · Anggota Tim · Assignment · Workload Chart</div>
+  </div>
+  <button class="btn primary" onclick="openAddMember()">+ Tambah Anggota</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('anggota',this)">Anggota Tim</div>
+  <div class="tab" onclick="switchTab('assignment',this)">Assignment Proyek</div>
+  <div class="tab" onclick="switchTab('kapasitas',this)">Kapasitas & Workload</div>
+</div>
+
+<div class="content">
+
+  <!-- TAB: Anggota -->
+  <div class="panel active" id="panel-anggota">
+    <div class="kpi-row" id="kpi-anggota"></div>
+    <p class="section-title">Daftar Anggota Tim</p>
+    <div class="team-grid" id="team-grid"></div>
+  </div>
+
+  <!-- TAB: Assignment -->
+  <div class="panel" id="panel-assignment">
+    <div class="toolbar">
+      <button class="btn primary" onclick="openAddAssignment()">+ Tambah Assignment</button>
+      <select id="filter-assign-member" class="btn" style="font-size:.74rem;" onchange="renderAssignments()">
+        <option value="">Semua Anggota</option>
+      </select>
+      <select id="filter-assign-status" class="btn" style="font-size:.74rem;" onchange="renderAssignments()">
+        <option value="">Semua Status</option>
+        <option value="aktif">Aktif</option>
+        <option value="selesai">Selesai</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>Anggota</th>
+            <th>Proyek / Klien</th>
+            <th>Peran</th>
+            <th>Jam/Minggu</th>
+            <th>Status</th>
+            <th>Deadline</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="assignment-tbody"></tbody>
+      </table>
+    </div>
+    <div id="assign-empty" class="empty-state" style="display:none;">
+      <span class="icon">📋</span><p>Belum ada assignment. Klik "+ Tambah Assignment" untuk mulai.</p>
+    </div>
+  </div>
+
+  <!-- TAB: Kapasitas -->
+  <div class="panel" id="panel-kapasitas">
+    <div class="kpi-row" id="kpi-kapasitas"></div>
+    <p class="section-title">Workload per Anggota Tim</p>
+    <div class="cap-chart" id="cap-chart"></div>
+    <p class="section-title">Ringkasan Ketersediaan</p>
+    <div class="table-wrap">
+      <table class="data" id="avail-table">
+        <thead><tr><th>Anggota</th><th>Kapasitas</th><th>Jam Maks/Minggu</th><th>Jam Terisi</th><th>Jam Tersedia</th><th>Ketersediaan</th></tr></thead>
+        <tbody id="avail-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Member -->
+<div class="modal-overlay" id="modal-member">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-member-title">Tambah Anggota Tim</h2>
+      <button class="modal-close" onclick="closeModal('member')">×</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nama</label>
+        <input id="mm-name" placeholder="Nama lengkap"/>
+      </div>
+      <div class="form-group">
+        <label>Jabatan / Role</label>
+        <input id="mm-role" placeholder="Lead Konsultan"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input id="mm-email" type="email" placeholder="nama@arafarnusa.com"/>
+      </div>
+      <div class="form-group">
+        <label>Kapasitas (%)</label>
+        <input id="mm-capacity" type="number" min="0" max="100" value="100" placeholder="100"/>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="mm-status">
+          <option value="aktif">Aktif</option>
+          <option value="cuti">Cuti</option>
+          <option value="nonaktif">Nonaktif</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Emoji Avatar</label>
+        <input id="mm-avatar" placeholder="👤" maxlength="4"/>
+      </div>
+      <div class="form-group full">
+        <label>Keahlian ISO</label>
+        <div class="skills-checkboxes" id="skills-checkboxes"></div>
+      </div>
+      <div class="form-group full">
+        <label>Catatan</label>
+        <textarea id="mm-notes" placeholder="Keahlian khusus, bahasa, area expertise..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('member')">Batal</button>
+      <button class="btn primary" onclick="saveMember()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Assignment -->
+<div class="modal-overlay" id="modal-assignment">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-assign-title">Tambah Assignment</h2>
+      <button class="modal-close" onclick="closeModal('assignment')">×</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Anggota Tim</label>
+        <select id="ma-member"></select>
+      </div>
+      <div class="form-group">
+        <label>Proyek / Klien</label>
+        <input id="ma-project" placeholder="PT. Sumber Makmur — ISO 9001"/>
+      </div>
+      <div class="form-group">
+        <label>Peran dalam Proyek</label>
+        <select id="ma-role">
+          <option value="Lead Konsultan">Lead Konsultan</option>
+          <option value="Auditor">Auditor</option>
+          <option value="Reviewer">Reviewer</option>
+          <option value="Dokumentator">Dokumentator</option>
+          <option value="Trainer">Trainer</option>
+          <option value="Support">Support</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Jam / Minggu</label>
+        <input id="ma-hours" type="number" min="1" max="40" value="8" placeholder="8"/>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="ma-status">
+          <option value="aktif">Aktif</option>
+          <option value="selesai">Selesai</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Deadline</label>
+        <input id="ma-deadline" type="date"/>
+      </div>
+      <div class="form-group full">
+        <label>Standar ISO Terkait</label>
+        <input id="ma-standard" placeholder="ISO 9001, ISO 14001"/>
+      </div>
+      <div class="form-group full">
+        <label>Catatan</label>
+        <textarea id="ma-notes" placeholder="Detail pekerjaan, milestone, deliverable..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('assignment')">Batal</button>
+      <button class="btn primary" onclick="saveAssignment()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<footer>MOD-19 · Team & Capacity Manager · Konsultan ISO · arafarnusa.com</footer>
+
+<script>
+const STANDARDS = ['ISO 9001','ISO 14001','ISO 45001','ISO 27001','ISO 37001','ISO 22000','ISO 17021-1'];
+
+let team = [];
+let assignments = [];
+let editMemberId = null;
+let editAssignId = null;
+
+function loadData(){
+  team = JSON.parse(localStorage.getItem('crm_team')||'[]');
+  assignments = JSON.parse(localStorage.getItem('crm_assignments')||'[]');
+  if(!team.length) seedTeam();
+}
+
+function saveTeam(){ localStorage.setItem('crm_team', JSON.stringify(team)); }
+function saveAssignments(){ localStorage.setItem('crm_assignments', JSON.stringify(assignments)); }
+
+function seedTeam(){
+  team = [
+    {id:'t1',name:'Ara Farnusa',role:'Lead Konsultan & Direktur',email:'ara@arafarnusa.com',skills:['ISO 9001','ISO 14001','ISO 45001','ISO 27001','ISO 17021-1'],capacity:80,status:'aktif',avatar:'🧑‍💼',notes:'Founder arafarnusa.com, lead konsultan utama',createdAt:new Date().toISOString()},
+    {id:'t2',name:'Ahmad Rizky',role:'Senior Auditor TSI',email:'ahmad@arafarnusa.com',skills:['ISO 9001','ISO 14001','ISO 17021-1'],capacity:100,status:'aktif',avatar:'👨‍🔬',notes:'Spesialis audit TSI dan GAP analysis',createdAt:new Date().toISOString()},
+    {id:'t3',name:'Sari Dewi',role:'ISO 27001 Specialist',email:'sari@arafarnusa.com',skills:['ISO 27001','ISO 37001'],capacity:60,status:'cuti',avatar:'👩‍💻',notes:'Konsultan keamanan informasi dan anti-suap',createdAt:new Date().toISOString()},
+    {id:'t4',name:'Budi Santoso',role:'Konsultan ISO Pangan',email:'budi@arafarnusa.com',skills:['ISO 22000','ISO 9001'],capacity:100,status:'aktif',avatar:'👨‍🍳',notes:'Spesialis industri makanan dan minuman',createdAt:new Date().toISOString()},
+  ];
+  saveTeam();
+  seedAssignments();
+}
+
+function seedAssignments(){
+  assignments = [
+    {id:'a1',memberId:'t1',project:'PT. Makmur Jaya — ISO 9001',role:'Lead Konsultan',hoursPerWeek:10,status:'aktif',standard:'ISO 9001',deadline:'2026-10-31',notes:'Fase implementasi dokumen QMS',createdAt:new Date().toISOString()},
+    {id:'a2',memberId:'t1',project:'PT. Digital Nusa — ISO 27001',role:'Lead Konsultan',hoursPerWeek:8,status:'aktif',standard:'ISO 27001',deadline:'2026-09-30',notes:'',createdAt:new Date().toISOString()},
+    {id:'a3',memberId:'t2',project:'PT. Makmur Jaya — ISO 9001',role:'Auditor',hoursPerWeek:6,status:'aktif',standard:'ISO 9001',deadline:'2026-10-31',notes:'Audit internal pre-sertifikasi',createdAt:new Date().toISOString()},
+    {id:'a4',memberId:'t4',project:'Koperasi Pangan Nusantara — ISO 22000',role:'Lead Konsultan',hoursPerWeek:12,status:'aktif',standard:'ISO 22000',deadline:'2026-11-15',notes:'Implementasi HACCP dan sistem mutu pangan',createdAt:new Date().toISOString()},
+    {id:'a5',memberId:'t2',project:'CV. Baja Sakti — ISO 45001',role:'Auditor',hoursPerWeek:5,status:'selesai',standard:'ISO 45001',deadline:'2026-07-31',notes:'Audit selesai, sertifikasi diraih',createdAt:new Date().toISOString()},
+  ];
+  saveAssignments();
+}
+
+function getMemberLoad(memberId){
+  return assignments.filter(a=>a.memberId===memberId&&a.status==='aktif').reduce((s,a)=>s+(a.hoursPerWeek||0),0);
+}
+
+function getMemberMaxHours(m){ return Math.round((m.capacity||100)/100*40); }
+
+function getCapPct(m){
+  const used = getMemberLoad(m.id);
+  const max = getMemberMaxHours(m);
+  if(!max) return 0;
+  return Math.round(used/max*100);
+}
+
+function capColor(pct){
+  if(pct>=90) return 'var(--red)';
+  if(pct>=70) return 'var(--orange)';
+  return 'var(--green)';
+}
+
+function switchTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='anggota'){ renderKpiAnggota(); renderTeam(); }
+  if(id==='assignment') renderAssignments();
+  if(id==='kapasitas'){ renderKpiKapasitas(); renderCapChart(); renderAvailTable(); }
+}
+
+function renderKpiAnggota(){
+  const aktif = team.filter(m=>m.status==='aktif').length;
+  const cuti = team.filter(m=>m.status==='cuti').length;
+  const nonaktif = team.filter(m=>m.status==='nonaktif').length;
+  const overloaded = team.filter(m=>getCapPct(m)>=90).length;
+  document.getElementById('kpi-anggota').innerHTML = `
+    <div class="kpi green"><div class="kpi-label">Aktif</div><div class="kpi-value">${aktif}</div><div class="kpi-sub">anggota aktif</div></div>
+    <div class="kpi orange"><div class="kpi-label">Cuti</div><div class="kpi-value">${cuti}</div><div class="kpi-sub">sedang cuti</div></div>
+    <div class="kpi accent"><div class="kpi-label">Total Tim</div><div class="kpi-value">${team.length}</div><div class="kpi-sub">anggota terdaftar</div></div>
+    <div class="kpi red"><div class="kpi-label">Overloaded</div><div class="kpi-value">${overloaded}</div><div class="kpi-sub">kapasitas ≥90%</div></div>
+    <div class="kpi blue"><div class="kpi-label">Assignment Aktif</div><div class="kpi-value">${assignments.filter(a=>a.status==='aktif').length}</div><div class="kpi-sub">proyek berjalan</div></div>
+  `;
+}
+
+function renderTeam(){
+  const el = document.getElementById('team-grid');
+  if(!team.length){
+    el.innerHTML = '<div class="empty-state"><span class="icon">👥</span><p>Belum ada anggota tim.</p></div>';
+    return;
+  }
+  el.innerHTML = team.map(m => {
+    const pct = getCapPct(m);
+    const bar = capColor(pct);
+    const load = getMemberLoad(m.id);
+    const max = getMemberMaxHours(m);
+    const myAssigns = assignments.filter(a=>a.memberId===m.id&&a.status==='aktif');
+    return `<div class="member-card">
+      <div class="member-header">
+        <div class="member-avatar">${m.avatar||'👤'}</div>
+        <div class="member-info">
+          <div class="member-name">${m.name}</div>
+          <div class="member-role">${m.role}</div>
+          <div class="member-email">${m.email||''}</div>
+        </div>
+        <div>
+          <span class="status-dot ${m.status}"></span>
+          <span style="font-size:.65rem;color:var(--text-3)">${m.status}</span>
+        </div>
+      </div>
+      <div class="skill-chips">${(m.skills||[]).map(s=>`<span class="skill-chip">${s}</span>`).join('')}</div>
+      <div class="capacity-row">
+        <div class="capacity-label">
+          <span>Kapasitas terisi</span>
+          <span style="color:${bar}">${pct}% · ${load}/${max} jam/minggu</span>
+        </div>
+        <div class="capacity-bar-wrap">
+          <div class="capacity-bar" style="width:${Math.min(pct,100)}%;background:${bar}"></div>
+        </div>
+      </div>
+      <div class="assign-count">${myAssigns.length} proyek aktif${myAssigns.length?': '+myAssigns.map(a=>a.project).join(', ').substring(0,60)+(myAssigns.map(a=>a.project).join(', ').length>60?'...':''):''}</div>
+      ${m.notes?`<div style="font-size:.68rem;color:var(--text-3);margin-top:6px;font-style:italic">${m.notes}</div>`:''}
+      <div class="member-actions">
+        <button class="btn sm" onclick="openAddAssignment('${m.id}')">+ Assign</button>
+        <button class="btn sm" onclick="openEditMember('${m.id}')">Edit</button>
+        <button class="btn sm danger" onclick="deleteMember('${m.id}')">Hapus</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAssignments(){
+  const fMember = document.getElementById('filter-assign-member')?.value||'';
+  const fStatus = document.getElementById('filter-assign-status')?.value||'';
+  let list = assignments;
+  if(fMember) list = list.filter(a=>a.memberId===fMember);
+  if(fStatus) list = list.filter(a=>a.status===fStatus);
+
+  const tbody = document.getElementById('assignment-tbody');
+  const emptyEl = document.getElementById('assign-empty');
+  if(!list.length){ tbody.innerHTML=''; emptyEl.style.display='block'; return; }
+  emptyEl.style.display='none';
+  tbody.innerHTML = list.map(a => {
+    const m = team.find(x=>x.id===a.memberId);
+    const mName = m?m.name:'–';
+    const dl = a.deadline ? new Date(a.deadline) : null;
+    const dlStr = dl ? dl.toLocaleDateString('id') : '–';
+    const dlDays = dl ? Math.round((dl-new Date())/(1000*60*60*24)) : null;
+    const dlColor = dlDays!==null ? (dlDays<0?'var(--red)':dlDays<14?'var(--orange)':'var(--text-2)') : 'var(--text-2)';
+    return `<tr>
+      <td>${m?m.avatar+' ':''}<strong>${mName}</strong></td>
+      <td>${a.project}</td>
+      <td>${a.role}</td>
+      <td style="text-align:center">${a.hoursPerWeek||0}</td>
+      <td><span class="badge ${a.status}">${a.status}</span></td>
+      <td style="color:${dlColor}">${dlStr}</td>
+      <td>
+        <button class="btn sm" onclick="editAssignment('${a.id}')">Edit</button>
+        <button class="btn sm danger" onclick="deleteAssignment('${a.id}')">Hapus</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderKpiKapasitas(){
+  const totalCap = team.reduce((s,m)=>s+getMemberMaxHours(m),0);
+  const totalUsed = team.reduce((s,m)=>s+getMemberLoad(m.id),0);
+  const pctUsed = totalCap ? Math.round(totalUsed/totalCap*100) : 0;
+  const avail = totalCap - totalUsed;
+  const overloaded = team.filter(m=>getCapPct(m)>=90).length;
+  document.getElementById('kpi-kapasitas').innerHTML = `
+    <div class="kpi accent"><div class="kpi-label">Kapasitas Total</div><div class="kpi-value">${totalCap}j</div><div class="kpi-sub">jam/minggu seluruh tim</div></div>
+    <div class="kpi orange"><div class="kpi-label">Terisi</div><div class="kpi-value">${totalUsed}j</div><div class="kpi-sub">${pctUsed}% dari total kapasitas</div></div>
+    <div class="kpi green"><div class="kpi-label">Tersedia</div><div class="kpi-value">${avail}j</div><div class="kpi-sub">jam/minggu tersisa</div></div>
+    <div class="kpi red"><div class="kpi-label">Overloaded</div><div class="kpi-value">${overloaded}</div><div class="kpi-sub">anggota di atas 90%</div></div>
+  `;
+}
+
+function renderCapChart(){
+  const el = document.getElementById('cap-chart');
+  if(!team.length){ el.innerHTML='<div class="empty-state"><span class="icon">📊</span><p>Belum ada anggota tim.</p></div>'; return; }
+  el.innerHTML = team.map(m => {
+    const load = getMemberLoad(m.id);
+    const max = getMemberMaxHours(m);
+    const pct = max ? Math.min(Math.round(load/max*100),100) : 0;
+    const bar = capColor(pct);
+    const myAssigns = assignments.filter(a=>a.memberId===m.id&&a.status==='aktif');
+    return `<div class="cap-member-row">
+      <div class="cap-member-header">
+        <span class="cap-member-name">${m.avatar||'👤'} ${m.name} <span style="font-size:.72rem;color:var(--text-3)">${m.role}</span></span>
+        <span class="cap-hours">${load} / ${max} jam/minggu</span>
+      </div>
+      <div class="cap-bar-wrap">
+        <div class="cap-bar-used" style="width:${pct}%;background:${bar}"></div>
+        <div class="cap-bar-label">${pct}%</div>
+      </div>
+      ${myAssigns.length?`<div class="cap-project-list">${myAssigns.map(a=>`<span class="cap-project-chip">${a.project} (${a.hoursPerWeek}j)</span>`).join('')}</div>`:'<div style="margin-top:8px;font-size:.68rem;color:var(--text-3)">Tidak ada proyek aktif</div>'}
+    </div>`;
+  }).join('');
+}
+
+function renderAvailTable(){
+  const tbody = document.getElementById('avail-tbody');
+  tbody.innerHTML = team.map(m => {
+    const load = getMemberLoad(m.id);
+    const max = getMemberMaxHours(m);
+    const avail = Math.max(0, max-load);
+    const pct = max ? Math.round(load/max*100) : 0;
+    const color = capColor(pct);
+    return `<tr>
+      <td>${m.avatar||'👤'} <strong>${m.name}</strong></td>
+      <td>${m.capacity}%</td>
+      <td>${max}j/minggu</td>
+      <td style="color:${color}">${load}j</td>
+      <td>${avail}j</td>
+      <td><span style="color:${color};font-size:.78rem;">● ${pct}% terisi</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function openAddMember(){
+  editMemberId = null;
+  document.getElementById('modal-member-title').textContent = 'Tambah Anggota Tim';
+  ['mm-name','mm-role','mm-email','mm-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mm-capacity').value = '100';
+  document.getElementById('mm-status').value = 'aktif';
+  document.getElementById('mm-avatar').value = '';
+  renderSkillCheckboxes([]);
+  document.getElementById('modal-member').classList.add('open');
+}
+
+function openEditMember(id){
+  const m = team.find(x=>x.id===id);
+  if(!m) return;
+  editMemberId = id;
+  document.getElementById('modal-member-title').textContent = 'Edit Anggota Tim';
+  document.getElementById('mm-name').value = m.name;
+  document.getElementById('mm-role').value = m.role;
+  document.getElementById('mm-email').value = m.email||'';
+  document.getElementById('mm-capacity').value = m.capacity||100;
+  document.getElementById('mm-status').value = m.status||'aktif';
+  document.getElementById('mm-avatar').value = m.avatar||'';
+  document.getElementById('mm-notes').value = m.notes||'';
+  renderSkillCheckboxes(m.skills||[]);
+  document.getElementById('modal-member').classList.add('open');
+}
+
+function renderSkillCheckboxes(selected){
+  document.getElementById('skills-checkboxes').innerHTML = STANDARDS.map(s =>
+    `<label><input type="checkbox" name="skill" value="${s}" ${selected.includes(s)?'checked':''}/>${s}</label>`
+  ).join('');
+}
+
+function getSelectedSkills(){
+  return Array.from(document.querySelectorAll('#skills-checkboxes input:checked')).map(el=>el.value);
+}
+
+function saveMember(){
+  const name = document.getElementById('mm-name').value.trim();
+  if(!name){ showToast('Nama wajib diisi'); return; }
+  const m = {
+    id: editMemberId || 't'+Date.now(),
+    name,
+    role: document.getElementById('mm-role').value.trim(),
+    email: document.getElementById('mm-email').value.trim(),
+    capacity: parseInt(document.getElementById('mm-capacity').value)||100,
+    status: document.getElementById('mm-status').value,
+    avatar: document.getElementById('mm-avatar').value.trim()||'👤',
+    skills: getSelectedSkills(),
+    notes: document.getElementById('mm-notes').value.trim(),
+    createdAt: editMemberId ? team.find(x=>x.id===editMemberId)?.createdAt||new Date().toISOString() : new Date().toISOString(),
+  };
+  if(editMemberId){
+    const idx = team.findIndex(x=>x.id===editMemberId);
+    if(idx>=0) team[idx]=m; else team.push(m);
+  } else { team.push(m); }
+  saveTeam();
+  closeModal('member');
+  renderKpiAnggota();
+  renderTeam();
+  populateMemberFilters();
+  showToast(editMemberId?'Anggota diperbarui':'Anggota ditambahkan');
+  editMemberId = null;
+}
+
+function deleteMember(id){
+  if(!confirm('Hapus anggota tim ini? Assignment terkait tidak akan dihapus.')) return;
+  team = team.filter(m=>m.id!==id);
+  saveTeam();
+  renderKpiAnggota();
+  renderTeam();
+  populateMemberFilters();
+  showToast('Anggota dihapus');
+}
+
+function openAddAssignment(preselect=''){
+  editAssignId = null;
+  document.getElementById('modal-assign-title').textContent = 'Tambah Assignment';
+  document.getElementById('ma-project').value = '';
+  document.getElementById('ma-role').value = 'Lead Konsultan';
+  document.getElementById('ma-hours').value = '8';
+  document.getElementById('ma-status').value = 'aktif';
+  document.getElementById('ma-deadline').value = '';
+  document.getElementById('ma-standard').value = '';
+  document.getElementById('ma-notes').value = '';
+  populateAssignMemberSelect(preselect);
+  document.getElementById('modal-assignment').classList.add('open');
+}
+
+function editAssignment(id){
+  const a = assignments.find(x=>x.id===id);
+  if(!a) return;
+  editAssignId = id;
+  document.getElementById('modal-assign-title').textContent = 'Edit Assignment';
+  populateAssignMemberSelect(a.memberId);
+  document.getElementById('ma-project').value = a.project||'';
+  document.getElementById('ma-role').value = a.role||'Lead Konsultan';
+  document.getElementById('ma-hours').value = a.hoursPerWeek||8;
+  document.getElementById('ma-status').value = a.status||'aktif';
+  document.getElementById('ma-deadline').value = a.deadline||'';
+  document.getElementById('ma-standard').value = a.standard||'';
+  document.getElementById('ma-notes').value = a.notes||'';
+  document.getElementById('modal-assignment').classList.add('open');
+}
+
+function populateAssignMemberSelect(selected=''){
+  const sel = document.getElementById('ma-member');
+  sel.innerHTML = team.map(m=>`<option value="${m.id}" ${m.id===selected?'selected':''}>${m.avatar||'👤'} ${m.name}</option>`).join('');
+}
+
+function saveAssignment(){
+  const project = document.getElementById('ma-project').value.trim();
+  if(!project){ showToast('Nama proyek wajib diisi'); return; }
+  const a = {
+    id: editAssignId || 'a'+Date.now(),
+    memberId: document.getElementById('ma-member').value,
+    project,
+    role: document.getElementById('ma-role').value,
+    hoursPerWeek: parseInt(document.getElementById('ma-hours').value)||8,
+    status: document.getElementById('ma-status').value,
+    deadline: document.getElementById('ma-deadline').value,
+    standard: document.getElementById('ma-standard').value.trim(),
+    notes: document.getElementById('ma-notes').value.trim(),
+    createdAt: editAssignId ? assignments.find(x=>x.id===editAssignId)?.createdAt||new Date().toISOString() : new Date().toISOString(),
+  };
+  if(editAssignId){
+    const idx = assignments.findIndex(x=>x.id===editAssignId);
+    if(idx>=0) assignments[idx]=a; else assignments.push(a);
+  } else { assignments.push(a); }
+  saveAssignments();
+  closeModal('assignment');
+  renderAssignments();
+  renderTeam();
+  renderKpiAnggota();
+  showToast(editAssignId?'Assignment diperbarui':'Assignment ditambahkan');
+  editAssignId = null;
+}
+
+function deleteAssignment(id){
+  if(!confirm('Hapus assignment ini?')) return;
+  assignments = assignments.filter(a=>a.id!==id);
+  saveAssignments();
+  renderAssignments();
+  renderTeam();
+  renderKpiAnggota();
+  showToast('Assignment dihapus');
+}
+
+function populateMemberFilters(){
+  const sel = document.getElementById('filter-assign-member');
+  if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Semua Anggota</option>'+team.map(m=>`<option value="${m.id}" ${m.id===cur?'selected':''}>${m.name}</option>`).join('');
+}
+
+function closeModal(which){
+  document.getElementById('modal-'+which).classList.remove('open');
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function init(){
+  loadData();
+  renderKpiAnggota();
+  renderTeam();
+  populateMemberFilters();
+  document.getElementById('modal-member').addEventListener('click',function(e){if(e.target===this)closeModal('member');});
+  document.getElementById('modal-assignment').addEventListener('click',function(e){if(e.target===this)closeModal('assignment');});
+}
+init();
+</script>
+</body>
+</html>
