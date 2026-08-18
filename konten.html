@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Konten Marketing — CRM Konsultan ISO</title>
+<style>
+:root{
+  --bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;
+  --text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;
+  --accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);
+  --green:#2D7A4F;--green-dim:rgba(45,122,79,.12);
+  --blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);
+  --orange:#C47A20;--orange-dim:rgba(196,122,32,.12);
+  --red:#C03030;--red-dim:rgba(192,48,48,.1);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;
+  --text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;
+  --accent:#D06528;--accent-dim:rgba(208,101,40,.15);
+  --green:#3DAF72;--green-dim:rgba(61,175,114,.12);
+  --blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);
+  --orange:#E09030;--orange-dim:rgba(224,144,48,.12);
+  --red:#E05050;--red-dim:rgba(224,80,80,.1);
+}}
+:root[data-theme=light]{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D7A4F;--green-dim:rgba(45,122,79,.12);--blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);--orange:#C47A20;--orange-dim:rgba(196,122,32,.12);--red:#C03030;--red-dim:rgba(192,48,48,.1);}
+:root[data-theme=dark]{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3DAF72;--green-dim:rgba(61,175,114,.12);--blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);--orange:#E09030;--orange-dim:rgba(224,144,48,.12);--red:#E05050;--red-dim:rgba(224,80,80,.1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+
+/* HEADER */
+header{padding:24px 40px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--accent);text-decoration:none;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);padding:5px 12px;border-radius:3px;transition:background .15s;}
+.back-link:hover{background:var(--accent-dim);}
+.header-text h1{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.5rem;font-weight:normal;}
+.header-text p{font-size:.75rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:12px;padding:20px 40px 0;flex-wrap:wrap;}
+.stat-chip{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:10px 18px;display:flex;align-items:center;gap:10px;}
+.stat-chip .num{font-family:"Palatino Linotype",Palatino,serif;font-size:1.4rem;font-weight:normal;}
+.stat-chip .lbl{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);}
+.stat-chip.pending .num{color:var(--orange);}
+.stat-chip.release .num{color:var(--green);}
+.stat-chip.draft .num{color:var(--blue);}
+
+/* TAB BAR */
+.tab-bar{display:flex;gap:0;padding:20px 40px 0;border-bottom:1px solid var(--border);}
+.tab-btn{background:none;border:none;padding:10px 22px;font-family:inherit;font-size:.82rem;letter-spacing:.04em;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* CONTENT AREA */
+.tab-content{display:none;padding:28px 40px;}
+.tab-content.active{display:block;}
+
+/* TOOLBAR */
+.toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.toolbar-left{display:flex;gap:10px;flex:1;flex-wrap:wrap;}
+input[type=text],select,textarea{
+  background:var(--surface);border:1px solid var(--border);border-radius:3px;
+  color:var(--text);font-family:inherit;font-size:.83rem;padding:7px 12px;
+  transition:border-color .15s;
+}
+input[type=text]:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);}
+.search-input{min-width:200px;}
+select{cursor:pointer;}
+.btn{border:none;border-radius:3px;padding:8px 16px;font-family:inherit;font-size:.82rem;cursor:pointer;transition:opacity .15s,background .15s;letter-spacing:.03em;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{opacity:.88;}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--text-2);}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-sm{padding:5px 10px;font-size:.75rem;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-green:hover{opacity:.85;}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{opacity:.85;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.82rem;}
+th{text-align:left;padding:9px 12px;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);border-bottom:2px solid var(--border);font-weight:normal;white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+tr:hover td{background:var(--surface);}
+.topik-cell{max-width:280px;}
+.topik-title{font-weight:normal;line-height:1.4;margin-bottom:3px;}
+.topik-sub{font-size:.73rem;color:var(--text-3);line-height:1.4;}
+.standar-badge{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:2px;background:var(--accent-dim);color:var(--accent);font-weight:normal;white-space:nowrap;}
+.format-tag{font-size:.73rem;color:var(--text-3);}
+
+/* STATUS BADGES */
+.badge{display:inline-block;font-size:.68rem;padding:3px 9px;border-radius:2px;letter-spacing:.05em;font-weight:normal;white-space:nowrap;}
+.badge-pending{background:var(--orange-dim);color:var(--orange);}
+.badge-release{background:var(--green-dim);color:var(--green);}
+.badge-draft{background:var(--blue-dim);color:var(--blue);}
+.badge-archived{background:var(--surface-2);color:var(--text-3);}
+.badge-in-progress{background:var(--accent-dim);color:var(--accent);}
+
+/* ACTION BTNS */
+.action-group{display:flex;gap:5px;flex-wrap:wrap;}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-3);}
+.empty-state .icon{font-size:2rem;margin-bottom:12px;}
+.empty-state p{font-size:.85rem;margin-bottom:16px;}
+
+/* GENERATOR */
+.gen-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:700px){.gen-grid{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.form-group label{font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);}
+.form-group textarea{resize:vertical;min-height:80px;}
+.suggestions-panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;}
+.suggestions-panel h3{font-family:"Palatino Linotype",Palatino,serif;font-size:1rem;font-weight:normal;margin-bottom:14px;color:var(--text-2);}
+.suggestion-card{background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:14px;margin-bottom:10px;}
+.suggestion-card:last-child{margin-bottom:0;}
+.sug-title{font-size:.87rem;line-height:1.45;margin-bottom:6px;}
+.sug-meta{font-size:.72rem;color:var(--text-3);margin-bottom:10px;}
+.sug-hook{font-size:.78rem;color:var(--text-2);font-style:italic;border-left:2px solid var(--accent);padding-left:8px;margin-bottom:10px;}
+
+/* PREVIEW CARDS */
+.articles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.article-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px;}
+.article-card .a-standar{margin-bottom:8px;}
+.article-card .a-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1rem;font-weight:normal;line-height:1.45;margin-bottom:6px;}
+.article-card .a-sub{font-size:.76rem;color:var(--text-3);line-height:1.5;margin-bottom:12px;}
+.article-card .a-meta{font-size:.7rem;color:var(--text-3);display:flex;justify-content:space-between;align-items:center;}
+.article-card .a-link{color:var(--accent);font-size:.75rem;text-decoration:none;}
+.article-card .a-link:hover{text-decoration:underline;}
+
+/* QUICK ACTIONS */
+.actions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:28px;}
+.action-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;}
+.action-card .ac-icon{font-size:1.4rem;margin-bottom:10px;}
+.action-card .ac-title{font-size:.9rem;font-family:"Palatino Linotype",Palatino,serif;font-weight:normal;margin-bottom:5px;}
+.action-card .ac-desc{font-size:.76rem;color:var(--text-3);line-height:1.5;margin-bottom:14px;}
+.action-card .ac-status{font-size:.7rem;margin-bottom:12px;display:flex;align-items:center;gap:5px;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--text-3);}
+.status-dot.ok{background:var(--green);}
+.status-dot.warn{background:var(--orange);}
+
+/* CONFIG SECTION */
+.config-section{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;margin-top:8px;}
+.config-section h3{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px;}
+.config-row{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+.config-row label{font-size:.78rem;color:var(--text-2);min-width:180px;}
+.config-row input{flex:1;min-width:200px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;}
+.modal h2{font-family:"Palatino Linotype",Palatino,serif;font-size:1.2rem;font-weight:normal;margin-bottom:18px;}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);padding:10px 18px;border-radius:4px;font-size:.82rem;z-index:200;transform:translateY(100px);opacity:0;transition:transform .25s,opacity .25s;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* SECTION TITLE */
+.section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:14px;}
+.section-divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+
+footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+
+@media(max-width:600px){
+  header{padding:16px 20px;flex-wrap:wrap;}
+  .stats-row,.tab-bar,.tab-content{padding-left:20px;padding-right:20px;}
+  .tab-btn{padding:10px 14px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="index.html">← CRM</a>
+  <div class="header-text">
+    <h1>Content Marketing Engine</h1>
+    <p>MOD-03 · Bank Topik · Kalender Editorial · n8n Integration</p>
+  </div>
+</header>
+
+<div class="stats-row" id="statsRow">
+  <div class="stat-chip">
+    <div class="num" id="statTotal">—</div>
+    <div class="lbl">Total Topik</div>
+  </div>
+  <div class="stat-chip pending">
+    <div class="num" id="statPending">—</div>
+    <div class="lbl">Pending</div>
+  </div>
+  <div class="stat-chip draft">
+    <div class="num" id="statDraft">—</div>
+    <div class="lbl">In Progress</div>
+  </div>
+  <div class="stat-chip release">
+    <div class="num" id="statRelease">—</div>
+    <div class="lbl">Release</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('kalender')">Kalender Editorial</button>
+  <button class="tab-btn" onclick="switchTab('generator')">Generator Topik</button>
+  <button class="tab-btn" onclick="switchTab('preview')">Preview Konten</button>
+  <button class="tab-btn" onclick="switchTab('aksi')">Quick Actions</button>
+</div>
+
+<!-- TAB 1: KALENDER EDITORIAL -->
+<div class="tab-content active" id="tab-kalender">
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <input type="text" class="search-input" id="searchInput" placeholder="Cari topik…" oninput="renderTable()">
+      <select id="filterStatus" onchange="renderTable()">
+        <option value="">Semua Status</option>
+        <option value="PENDING">Pending</option>
+        <option value="IN-PROGRESS">In Progress</option>
+        <option value="RELEASE">Release</option>
+        <option value="ARCHIVED">Archived</option>
+      </select>
+      <select id="filterStandar" onchange="renderTable()">
+        <option value="">Semua Standar</option>
+        <option>ISO 9001</option>
+        <option>ISO 14001</option>
+        <option>ISO 45001</option>
+        <option>ISO 27001</option>
+        <option>ISO 22000</option>
+        <option>ISO 37001</option>
+        <option>ISO 17021-1</option>
+        <option>ISO 31000</option>
+        <option>ISO 22301</option>
+        <option>Umum</option>
+      </select>
+      <select id="filterFormat" onchange="renderTable()">
+        <option value="">Semua Format</option>
+        <option>Artikel Blog</option>
+        <option>LinkedIn Post</option>
+        <option>Carousel</option>
+        <option>Infografis</option>
+        <option>Video</option>
+      </select>
+    </div>
+    <button class="btn btn-outline btn-sm" onclick="refreshFromN8n()">↻ Sync</button>
+    <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Tambah Topik</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:36px">#</th>
+          <th>Topik</th>
+          <th>Standar</th>
+          <th>Format</th>
+          <th>Status</th>
+          <th>Tanggal</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="topicsBody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="icon">📋</div>
+      <p>Belum ada topik ditemukan.</p>
+      <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Tambah Topik Pertama</button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: GENERATOR TOPIK -->
+<div class="tab-content" id="tab-generator">
+  <div class="gen-grid">
+    <div>
+      <p class="section-title">Generate Ide Topik</p>
+      <div class="form-group">
+        <label>Keyword / Tema Utama</label>
+        <input type="text" id="genKeyword" placeholder="contoh: audit internal, gap analysis, pendirian CB…">
+      </div>
+      <div class="form-group">
+        <label>Standar ISO</label>
+        <select id="genStandar">
+          <option value="">Pilih Standar…</option>
+          <option>ISO 9001</option>
+          <option>ISO 14001</option>
+          <option>ISO 45001</option>
+          <option>ISO 27001</option>
+          <option>ISO 22000</option>
+          <option>ISO 37001</option>
+          <option>ISO 17021-1</option>
+          <option>ISO 31000</option>
+          <option>ISO 22301</option>
+          <option value="Umum">Umum (Multi-standard)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Format Konten</label>
+        <select id="genFormat">
+          <option>Artikel Blog</option>
+          <option>LinkedIn Post</option>
+          <option>Carousel</option>
+          <option>Infografis</option>
+          <option>Video</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Target Audiens</label>
+        <select id="genAudiens">
+          <option value="icp1">ICP-1 — Perusahaan ingin sertifikasi</option>
+          <option value="icp2">ICP-2 — Calon pendiri lembaga sertifikasi</option>
+          <option value="umum">Umum / Awareness</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Konteks Tambahan (opsional)</label>
+        <textarea id="genKonteks" placeholder="Insight spesifik, pain point klien, atau angle yang ingin ditonjolkan…"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="generateTopics()">⚡ Generate Ide Topik</button>
+    </div>
+
+    <div class="suggestions-panel">
+      <h3 id="sugTitle">Ide topik akan muncul di sini</h3>
+      <div id="suggestionsContainer">
+        <div style="color:var(--text-3);font-size:.82rem;line-height:1.6">
+          Isi form di sebelah kiri, lalu klik <strong>Generate Ide Topik</strong> untuk mendapatkan 4 saran topik konten berdasarkan standar ISO dan audiens yang dipilih.<br><br>
+          Setiap saran dilengkapi dengan hook pembuka dan CTA, siap dijadwalkan ke Bank Topik.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: PREVIEW KONTEN -->
+<div class="tab-content" id="tab-preview">
+  <p class="section-title">Artikel yang Sudah Rilis</p>
+  <div class="articles-grid" id="articlesGrid"></div>
+  <div class="empty-state" id="previewEmpty" style="display:none">
+    <div class="icon">📰</div>
+    <p>Belum ada artikel berstatus RELEASE.</p>
+    <button class="btn btn-outline btn-sm" onclick="switchTab('kalender')">Lihat Bank Topik</button>
+  </div>
+</div>
+
+<!-- TAB 4: QUICK ACTIONS -->
+<div class="tab-content" id="tab-aksi">
+  <p class="section-title">Trigger n8n Workflows</p>
+  <div class="actions-grid">
+
+    <div class="action-card">
+      <div class="ac-icon">✍️</div>
+      <div class="ac-title">Generate Artikel LinkedIn</div>
+      <div class="ac-desc">Kirim topik ke n8n → generate artikel lengkap → post ke LinkedIn. Workflow: <em>Linkedin from Telegram</em>.</div>
+      <div class="ac-status"><span class="status-dot" id="dot-artikel"></span><span id="lbl-artikel">Belum dikonfigurasi</span></div>
+      <div style="margin-bottom:10px">
+        <input type="text" id="inp-topik-artikel" placeholder="Topik artikel…" style="width:100%;margin-bottom:6px">
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="triggerWorkflow('artikel')">Kirim ke n8n →</button>
+    </div>
+
+    <div class="action-card">
+      <div class="ac-icon">🎨</div>
+      <div class="ac-title">Generate Carousel / Infografis</div>
+      <div class="ac-desc">Trigger workflow Linkedin Infografis v3 via n8n. Generate carousel dengan Gemini + approval flow.</div>
+      <div class="ac-status"><span class="status-dot" id="dot-carousel"></span><span id="lbl-carousel">Belum dikonfigurasi</span></div>
+      <div style="margin-bottom:10px">
+        <input type="text" id="inp-topik-carousel" placeholder="Tema carousel…" style="width:100%;margin-bottom:6px">
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="triggerWorkflow('carousel')">Kirim ke n8n →</button>
+    </div>
+
+    <div class="action-card">
+      <div class="ac-icon">📅</div>
+      <div class="ac-title">Trigger LinkedIn Scheduled</div>
+      <div class="ac-desc">Jalankan workflow <em>Linkedinscheduled</em> sekarang (biasanya berjalan Senin+Kamis 07:00 otomatis).</div>
+      <div class="ac-status"><span class="status-dot" id="dot-scheduled"></span><span id="lbl-scheduled">Belum dikonfigurasi</span></div>
+      <button class="btn btn-outline btn-sm" onclick="triggerWorkflow('scheduled')" style="margin-top:10px">▶ Jalankan Sekarang</button>
+    </div>
+
+    <div class="action-card">
+      <div class="ac-icon">📚</div>
+      <div class="ac-title">Second Brain — Simpan URL</div>
+      <div class="ac-desc">Kirim URL artikel/referensi → n8n ekstrak konten via Jina AI → simpan ke Google Docs knowledge base.</div>
+      <div class="ac-status"><span class="status-dot" id="dot-brain"></span><span id="lbl-brain">Belum dikonfigurasi</span></div>
+      <div style="margin-bottom:10px">
+        <input type="text" id="inp-url-brain" placeholder="https://…" style="width:100%;margin-bottom:6px">
+      </div>
+      <button class="btn btn-blue btn-sm" onclick="triggerWorkflow('brain')">Simpan ke Knowledge Base →</button>
+    </div>
+
+  </div>
+
+  <hr class="section-divider">
+  <div class="config-section">
+    <h3>⚙ Konfigurasi Webhook URL (disimpan di localStorage)</h3>
+    <div class="config-row">
+      <label>Bank Topik — Baca (GET)</label>
+      <input type="text" id="cfg-read" placeholder="https://nusantara8n.my.id/webhook/…" oninput="saveConfig()">
+    </div>
+    <div class="config-row">
+      <label>Bank Topik — Tulis (POST)</label>
+      <input type="text" id="cfg-write" placeholder="https://nusantara8n.my.id/webhook/…" oninput="saveConfig()">
+    </div>
+    <div class="config-row">
+      <label>Generate Artikel LinkedIn</label>
+      <input type="text" id="cfg-artikel" placeholder="https://nusantara8n.my.id/webhook/…" oninput="saveConfig()">
+    </div>
+    <div class="config-row">
+      <label>Generate Carousel</label>
+      <input type="text" id="cfg-carousel" placeholder="https://nusantara8n.my.id/webhook/…" oninput="saveConfig()">
+    </div>
+    <div class="config-row">
+      <label>LinkedIn Scheduled (manual trigger)</label>
+      <input type="text" id="cfg-scheduled" placeholder="https://nusantara8n.my.id/webhook/…" oninput="saveConfig()">
+    </div>
+    <div class="config-row">
+      <label>Second Brain</label>
+      <input type="text" id="cfg-brain" placeholder="https://nusantara8n.my.id/webhook/…" oninput="saveConfig()">
+    </div>
+    <p style="font-size:.72rem;color:var(--text-3);margin-top:10px">Tanpa webhook, semua data disimpan di localStorage browser. Data tidak hilang saat tab ditutup.</p>
+  </div>
+</div>
+
+<!-- MODAL: TAMBAH / EDIT TOPIK -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <h2 id="modalTitle">Tambah Topik ke Bank Topik</h2>
+    <input type="hidden" id="editId">
+    <div class="form-group">
+      <label>Topik *</label>
+      <input type="text" id="mTopik" placeholder="Judul topik / artikel…">
+    </div>
+    <div class="form-group">
+      <label>Subtopik / Deskripsi</label>
+      <input type="text" id="mSubtopik" placeholder="Kata kunci, angle, atau catatan…">
+    </div>
+    <div class="form-group">
+      <label>Standar ISO *</label>
+      <select id="mStandar">
+        <option value="">Pilih Standar…</option>
+        <option>ISO 9001</option>
+        <option>ISO 14001</option>
+        <option>ISO 45001</option>
+        <option>ISO 27001</option>
+        <option>ISO 22000</option>
+        <option>ISO 37001</option>
+        <option>ISO 17021-1</option>
+        <option>ISO 31000</option>
+        <option>ISO 22301</option>
+        <option>Umum</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Format Konten *</label>
+      <select id="mFormat">
+        <option>Artikel Blog</option>
+        <option>LinkedIn Post</option>
+        <option>Carousel</option>
+        <option>Infografis</option>
+        <option>Video</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Hook Pembuka</label>
+      <textarea id="mHook" placeholder="Kalimat pertama yang menarik perhatian pembaca…"></textarea>
+    </div>
+    <div class="form-group">
+      <label>CTA (Call to Action)</label>
+      <input type="text" id="mCta" placeholder="contoh: Download checklist gratis, Hubungi kami…">
+    </div>
+    <div class="form-group">
+      <label>Status</label>
+      <select id="mStatus">
+        <option value="PENDING">PENDING</option>
+        <option value="IN-PROGRESS">IN-PROGRESS</option>
+        <option value="RELEASE">RELEASE</option>
+        <option value="ARCHIVED">ARCHIVED</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+      <button class="btn btn-primary" onclick="saveTopic()">Jadwalkan ke Bank Topik</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>Content Marketing Engine · MOD-03 · CRM Konsultan ISO · arafarnusa.com</footer>
+
+<script>
+// ─── DATA STORE ─────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'crm_bank_topik';
+const CONFIG_KEY  = 'crm_webhook_config';
+
+const SEED_DATA = [
+  {id:1,topik:"5 Kesalahan Fatal Saat Audit ISO 9001 (dan Cara Menghindarinya)",subtopik:"audit readiness, common findings, corrective action",standar:"ISO 9001",format:"Artikel Blog",hook:"Audit besok dan Anda belum siap? Ini yang paling sering bikin perusahaan gagal.",cta:"Download checklist persiapan audit gratis",status:"PENDING",tanggal:"2026-08-18"},
+  {id:2,topik:"Dari Perusahaan Bersertifikat ke Lembaga Sertifikasi: Panduan Memulai",subtopik:"ISO 17021-1, pendirian CB, akreditasi KAN",standar:"ISO 17021-1",format:"LinkedIn Post",hook:"Apa yang terjadi ketika klien Anda justru ingin menjadi lembaga yang mengeluarkan sertifikat?",cta:"Hubungi kami untuk discovery call",status:"RELEASE",tanggal:"2026-08-12"},
+  {id:3,topik:"Gap Analysis ISO 14001: Template dan Panduan Langkah demi Langkah",subtopik:"lingkungan hidup, gap analysis, EMS implementation",standar:"ISO 14001",format:"Artikel Blog",hook:"Sebelum implementasi, Anda harus tahu dulu seberapa jauh jarak antara kondisi saat ini dan persyaratan ISO 14001.",cta:"Unduh template gap analysis",status:"IN-PROGRESS",tanggal:"2026-08-20"},
+  {id:4,topik:"ISO 45001 vs OHSAS 18001: Apa yang Berubah dan Mengapa Itu Penting",subtopik:"transisi standar, K3, perbandingan",standar:"ISO 45001",format:"Carousel",hook:"Masih pakai OHSAS 18001? Inilah yang perlu Anda ketahui sebelum terlambat.",cta:"Konsultasi transisi gratis 30 menit",status:"PENDING",tanggal:"2026-08-25"},
+  {id:5,topik:"How to Set Up an Accredited ISO Certification Body in Southeast Asia",subtopik:"CB setup, accreditation, ISO 17021-1, ASEAN",standar:"ISO 17021-1",format:"Artikel Blog",hook:"Starting a certification body in Southeast Asia is a rare but high-value opportunity. Here's the roadmap.",cta:"Book a discovery call",status:"RELEASE",tanggal:"2026-08-05"},
+  {id:6,topik:"Biaya Sertifikasi ISO 9001 untuk UKM: Panduan Realistis 2025",subtopik:"pricing, ROI, UKM, cost breakdown",standar:"ISO 9001",format:"Artikel Blog",hook:"Berapa sebenarnya biaya yang dibutuhkan? Bukan yang bikin Anda kabur, tapi yang realistis.",cta:"Dapatkan estimasi biaya gratis",status:"PENDING",tanggal:"2026-09-01"},
+  {id:7,topik:"Audit Internal ISO 27001: Checklist Lengkap untuk Tim IT",subtopik:"information security, internal audit, ISMS",standar:"ISO 27001",format:"Infografis",hook:"Internal audit bukan hanya formalitas — ini adalah kesempatan emas menemukan celah sebelum auditor eksternal menemukan lebih dulu.",cta:"Download checklist audit internal ISO 27001",status:"PENDING",tanggal:"2026-09-08"},
+  {id:8,topik:"3 Alasan Klien Anda Membutuhkan ISO 37001 di Era Anti-Korupsi Global",subtopik:"anti bribery, due diligence, governance",standar:"ISO 37001",format:"LinkedIn Post",hook:"Satu klien korporat kehilangan kontrak internasional karena tidak punya sistem anti-suap. Ini kisahnya.",cta:"Pelajari lebih lanjut tentang ISO 37001",status:"ARCHIVED",tanggal:"2026-07-20"},
+];
+
+function loadTopics(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(raw) return JSON.parse(raw);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_DATA));
+  return SEED_DATA;
+}
+function saveTopics(data){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function loadConfig(){ return JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}'); }
+function saveConfig(){
+  const cfg = {
+    read: document.getElementById('cfg-read').value.trim(),
+    write: document.getElementById('cfg-write').value.trim(),
+    artikel: document.getElementById('cfg-artikel').value.trim(),
+    carousel: document.getElementById('cfg-carousel').value.trim(),
+    scheduled: document.getElementById('cfg-scheduled').value.trim(),
+    brain: document.getElementById('cfg-brain').value.trim(),
+  };
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+  updateStatusDots();
+}
+function loadConfigUI(){
+  const cfg = loadConfig();
+  document.getElementById('cfg-read').value = cfg.read||'';
+  document.getElementById('cfg-write').value = cfg.write||'';
+  document.getElementById('cfg-artikel').value = cfg.artikel||'';
+  document.getElementById('cfg-carousel').value = cfg.carousel||'';
+  document.getElementById('cfg-scheduled').value = cfg.scheduled||'';
+  document.getElementById('cfg-brain').value = cfg.brain||'';
+  updateStatusDots();
+}
+function updateStatusDots(){
+  const cfg = loadConfig();
+  const map = {artikel:'artikel', carousel:'carousel', scheduled:'scheduled', brain:'brain'};
+  for(const [k,v] of Object.entries(map)){
+    const dot = document.getElementById('dot-'+v);
+    const lbl = document.getElementById('lbl-'+v);
+    if(cfg[k]){ dot.className='status-dot ok'; lbl.textContent='Webhook terkonfigurasi'; }
+    else{ dot.className='status-dot warn'; lbl.textContent='Belum dikonfigurasi'; }
+  }
+}
+
+// ─── STATS ───────────────────────────────────────────────────────────────────
+function updateStats(){
+  const data = loadTopics();
+  document.getElementById('statTotal').textContent   = data.length;
+  document.getElementById('statPending').textContent = data.filter(d=>d.status==='PENDING').length;
+  document.getElementById('statDraft').textContent   = data.filter(d=>d.status==='IN-PROGRESS').length;
+  document.getElementById('statRelease').textContent = data.filter(d=>d.status==='RELEASE').length;
+}
+
+// ─── TABLE ───────────────────────────────────────────────────────────────────
+function statusBadge(s){
+  const map = {
+    'PENDING':'badge-pending','IN-PROGRESS':'badge-in-progress',
+    'RELEASE':'badge-release','ARCHIVED':'badge-archived'
+  };
+  return `<span class="badge ${map[s]||'badge-draft'}">${s}</span>`;
+}
+function renderTable(){
+  const data = loadTopics();
+  const q     = document.getElementById('searchInput').value.toLowerCase();
+  const fStat = document.getElementById('filterStatus').value;
+  const fStd  = document.getElementById('filterStandar').value;
+  const fFmt  = document.getElementById('filterFormat').value;
+
+  const filtered = data.filter(d=>{
+    if(fStat && d.status!==fStat) return false;
+    if(fStd  && d.standar!==fStd) return false;
+    if(fFmt  && d.format!==fFmt) return false;
+    if(q && !d.topik.toLowerCase().includes(q) && !(d.subtopik||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  const tbody = document.getElementById('topicsBody');
+  const empty = document.getElementById('emptyState');
+  if(!filtered.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  tbody.innerHTML = filtered.map((d,i)=>`
+    <tr>
+      <td style="color:var(--text-3);font-size:.75rem">${i+1}</td>
+      <td class="topik-cell">
+        <div class="topik-title">${esc(d.topik)}</div>
+        ${d.subtopik?`<div class="topik-sub">${esc(d.subtopik)}</div>`:''}
+      </td>
+      <td><span class="standar-badge">${esc(d.standar)}</span></td>
+      <td><span class="format-tag">${esc(d.format)}</span></td>
+      <td>${statusBadge(d.status)}</td>
+      <td style="font-size:.75rem;color:var(--text-3);white-space:nowrap">${d.tanggal||'—'}</td>
+      <td>
+        <div class="action-group">
+          <button class="btn btn-outline btn-sm" onclick="editTopic(${d.id})">Edit</button>
+          <button class="btn btn-outline btn-sm" onclick="cycleStatus(${d.id})" title="Ubah status">↻</button>
+          <button class="btn btn-outline btn-sm" onclick="deleteTopic(${d.id})" title="Hapus" style="color:var(--red)">×</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function cycleStatus(id){
+  const data = loadTopics();
+  const idx  = data.findIndex(d=>d.id===id);
+  if(idx<0) return;
+  const cycle = ['PENDING','IN-PROGRESS','RELEASE','ARCHIVED'];
+  const cur   = cycle.indexOf(data[idx].status);
+  data[idx].status = cycle[(cur+1)%cycle.length];
+  saveTopics(data);
+  renderTable();
+  updateStats();
+  renderPreview();
+  showToast(`Status diupdate: ${data[idx].status}`);
+}
+function deleteTopic(id){
+  if(!confirm('Hapus topik ini?')) return;
+  const data = loadTopics().filter(d=>d.id!==id);
+  saveTopics(data);
+  renderTable();
+  updateStats();
+  renderPreview();
+  showToast('Topik dihapus');
+}
+function editTopic(id){
+  const d = loadTopics().find(t=>t.id===id);
+  if(!d) return;
+  document.getElementById('modalTitle').textContent = 'Edit Topik';
+  document.getElementById('editId').value  = id;
+  document.getElementById('mTopik').value  = d.topik||'';
+  document.getElementById('mSubtopik').value= d.subtopik||'';
+  document.getElementById('mStandar').value= d.standar||'';
+  document.getElementById('mFormat').value = d.format||'Artikel Blog';
+  document.getElementById('mHook').value   = d.hook||'';
+  document.getElementById('mCta').value    = d.cta||'';
+  document.getElementById('mStatus').value = d.status||'PENDING';
+  document.getElementById('addModal').classList.add('open');
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openAddModal(){
+  document.getElementById('modalTitle').textContent = 'Tambah Topik ke Bank Topik';
+  document.getElementById('editId').value  = '';
+  ['mTopik','mSubtopik','mHook','mCta'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mStandar').value='';
+  document.getElementById('mFormat').value='Artikel Blog';
+  document.getElementById('mStatus').value='PENDING';
+  document.getElementById('addModal').classList.add('open');
+}
+function closeModal(){ document.getElementById('addModal').classList.remove('open'); }
+document.getElementById('addModal').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeModal(); });
+
+async function saveTopic(){
+  const topik   = document.getElementById('mTopik').value.trim();
+  const standar = document.getElementById('mStandar').value;
+  if(!topik||!standar){ showToast('Isi Topik dan Standar ISO terlebih dahulu'); return; }
+
+  const entry = {
+    topik,
+    subtopik: document.getElementById('mSubtopik').value.trim(),
+    standar,
+    format:   document.getElementById('mFormat').value,
+    hook:     document.getElementById('mHook').value.trim(),
+    cta:      document.getElementById('mCta').value.trim(),
+    status:   document.getElementById('mStatus').value,
+    tanggal:  new Date().toISOString().slice(0,10),
+  };
+
+  const data   = loadTopics();
+  const editId = parseInt(document.getElementById('editId').value||'0');
+  if(editId){
+    const idx = data.findIndex(d=>d.id===editId);
+    if(idx>=0){ data[idx] = {...data[idx],...entry}; }
+  } else {
+    const maxId = data.reduce((m,d)=>Math.max(m,d.id||0),0);
+    data.push({id:maxId+1,...entry});
+  }
+  saveTopics(data);
+
+  // Try to write to n8n webhook if configured
+  const cfg = loadConfig();
+  if(cfg.write){
+    try{
+      await fetch(cfg.write,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(entry)});
+      showToast('Disimpan ke Bank Topik & dikirim ke n8n ✓');
+    } catch(_){
+      showToast('Disimpan lokal. Sync ke n8n gagal — cek koneksi.');
+    }
+  } else {
+    showToast(editId ? 'Topik diperbarui ✓' : 'Topik dijadwalkan ke Bank Topik ✓');
+  }
+
+  closeModal();
+  renderTable();
+  updateStats();
+  renderPreview();
+}
+
+// ─── REFRESH FROM N8N ────────────────────────────────────────────────────────
+async function refreshFromN8n(){
+  const cfg = loadConfig();
+  if(!cfg.read){ showToast('Webhook Baca belum dikonfigurasi — data dari cache lokal'); return; }
+  showToast('Mengambil data dari n8n…');
+  try{
+    const res  = await fetch(cfg.read);
+    const json = await res.json();
+    if(Array.isArray(json) && json.length){
+      saveTopics(json);
+      renderTable();
+      updateStats();
+      renderPreview();
+      showToast(`Synced ${json.length} topik dari Bank Topik ✓`);
+    } else { showToast('Tidak ada data baru dari n8n'); }
+  } catch(_){ showToast('Gagal mengambil data dari n8n — gunakan data lokal'); }
+}
+
+// ─── PREVIEW KONTEN ──────────────────────────────────────────────────────────
+function renderPreview(){
+  const released = loadTopics().filter(d=>d.status==='RELEASE');
+  const grid  = document.getElementById('articlesGrid');
+  const empty = document.getElementById('previewEmpty');
+  if(!released.length){ grid.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  grid.innerHTML = released.map(d=>`
+    <div class="article-card">
+      <div class="a-standar"><span class="standar-badge">${esc(d.standar)}</span> <span style="font-size:.7rem;color:var(--text-3)">${esc(d.format)}</span></div>
+      <div class="a-title">${esc(d.topik)}</div>
+      ${d.subtopik?`<div class="a-sub">${esc(d.subtopik)}</div>`:''}
+      <div class="a-meta">
+        <span>${d.tanggal||'—'}</span>
+        <a class="a-link" href="https://arafarnusa.com/artikel/" target="_blank" rel="noopener">Lihat di web ↗</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── QUICK ACTIONS ───────────────────────────────────────────────────────────
+async function triggerWorkflow(type){
+  const cfg = loadConfig();
+  const webhookMap = {artikel:'artikel',carousel:'carousel',scheduled:'scheduled',brain:'brain'};
+  const url = cfg[webhookMap[type]];
+  if(!url){ showToast(`Webhook ${type} belum dikonfigurasi — isi di bagian Konfigurasi di bawah`); return; }
+
+  let payload = {};
+  if(type==='artikel') payload = {topik: document.getElementById('inp-topik-artikel').value.trim(), platform:'linkedin'};
+  if(type==='carousel') payload = {tema: document.getElementById('inp-topik-carousel').value.trim(), format:'carousel'};
+  if(type==='brain') payload = {url: document.getElementById('inp-url-brain').value.trim()};
+
+  showToast(`Mengirim ke n8n…`);
+  try{
+    await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    showToast(`Berhasil dikirim ke n8n ✓`);
+  } catch(_){ showToast('Gagal menghubungi n8n — cek URL webhook'); }
+}
+
+// ─── GENERATOR ───────────────────────────────────────────────────────────────
+const TEMPLATES = {
+  "ISO 9001": [
+    {tpl:"{{N}} Kesalahan Umum Implementasi ISO 9001 yang Merugikan Bisnis",hook:"Mayoritas perusahaan menghabiskan waktu dan uang untuk implementasi yang keliru. Inilah yang sebenarnya terjadi.",cta:"Konsultasi gratis persiapan ISO 9001"},
+    {tpl:"Cara Membuat Document Control yang Efektif untuk ISO 9001",hook:"Document control bukan tentang paperwork — ini tentang memastikan tim Anda selalu menggunakan versi yang benar.",cta:"Download template prosedur document control"},
+    {tpl:"Internal Audit ISO 9001: Panduan Praktis dari Sudut Pandang Lead Auditor",hook:"Sebagai auditor, saya melihat pola yang sama berulang. Inilah yang benar-benar dicari auditor sertifikasi.",cta:"Dapatkan checklist internal audit gratis"},
+    {tpl:"ROI Sertifikasi ISO 9001: Berapa Sebenarnya yang Bisa Anda Harapkan?",hook:"Angka-angka ini mungkin mengejutkan Anda — dalam arti yang menyenangkan.",cta:"Hitung ROI sertifikasi untuk bisnis Anda"},
+  ],
+  "ISO 14001": [
+    {tpl:"Aspek Lingkungan ISO 14001: Cara Mengidentifikasi yang Benar (Bukan Formalitas)",hook:"Daftar aspek lingkungan yang panjang tanpa prioritas justru membuat sistem manajemen tidak efektif.",cta:"Download template identifikasi aspek lingkungan"},
+    {tpl:"ISO 14001 untuk Industri Manufaktur: Panduan Implementasi Spesifik",hook:"Tantangan implementasi ISO 14001 di pabrik sangat berbeda dengan kantor. Inilah yang perlu Anda ketahui.",cta:"Konsultasi implementasi ISO 14001"},
+    {tpl:"Emergency Preparedness ISO 14001: Lebih dari Sekadar SOP",hook:"Satu kejadian kebocoran kimia bisa mengakhiri bisnis Anda. Ini cara ISO 14001 membantu Anda mencegahnya.",cta:"Review kesiapan darurat lingkungan Anda"},
+    {tpl:"Objective, Target & Program Lingkungan ISO 14001: Cara Setting yang Benar",hook:"OTP yang buruk adalah alasan paling umum perusahaan gagal audit surveillance.",cta:"Template OTP ISO 14001 siap pakai"},
+  ],
+  "ISO 45001": [
+    {tpl:"Identifikasi Bahaya ISO 45001: Metode yang Benar-Benar Bekerja",hook:"Mayoritas perusahaan melakukan HIRA hanya untuk memenuhi dokumen. Inilah cara melakukannya untuk keselamatan nyata.",cta:"Workshop identifikasi bahaya K3"},
+    {tpl:"ISO 45001 vs OHSAS 18001: Apa yang Benar-Benar Berbeda?",hook:"Bukan sekadar pergantian nama. Perubahan filosofis ini mengubah cara Anda melihat K3.",cta:"Checklist gap analysis ISO 45001"},
+    {tpl:"Keterlibatan Pekerja dalam ISO 45001: Mengapa Ini Kunci Kesuksesan",hook:"Sistem K3 terbaik gagal ketika pekerja tidak dilibatkan sejak awal. Begini cara yang benar.",cta:"Panduan worker participation ISO 45001"},
+    {tpl:"Incident Investigation ISO 45001: Dari Root Cause ke Corrective Action",hook:"Laporan insiden yang tidak menemukan akar masalah sesungguhnya akan membiarkan kecelakaan terjadi lagi.",cta:"Template investigasi insiden ISO 45001"},
+  ],
+  "ISO 17021-1": [
+    {tpl:"Dari Certified to Certifier: Panduan Memulai Lembaga Sertifikasi ISO",hook:"Peluang bisnis ini hampir tidak ada yang mengejar — karena hampir tidak ada yang tahu caranya.",cta:"Discovery call: jadikan bisnis Anda lembaga sertifikasi"},
+    {tpl:"Persyaratan Impartiality ISO 17021-1: Mengapa Ini Lebih dari Sekadar Aturan",hook:"Satu keputusan yang mengkompromikan impartiality bisa mencabut akreditasi bertahun-tahun dalam semalam.",cta:"Review sistem manajemen CB Anda"},
+    {tpl:"How to Get KAN Accreditation for Your Certification Body: Step-by-Step",hook:"The path to KAN accreditation is long but predictable. Here's the map no one else is giving you.",cta:"Book a consultation for CB setup"},
+    {tpl:"Competence Management di Lembaga Sertifikasi: Membangun Roster Auditor",hook:"Sumber daya manusia adalah bottleneck terbesar dalam pendirian lembaga sertifikasi. Ini cara mengelolanya.",cta:"Konsultasi pendirian lembaga sertifikasi"},
+  ],
+  "ISO 27001": [
+    {tpl:"Risk Assessment ISO 27001: Metode yang Benar untuk Tim IT Non-CISO",hook:"Risk assessment keamanan informasi tidak harus rumit — tapi harus sistematis.",cta:"Template risk assessment ISO 27001"},
+    {tpl:"Statement of Applicability ISO 27001: Cara Mengisinya dengan Benar",hook:"SoA yang salah adalah tiket satu arah menuju temuan major di audit sertifikasi.",cta:"Panduan SoA ISO 27001 lengkap"},
+    {tpl:"ISO 27001 untuk Startup Teknologi: Kapan Harus Mulai dan Mengapa",hook:"Klien enterprise dan investor kini mensyaratkan ISO 27001. Menunggu lebih lama hanya membuatnya makin mahal.",cta:"Roadmap ISO 27001 untuk startup"},
+    {tpl:"Incident Management ISO 27001 vs Reality: Apa yang Sering Diabaikan",hook:"Prosedur incident management yang bagus di atas kertas seringkali tidak bertahan ketika insiden nyata terjadi.",cta:"Review kematangan incident management Anda"},
+  ],
+  "ISO 22000": [
+    {tpl:"HACCP vs ISO 22000: Apa Bedanya dan Mana yang Lebih Relevan untuk Bisnis Anda",hook:"Banyak industri pangan masih bingung antara HACCP dan ISO 22000. Inilah penjelasan praktisnya.",cta:"Konsultasi implementasi ISO 22000"},
+    {tpl:"PRPs (Prerequisite Programs) ISO 22000: Pondasi yang Sering Diabaikan",hook:"Tanpa PRPs yang solid, HACCP plan Anda berdiri di atas pasir.",cta:"Checklist PRPs ISO 22000"},
+    {tpl:"ISO 22000 untuk UMKM Pangan: Realistis dan Terjangkau",hook:"Sertifikasi keamanan pangan bukan hanya untuk perusahaan besar. Inilah buktinya.",cta:"Estimasi biaya implementasi ISO 22000"},
+    {tpl:"Traceability ISO 22000: Membangun Sistem Pelacakan yang Benar-Benar Berfungsi",hook:"Ketika ada product recall, traceability yang buruk bisa menjadi bencana bisnis.",cta:"Audit kesiapan traceability Anda"},
+  ],
+  "ISO 37001": [
+    {tpl:"Mengapa ISO 37001 Kini Jadi Syarat Wajib Tender Internasional",hook:"Satu klien kami kehilangan kontrak senilai miliaran karena tidak punya sistem anti-suap yang tersertifikasi.",cta:"Pelajari implementasi ISO 37001"},
+    {tpl:"Due Diligence ISO 37001: Cara Menilai Risiko Suap di Rantai Pasok",hook:"Mitra bisnis Anda adalah ekstensi dari risiko bisnis Anda.",cta:"Template due diligence ISO 37001"},
+    {tpl:"Perbedaan ISO 37001 dan ISO 37301: Mana yang Anda Butuhkan?",hook:"Compliance management dan anti-bribery management — serupa tapi tidak sama.",cta:"Konsultasi pilihan standar yang tepat"},
+    {tpl:"ISO 37001 untuk BUMN dan Instansi Pemerintah: Konteks yang Berbeda",hook:"Tantangan implementasi anti-bribery di sektor publik membutuhkan pendekatan yang berbeda.",cta:"Hubungi kami untuk konsultasi sektor publik"},
+  ],
+  "ISO 31000": [
+    {tpl:"Enterprise Risk Management dengan ISO 31000: Panduan untuk Board of Directors",hook:"Risiko bukan hanya urusan manajer — ini adalah tanggung jawab puncak organisasi.",cta:"Workshop ERM untuk pimpinan"},
+    {tpl:"Integrasi ISO 31000 ke Sistem Manajemen Lainnya: Panduan Praktis",hook:"Mengelola risiko secara terpisah dari operasional adalah pendekatan yang sudah usang.",cta:"Audit integrasi manajemen risiko Anda"},
+  ],
+  "ISO 22301": [
+    {tpl:"Business Impact Analysis ISO 22301: Template dan Metodologi Lengkap",hook:"Tanpa BIA yang solid, BCP Anda hanya dokumen tebal yang tidak berguna saat krisis.",cta:"Download template BIA ISO 22301"},
+    {tpl:"ISO 22301 Setelah Pandemi: Pelajaran yang Harus Diimplementasikan",hook:"COVID-19 adalah uji nyata BCMS. Inilah yang berhasil dan yang gagal.",cta:"Review BCMS Anda berdasarkan lessons learned"},
+  ],
+  "Umum": [
+    {tpl:"Integrated Management System: Menggabungkan ISO 9001, 14001, dan 45001",hook:"Tiga sertifikasi sekaligus tidak harus tiga kali effort. Begini caranya.",cta:"Konsultasi Integrated Management System"},
+    {tpl:"Cara Memilih Konsultan ISO yang Tepat: 7 Pertanyaan yang Harus Anda Tanyakan",hook:"Tidak semua konsultan ISO diciptakan sama. Inilah cara membedakan yang benar-benar kompeten.",cta:"Bandingkan dengan cara kerja kami"},
+    {tpl:"Setelah Audit Sertifikasi: Apa yang Terjadi Jika Ada Temuan Major?",hook:"Panik adalah reaksi alamiah. Tapi ada langkah sistematis yang bisa menyelamatkan sertifikasi Anda.",cta:"Panduan corrective action pasca-audit"},
+    {tpl:"Perbedaan Konsultan ISO dan Auditor ISO: Mana yang Anda Butuhkan?",hook:"Banyak perusahaan mencampur aduk dua peran ini dan berujung pada konflik kepentingan.",cta:"Pahami peran yang tepat untuk bisnis Anda"},
+  ],
+};
+
+function generateTopics(){
+  const keyword  = document.getElementById('genKeyword').value.trim();
+  const standar  = document.getElementById('genStandar').value || 'Umum';
+  const format   = document.getElementById('genFormat').value;
+  const audiens  = document.getElementById('genAudiens').value;
+  const konteks  = document.getElementById('genKonteks').value.trim();
+
+  const pool = TEMPLATES[standar] || TEMPLATES['Umum'];
+  const selected = [...pool].sort(()=>Math.random()-.5).slice(0,4);
+
+  const audiensLabel = {icp1:'Perusahaan yang ingin sertifikasi',icp2:'Calon pendiri lembaga sertifikasi',umum:'Umum / Awareness'}[audiens]||'Umum';
+
+  document.getElementById('sugTitle').textContent = `4 Ide Topik · ${standar} · ${format}`;
+
+  document.getElementById('suggestionsContainer').innerHTML = selected.map((s,i)=>{
+    const title = keyword
+      ? s.tpl.replace('{{N}}', ['5','7','3','10'][i]).replace(/ISO \d+[\-\d]*/g, standar) + (keyword ? ` — ${keyword}` : '')
+      : s.tpl.replace('{{N}}', ['5','7','3','10'][i]);
+    return `
+      <div class="suggestion-card">
+        <div class="sug-title">${esc(title)}</div>
+        <div class="sug-meta">${standar} · ${format} · ${audiensLabel}</div>
+        <div class="sug-hook">"${esc(s.hook)}"</div>
+        <button class="btn btn-green btn-sm" onclick='jadwalkanSuggestion(${JSON.stringify({topik:title,standar,format,hook:s.hook,cta:s.cta,audiens:audiensLabel,konteks})})'>+ Jadwalkan ke Bank Topik</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function jadwalkanSuggestion(d){
+  document.getElementById('modalTitle').textContent = 'Jadwalkan Topik ke Bank Topik';
+  document.getElementById('editId').value = '';
+  document.getElementById('mTopik').value    = d.topik||'';
+  document.getElementById('mSubtopik').value = d.konteks||d.audiens||'';
+  document.getElementById('mStandar').value  = d.standar||'';
+  document.getElementById('mFormat').value   = d.format||'Artikel Blog';
+  document.getElementById('mHook').value     = d.hook||'';
+  document.getElementById('mCta').value      = d.cta||'';
+  document.getElementById('mStatus').value   = 'PENDING';
+  document.getElementById('addModal').classList.add('open');
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function switchTab(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const tabs = ['kalender','generator','preview','aksi'];
+  document.querySelectorAll('.tab-btn')[tabs.indexOf(id)]?.classList.add('active');
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+(function init(){
+  renderTable();
+  updateStats();
+  renderPreview();
+  loadConfigUI();
+})();
+</script>
+</body>
+</html>
