@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Outreach Engine — CRM Konsultan ISO</title>
+<style>
+:root{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D7A4F;--green-dim:rgba(45,122,79,.12);--blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);--orange:#C47A20;--orange-dim:rgba(196,122,32,.12);--red:#C03030;--red-dim:rgba(192,48,48,.12);}
+@media(prefers-color-scheme:dark){:root{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3DAF72;--green-dim:rgba(61,175,114,.12);--blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);--orange:#E09030;--orange-dim:rgba(224,144,48,.12);--red:#E05050;--red-dim:rgba(224,80,80,.12);}}
+:root[data-theme=light]{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);}
+:root[data-theme=dark]{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{padding:24px 40px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--accent);text-decoration:none;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);padding:5px 12px;border-radius:3px;}
+.back-link:hover{background:var(--accent-dim);}
+.header-text h1{font-family:"Palatino Linotype",Palatino,serif;font-size:1.5rem;font-weight:normal;}
+.header-text p{font-size:.75rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+.stats-row{display:flex;gap:12px;padding:20px 40px 0;flex-wrap:wrap;}
+.stat-chip{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:10px 18px;display:flex;align-items:center;gap:10px;}
+.stat-chip .num{font-family:"Palatino Linotype",Palatino,serif;font-size:1.4rem;}
+.stat-chip .lbl{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);}
+.tab-bar{display:flex;padding:20px 40px 0;border-bottom:1px solid var(--border);}
+.tab-btn{background:none;border:none;padding:10px 20px;font-family:inherit;font-size:.82rem;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;padding:28px 40px;}
+.tab-content.active{display:block;}
+.toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.toolbar-left{display:flex;gap:10px;flex:1;flex-wrap:wrap;}
+input[type=text],input[type=email],select,textarea{background:var(--surface);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:inherit;font-size:.83rem;padding:7px 12px;transition:border-color .15s;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);}
+.btn{border:none;border-radius:3px;padding:8px 16px;font-family:inherit;font-size:.82rem;cursor:pointer;transition:opacity .15s;letter-spacing:.03em;}
+.btn-primary{background:var(--accent);color:#fff;}.btn-primary:hover{opacity:.88;}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--text-2);}.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-sm{padding:5px 10px;font-size:.75rem;}
+.badge{display:inline-block;font-size:.68rem;padding:3px 8px;border-radius:2px;letter-spacing:.04em;white-space:nowrap;}
+.badge-tertarik{background:var(--green-dim);color:var(--green);}
+.badge-meeting{background:var(--accent-dim);color:var(--accent);}
+.badge-belum{background:var(--surface-2);color:var(--text-3);}
+.badge-tidak-balas{background:var(--orange-dim);color:var(--orange);}
+.badge-tidak-tertarik{background:var(--red-dim);color:var(--red);}
+table{width:100%;border-collapse:collapse;font-size:.82rem;}
+th{text-align:left;padding:9px 12px;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);border-bottom:2px solid var(--border);font-weight:normal;}
+td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+tr:hover td{background:var(--surface);}
+.template-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.tpl-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px;}
+.tpl-card .t-cat{font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.tpl-card .t-title{font-family:"Palatino Linotype",Palatino,serif;font-size:.95rem;font-weight:normal;margin-bottom:5px;}
+.tpl-card .t-standar{font-size:.72rem;color:var(--text-3);margin-bottom:10px;}
+.tpl-body{font-size:.77rem;line-height:1.6;color:var(--text-2);background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:10px;margin-bottom:10px;max-height:120px;overflow-y:auto;white-space:pre-line;}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.form-group label{font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);}
+.form-group textarea{resize:vertical;min-height:70px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:28px;width:100%;max-width:520px;}
+.modal h2{font-family:"Palatino Linotype",Palatino,serif;font-size:1.1rem;font-weight:normal;margin-bottom:16px;}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+.section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:12px;}
+.config-row{display:grid;grid-template-columns:180px 1fr;gap:10px;align-items:center;margin-bottom:10px;}
+.config-row label{font-size:.78rem;color:var(--text-2);}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);padding:10px 18px;border-radius:4px;font-size:.82rem;z-index:200;transform:translateY(100px);opacity:0;transition:transform .25s,opacity .25s;}
+.toast.show{transform:translateY(0);opacity:1;}
+footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+.filter-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.filter-tab{background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-family:inherit;font-size:.75rem;color:var(--text-3);cursor:pointer;transition:all .15s;}
+.filter-tab.active,.filter-tab:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-link" href="index.html">← CRM</a>
+  <div class="header-text"><h1>Outreach Engine</h1><p>MOD-05 · Template Library · Tracker · n8n SMTP</p></div>
+</header>
+<div class="stats-row">
+  <div class="stat-chip"><div class="num" id="s1">—</div><div class="lbl">Total Outreach</div></div>
+  <div class="stat-chip"><div class="num" id="s2" style="color:var(--green)">—</div><div class="lbl">Tertarik</div></div>
+  <div class="stat-chip"><div class="num" id="s3" style="color:var(--accent)">—</div><div class="lbl">Meeting</div></div>
+  <div class="stat-chip"><div class="num" id="s4" style="color:var(--text-3)">—</div><div class="lbl">Belum Balas</div></div>
+</div>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="sw('tracker')">Tracker</button>
+  <button class="tab-btn" onclick="sw('templates')">Template Library</button>
+  <button class="tab-btn" onclick="sw('config')">Config</button>
+</div>
+
+<!-- TRACKER -->
+<div class="tab-content active" id="tab-tracker">
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <input type="text" id="searchOut" placeholder="Cari nama, perusahaan…" oninput="renderTracker()">
+      <select id="fRespon" onchange="renderTracker()">
+        <option value="">Semua Respon</option>
+        <option value="BELUM">Belum Balas</option>
+        <option value="TERTARIK">Tertarik</option>
+        <option value="MEETING">Meeting</option>
+        <option value="TIDAK_BALAS">Tidak Balas</option>
+        <option value="TIDAK_TERTARIK">Tidak Tertarik</option>
+      </select>
+      <select id="fJenis" onchange="renderTracker()">
+        <option value="">Semua Channel</option>
+        <option>Email</option><option>LinkedIn</option><option>WhatsApp</option><option>Telepon</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="openModal()">+ Log Outreach</button>
+  </div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>#</th><th>Target</th><th>Channel</th><th>Template</th><th>Tanggal</th><th>Respon</th><th>Aksi</th></tr></thead>
+      <tbody id="trackerBody"></tbody>
+    </table>
+    <div id="trackerEmpty" style="display:none;text-align:center;padding:50px;color:var(--text-3)"><p style="margin-bottom:12px">Belum ada outreach tercatat.</p><button class="btn btn-primary btn-sm" onclick="openModal()">+ Log Pertama</button></div>
+  </div>
+</div>
+
+<!-- TEMPLATES -->
+<div class="tab-content" id="tab-templates">
+  <div class="filter-tabs" id="catFilter">
+    <button class="filter-tab active" onclick="filterTpl('')">Semua</button>
+    <button class="filter-tab" onclick="filterTpl('Cold Email')">Cold Email</button>
+    <button class="filter-tab" onclick="filterTpl('Follow-up')">Follow-up</button>
+    <button class="filter-tab" onclick="filterTpl('LinkedIn')">LinkedIn</button>
+    <button class="filter-tab" onclick="filterTpl('WhatsApp')">WhatsApp</button>
+    <button class="filter-tab" onclick="filterTpl('ISO 17021-1')">ISO 17021-1</button>
+  </div>
+  <div class="template-grid" id="tplGrid"></div>
+</div>
+
+<!-- CONFIG -->
+<div class="tab-content" id="tab-config">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;max-width:600px">
+    <p class="section-title">Konfigurasi Outreach</p>
+    <div class="config-row"><label>SMTP Webhook (n8n)</label><input type="text" id="cfg-smtp" placeholder="https://nusantara8n.my.id/webhook/…" oninput="saveCfg()"></div>
+    <div class="config-row"><label>Nama Pengirim</label><input type="text" id="cfg-sender-name" placeholder="Arafarnusa ISO Consulting" oninput="saveCfg()"></div>
+    <div class="config-row"><label>Email Pengirim</label><input type="email" id="cfg-sender-email" placeholder="hello@arafarnusa.com" oninput="saveCfg()"></div>
+    <div class="form-group" style="margin-top:14px"><label>Signature Default</label><textarea id="cfg-sig" rows="4" oninput="saveCfg()" placeholder="Salam,&#10;Tim arafarnusa.com&#10;ISO Management Consulting&#10;arafarnusa.com | hello@arafarnusa.com"></textarea></div>
+    <p style="font-size:.72rem;color:var(--text-3);margin-top:8px">Outreach Engine mengirim email via n8n workflow SMTP. Pastikan workflow aktif di nusantara8n.my.id.</p>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="outModal">
+  <div class="modal">
+    <h2 id="mTitle">Log Outreach</h2>
+    <input type="hidden" id="editId">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group"><label>Nama Target *</label><input type="text" id="mNama" placeholder="Nama kontak"></div>
+      <div class="form-group"><label>Perusahaan *</label><input type="text" id="mPerusahaan" placeholder="Nama perusahaan"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="mEmail"></div>
+      <div class="form-group"><label>Channel *</label>
+        <select id="mJenis"><option>Email</option><option>LinkedIn</option><option>WhatsApp</option><option>Telepon</option></select></div>
+      <div class="form-group"><label>Template Dipakai</label><input type="text" id="mTemplate" placeholder="Nama template"></div>
+      <div class="form-group"><label>Tanggal</label><input type="text" id="mTanggal" placeholder="YYYY-MM-DD"></div>
+      <div class="form-group"><label>Respon</label>
+        <select id="mRespon"><option value="BELUM">Belum Balas</option><option value="TERTARIK">Tertarik</option><option value="MEETING">Meeting</option><option value="TIDAK_BALAS">Tidak Balas</option><option value="TIDAK_TERTARIK">Tidak Tertarik</option></select></div>
+    </div>
+    <div class="form-group"><label>Catatan</label><textarea id="mCatatan" rows="2" placeholder="Konteks, next step…"></textarea></div>
+    <div id="sendEmailRow" style="margin-top:4px">
+      <label style="display:flex;align-items:center;gap:8px;font-size:.82rem;cursor:pointer"><input type="checkbox" id="mSendEmail"> Kirim email sekarang via n8n SMTP</label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+      <button class="btn btn-primary" onclick="saveOutreach()">Simpan</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<footer>Outreach Engine · MOD-05 · CRM Konsultan ISO · arafarnusa.com</footer>
+
+<script>
+const KEY='crm_outreach';const CFG_KEY='crm_outreach_cfg';
+const SEED=[
+  {id:1,nama:"Mohammed Al-Rasheed",perusahaan:"Al-Noor Trading LLC",email:"m.rasheed@alnoor.ae",jenis:"Email",template:"Cold Email ISO 9001 — Internasional",tanggal:"2026-08-10",respon:"TERTARIK",catatan:"Balas email, minta proposal. Follow up minggu depan."},
+  {id:2,nama:"Rajesh Kumar",perusahaan:"Quality Cert Solutions",email:"rajesh@qcsindia.com",jenis:"LinkedIn",template:"Cold LinkedIn ISO 17021-1 — ICP-2",tanggal:"2026-08-12",respon:"MEETING",catatan:"Jadwal video call Selasa 19 Agustus"},
+  {id:3,nama:"Kwame Asante",perusahaan:"GhanaTest & Inspection",email:"kwame.asante@ghanatest.gh",jenis:"Email",template:"Cold Email ISO 17021-1 — Africa",tanggal:"2026-08-14",respon:"BELUM",catatan:""},
+  {id:4,nama:"Budi Santoso",perusahaan:"PT Teknologi Prima",email:"budi@tekprima.co.id",jenis:"WhatsApp",template:"Follow-up ISO 27001 — Indonesia",tanggal:"2026-08-13",respon:"TERTARIK",catatan:"Siap meeting di kantor mereka"},
+];
+const TEMPLATES=[
+  {cat:"Cold Email",title:"Cold Email ISO 9001 — Internasional",standar:"ISO 9001",body:`Subject: ISO 9001 Certification — Helping {{Perusahaan}} Meet International Standards
+
+Dear {{Nama}},
+
+I came across {{Perusahaan}} and noticed your operations in {{Negara}}. Many organizations in your sector are now being required by international clients to demonstrate ISO 9001 certification.
+
+At arafarnusa.com, we specialize in ISO management system consulting with a global perspective — we've helped organizations in Southeast Asia, the Middle East, and Africa achieve certification efficiently.
+
+Would you be open to a 20-minute call to explore whether ISO 9001 would benefit {{Perusahaan}}?
+
+Best regards,
+[Signature]`},
+  {cat:"Cold Email",title:"Cold Email ISO 17021-1 — Calon CB",standar:"ISO 17021-1",body:`Subject: Setting Up a Certification Body in {{Negara}} — How We Can Help
+
+Dear {{Nama}},
+
+Starting an accredited certification body (CB) is a rare but high-value opportunity. Very few consultants globally have the expertise to guide this process from concept to full accreditation under ISO/IEC 17021-1.
+
+arafarnusa.com is one of them.
+
+We have helped organizations in multiple countries design and implement complete certification body management systems — ready for accreditation assessment from day one.
+
+If {{Perusahaan}} is considering this path, I'd love to share how we approach it.
+
+Best,
+[Signature]`},
+  {cat:"Cold Email",title:"Cold Email ISO 27001 — IT Company",standar:"ISO 27001",body:`Subject: ISO 27001 untuk ${"{"}Perusahaan${"}"} — Syarat Klien Korporat
+
+Halo {{Nama}},
+
+Banyak perusahaan teknologi di Indonesia kini kehilangan kontrak besar karena belum memiliki ISO 27001. Klien enterprise semakin mensyaratkan ini sebelum menandatangani perjanjian.
+
+arafarnusa.com membantu perusahaan seperti {{Perusahaan}} mendapatkan sertifikasi ISO 27001 secara efisien — dengan sistem yang benar-benar berjalan, bukan hanya dokumen.
+
+Boleh saya share overview prosesnya dalam 15 menit?
+
+Salam,
+[Signature]`},
+  {cat:"Follow-up",title:"Follow-up #1 — Setelah Cold Email",standar:"Umum",body:`Subject: Re: [Judul email sebelumnya]
+
+Halo {{Nama}},
+
+Saya follow up dari email saya minggu lalu mengenai sertifikasi ISO untuk {{Perusahaan}}.
+
+Saya paham inbox Anda penuh — saya hanya ingin memastikan email sebelumnya tidak terlewat.
+
+Jika ini bukan waktu yang tepat, tidak masalah — cukup beritahu saya kapan lebih baik untuk dihubungi.
+
+Terima kasih,
+[Signature]`},
+  {cat:"Follow-up",title:"Follow-up #2 — Tambah Value",standar:"Umum",body:`Subject: Satu hal yang mungkin berguna untuk {{Perusahaan}}
+
+Halo {{Nama}},
+
+Sebelum saya menutup file ini, saya ingin berbagi sesuatu yang mungkin berguna:
+
+[LAMPIRKAN: Checklist persiapan audit ISO yang relevan]
+
+Ini adalah checklist yang kami gunakan untuk mempersiapkan klien sebelum audit sertifikasi. Tidak ada kewajiban — semoga bermanfaat.
+
+Jika ada pertanyaan, saya siap membantu.
+
+Salam,
+[Signature]`},
+  {cat:"LinkedIn",title:"Cold LinkedIn ISO 17021-1 — ICP-2",standar:"ISO 17021-1",body:`Halo {{Nama}},
+
+Saya melihat profil Anda dan {{Perusahaan}} bergerak di bidang inspeksi/pengujian. Banyak yang kami hubungi di sektor ini sedang menjajaki ekspansi ke layanan sertifikasi.
+
+Kami spesialis dalam membantu perusahaan mendirikan lembaga sertifikasi terakreditasi (ISO/IEC 17021-1). Ini niche yang sangat sedikit konsultan kuasai.
+
+Apakah ini sesuatu yang sedang Anda pertimbangkan? Senang berbagi lebih.`},
+  {cat:"LinkedIn",title:"LinkedIn Follow-up — Post Engagement",standar:"Umum",body:`Halo {{Nama}},
+
+Terima kasih sudah like/comment post saya tentang [topik]. Senang ada yang merespons!
+
+Saya perhatikan {{Perusahaan}} mungkin relevan dengan layanan yang kami tawarkan. Boleh saya share lebih detail via DM atau quick call?`},
+  {cat:"WhatsApp",title:"WhatsApp Follow-up — Setelah Perkenalan",standar:"Umum",body:`Halo Pak/Bu {{Nama}},
+
+Ini Saya dari arafarnusa.com — kami bertemu/berbicara sebelumnya mengenai sertifikasi ISO untuk {{Perusahaan}}.
+
+Saya ingin follow up dan menjawab pertanyaan apapun yang mungkin Anda miliki. Kalau berkenan, boleh kita jadwalkan call singkat 15-20 menit?
+
+Terima kasih 🙏`},
+  {cat:"ISO 17021-1",title:"Outreach Khusus CB Setup — Middle East",standar:"ISO 17021-1",body:`Subject: Establishing an Accredited Certification Body in {{Negara}}
+
+Dear {{Nama}},
+
+The market for ISO certification services in {{Negara}} continues to grow. Organizations looking to enter this space face one significant challenge: navigating the complex accreditation process under ISO/IEC 17021-1.
+
+arafarnusa.com is one of the few consulting firms globally that specializes in certification body setup and accreditation readiness.
+
+Our work includes full management system design, competence framework, impartiality committee structure, and accreditation documentation — everything you need to face assessment from day one.
+
+I'd welcome a conversation if {{Perusahaan}} is exploring this direction.
+
+Best regards,
+[Signature]`},
+];
+function load(){const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);localStorage.setItem(KEY,JSON.stringify(SEED));return SEED;}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d));}
+function loadCfg(){return JSON.parse(localStorage.getItem(CFG_KEY)||'{}');}
+function saveCfg(){const c={smtp:v('cfg-smtp'),name:v('cfg-sender-name'),email:v('cfg-sender-email'),sig:v('cfg-sig')};localStorage.setItem(CFG_KEY,JSON.stringify(c));}
+function loadCfgUI(){const c=loadCfg();sv('cfg-smtp',c.smtp||'');sv('cfg-sender-name',c.name||'');sv('cfg-sender-email',c.email||'');sv('cfg-sig',c.sig||'');}
+function v(id){return document.getElementById(id)?.value?.trim()||'';}
+function sv(id,val){const e=document.getElementById(id);if(e)e.value=val;}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function updateStats(){
+  const d=load();
+  document.getElementById('s1').textContent=d.length;
+  document.getElementById('s2').textContent=d.filter(x=>x.respon==='TERTARIK').length;
+  document.getElementById('s3').textContent=d.filter(x=>x.respon==='MEETING').length;
+  document.getElementById('s4').textContent=d.filter(x=>x.respon==='BELUM').length;
+}
+function responBadge(r){
+  const m={'TERTARIK':'badge-tertarik','MEETING':'badge-meeting','BELUM':'badge-belum','TIDAK_BALAS':'badge-tidak-balas','TIDAK_TERTARIK':'badge-tidak-tertarik'};
+  return`<span class="badge ${m[r]||'badge-belum'}">${r.replace('_',' ')}</span>`;
+}
+function renderTracker(){
+  const d=load();
+  const q=v('searchOut').toLowerCase();
+  const fR=v('fRespon');const fJ=v('fJenis');
+  const filtered=d.filter(x=>{
+    if(fR&&x.respon!==fR)return false;
+    if(fJ&&x.jenis!==fJ)return false;
+    if(q&&![x.nama,x.perusahaan,x.email].join(' ').toLowerCase().includes(q))return false;
+    return true;
+  }).sort((a,b)=>(b.tanggal||'').localeCompare(a.tanggal||''));
+  const tbody=document.getElementById('trackerBody');
+  const empty=document.getElementById('trackerEmpty');
+  if(!filtered.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=filtered.map((x,i)=>`<tr>
+    <td style="color:var(--text-3);font-size:.75rem">${i+1}</td>
+    <td><div>${esc(x.nama)}</div><div style="font-size:.74rem;color:var(--text-3)">${esc(x.perusahaan)}</div></td>
+    <td><span style="font-size:.76rem;color:var(--text-3)">${esc(x.jenis)}</span></td>
+    <td style="font-size:.76rem;color:var(--text-2);max-width:180px">${esc(x.template||'—')}</td>
+    <td style="font-size:.74rem;color:var(--text-3);white-space:nowrap">${x.tanggal||'—'}</td>
+    <td>${responBadge(x.respon)}</td>
+    <td><div style="display:flex;gap:4px"><button class="btn btn-outline btn-sm" onclick="editO(${x.id})">Edit</button><button class="btn btn-outline btn-sm" onclick="delO(${x.id})" style="color:var(--red)">×</button></div></td>
+  </tr>`).join('');
+}
+let activeCat='';
+function filterTpl(cat){
+  activeCat=cat;
+  document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTemplates();
+}
+function renderTemplates(){
+  const filtered=activeCat?TEMPLATES.filter(t=>t.cat===activeCat||t.standar===activeCat):TEMPLATES;
+  document.getElementById('tplGrid').innerHTML=filtered.map(t=>`
+    <div class="tpl-card">
+      <div class="t-cat">${esc(t.cat)}</div>
+      <div class="t-title">${esc(t.title)}</div>
+      <div class="t-standar">${esc(t.standar)}</div>
+      <div class="tpl-body">${esc(t.body)}</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline btn-sm" onclick="copyTpl(${JSON.stringify(t.body).replace(/'/g,"\\'")})" >📋 Copy</button>
+        <button class="btn btn-outline btn-sm" onclick="logWithTpl(${JSON.stringify(t.title)})">+ Log Outreach</button>
+      </div>
+    </div>
+  `).join('');
+}
+function copyTpl(body){navigator.clipboard?.writeText(body).then(()=>toast('Template disalin ✓')).catch(()=>toast('Seleksi manual'));}
+function logWithTpl(title){sv('mTemplate',title);openModal();}
+function openModal(id=''){
+  document.getElementById('mTitle').textContent=id?'Edit Outreach':'Log Outreach';
+  document.getElementById('editId').value=id;
+  if(!id){['mNama','mPerusahaan','mEmail','mCatatan'].forEach(x=>sv(x,''));sv('mJenis','Email');sv('mRespon','BELUM');sv('mTanggal',new Date().toISOString().slice(0,10));}
+  document.getElementById('outModal').classList.add('open');
+}
+function editO(id){
+  const x=load().find(d=>d.id===id);if(!x)return;
+  document.getElementById('editId').value=id;
+  document.getElementById('mTitle').textContent='Edit Outreach';
+  sv('mNama',x.nama||'');sv('mPerusahaan',x.perusahaan||'');sv('mEmail',x.email||'');
+  sv('mJenis',x.jenis||'Email');sv('mTemplate',x.template||'');sv('mTanggal',x.tanggal||'');
+  sv('mRespon',x.respon||'BELUM');sv('mCatatan',x.catatan||'');
+  document.getElementById('outModal').classList.add('open');
+}
+function delO(id){if(!confirm('Hapus?'))return;save(load().filter(d=>d.id!==id));renderTracker();updateStats();}
+function closeModal(){document.getElementById('outModal').classList.remove('open');}
+document.getElementById('outModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+async function saveOutreach(){
+  const nama=v('mNama'),perusahaan=v('mPerusahaan');
+  if(!nama||!perusahaan){toast('Nama dan Perusahaan wajib');return;}
+  const entry={nama,perusahaan,email:v('mEmail'),jenis:v('mJenis'),template:v('mTemplate'),tanggal:v('mTanggal'),respon:v('mRespon'),catatan:v('mCatatan')};
+  const data=load();const eid=parseInt(v('editId')||'0');
+  if(eid){const i=data.findIndex(d=>d.id===eid);if(i>=0)data[i]={...data[i],...entry};}
+  else{data.push({id:data.reduce((m,d)=>Math.max(m,d.id||0),0)+1,...entry});}
+  save(data);
+  if(document.getElementById('mSendEmail')?.checked){
+    const cfg=loadCfg();
+    if(cfg.smtp){try{await fetch(cfg.smtp,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...entry,senderName:cfg.name,senderEmail:cfg.email,signature:cfg.sig})});toast('Email dikirim via n8n ✓');}catch(_){toast('Gagal kirim via n8n');}}
+    else toast('SMTP webhook belum dikonfigurasi');
+  }else toast(eid?'Outreach diperbarui ✓':'Outreach dicatat ✓');
+  closeModal();renderTracker();updateStats();
+}
+function sw(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const tabs=['tracker','templates','config'];
+  document.querySelectorAll('.tab-btn')[tabs.indexOf(id)]?.classList.add('active');
+}
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3000);}
+(function(){renderTracker();updateStats();renderTemplates();loadCfgUI();})();
+</script>
+</body></html>
