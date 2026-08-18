@@ -245,9 +245,6 @@ code,.mono{font-family:"Courier New",Courier,monospace;}
   <a href="#stack">Stack Teknologi</a>
   <a href="#roadmap">Roadmap 5 Fase</a>
   <a href="#recs">Rekomendasi</a>
-  <div class="toc-foot">
-    <button class="btn-theme" onclick="toggleTheme()">Ganti Tema</button>
-  </div>
 </nav>
 
 <main class="content">
@@ -1089,15 +1086,3 @@ code,.mono{font-family:"Courier New",Courier,monospace;}
 </main>
 </div>
 
-<script>
-function toggleTheme(){
-  const r=document.documentElement;
-  const cur=r.getAttribute('data-theme');
-  const isDark=cur==='dark'||(cur===null&&window.matchMedia('(prefers-color-scheme:dark)').matches);
-  r.setAttribute('data-theme',isDark?'light':'dark');
-  try{localStorage.setItem('iso-theme',isDark?'light':'dark');}catch(e){}
-}
-(function(){
-  try{const t=localStorage.getItem('iso-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}
-})();
-</script>
