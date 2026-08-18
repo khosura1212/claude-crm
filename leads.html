@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Lead Generation Hub — CRM Konsultan ISO</title>
+<style>
+:root{
+  --bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;
+  --text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;
+  --accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);
+  --green:#2D7A4F;--green-dim:rgba(45,122,79,.12);
+  --blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);
+  --orange:#C47A20;--orange-dim:rgba(196,122,32,.12);
+  --red:#C03030;--red-dim:rgba(192,48,48,.12);
+  --purple:#6A3A9A;--purple-dim:rgba(106,58,154,.12);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;
+  --text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;
+  --accent:#D06528;--accent-dim:rgba(208,101,40,.15);
+  --green:#3DAF72;--green-dim:rgba(61,175,114,.12);
+  --blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);
+  --orange:#E09030;--orange-dim:rgba(224,144,48,.12);
+  --red:#E05050;--red-dim:rgba(224,80,80,.12);
+  --purple:#A070E0;--purple-dim:rgba(160,112,224,.12);
+}}
+:root[data-theme=light]{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D7A4F;--green-dim:rgba(45,122,79,.12);--blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);--orange:#C47A20;--orange-dim:rgba(196,122,32,.12);--red:#C03030;--red-dim:rgba(192,48,48,.12);--purple:#6A3A9A;--purple-dim:rgba(106,58,154,.12);}
+:root[data-theme=dark]{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3DAF72;--green-dim:rgba(61,175,114,.12);--blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);--orange:#E09030;--orange-dim:rgba(224,144,48,.12);--red:#E05050;--red-dim:rgba(224,80,80,.12);--purple:#A070E0;--purple-dim:rgba(160,112,224,.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+
+/* HEADER */
+header{padding:24px 40px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--accent);text-decoration:none;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);padding:5px 12px;border-radius:3px;transition:background .15s;}
+.back-link:hover{background:var(--accent-dim);}
+.header-text h1{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.5rem;font-weight:normal;}
+.header-text p{font-size:.75rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+
+/* STATS */
+.stats-row{display:flex;gap:12px;padding:20px 40px 0;flex-wrap:wrap;}
+.stat-chip{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:10px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .15s;}
+.stat-chip:hover{border-color:var(--accent);}
+.stat-chip .num{font-family:"Palatino Linotype",Palatino,serif;font-size:1.4rem;}
+.stat-chip .lbl{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);}
+.stat-chip.hot .num{color:var(--accent);}
+.stat-chip.warm .num{color:var(--orange);}
+.stat-chip.cold .num{color:var(--blue);}
+.stat-chip.conflict .num{color:var(--red);}
+
+/* TABS */
+.tab-bar{display:flex;padding:20px 40px 0;border-bottom:1px solid var(--border);}
+.tab-btn{background:none;border:none;padding:10px 20px;font-family:inherit;font-size:.82rem;letter-spacing:.04em;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;padding:28px 40px;}
+.tab-content.active{display:block;}
+
+/* TOOLBAR */
+.toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.toolbar-left{display:flex;gap:10px;flex:1;flex-wrap:wrap;}
+input[type=text],input[type=email],input[type=tel],input[type=url],select,textarea{background:var(--surface);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:inherit;font-size:.83rem;padding:7px 12px;transition:border-color .15s;}
+input[type=text]:focus,input[type=email]:focus,input[type=tel]:focus,input[type=url]:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);}
+.btn{border:none;border-radius:3px;padding:8px 16px;font-family:inherit;font-size:.82rem;cursor:pointer;transition:opacity .15s;letter-spacing:.03em;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{opacity:.88;}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--text-2);}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-sm{padding:5px 10px;font-size:.75rem;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-danger{background:var(--red);color:#fff;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.82rem;}
+th{text-align:left;padding:9px 12px;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);border-bottom:2px solid var(--border);font-weight:normal;white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+tr:hover td{background:var(--surface);}
+.person-cell .name{font-weight:normal;margin-bottom:2px;}
+.person-cell .company{font-size:.75rem;color:var(--text-3);}
+.person-cell .email{font-size:.73rem;color:var(--blue);}
+
+/* BADGES */
+.badge{display:inline-block;font-size:.68rem;padding:3px 8px;border-radius:2px;letter-spacing:.05em;white-space:nowrap;}
+.badge-hot{background:var(--accent-dim);color:var(--accent);}
+.badge-warm{background:var(--orange-dim);color:var(--orange);}
+.badge-cold{background:var(--blue-dim);color:var(--blue);}
+.badge-baru{background:var(--green-dim);color:var(--green);}
+.badge-dihubungi{background:var(--blue-dim);color:var(--blue);}
+.badge-kualifikasi{background:var(--orange-dim);color:var(--orange);}
+.badge-proposal{background:var(--purple-dim);color:var(--purple);}
+.badge-konversi{background:var(--green-dim);color:var(--green);}
+.badge-ditolak{background:var(--surface-2);color:var(--text-3);}
+.badge-conflict{background:var(--red-dim);color:var(--red);border:1px solid var(--red);}
+.standar-tag{display:inline-block;font-size:.67rem;padding:2px 6px;border-radius:2px;background:var(--accent-dim);color:var(--accent);margin:1px;}
+
+/* SCORE BAR */
+.score-wrap{display:flex;align-items:center;gap:8px;}
+.score-bar{width:60px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.score-fill{height:100%;border-radius:3px;transition:width .3s;}
+.score-num{font-size:.8rem;font-weight:normal;min-width:24px;}
+
+/* IMPARTIALITY ALERT */
+.imp-alert{background:var(--red-dim);border:1px solid var(--red);border-radius:4px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;display:none;}
+.imp-alert.visible{display:flex;}
+.imp-alert .icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+.imp-alert p{font-size:.8rem;line-height:1.5;color:var(--red);}
+
+/* DETAIL PANEL */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:600px){.detail-grid{grid-template-columns:1fr;}}
+.detail-field{display:flex;flex-direction:column;gap:4px;}
+.detail-field label{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);}
+.detail-field .val{font-size:.85rem;}
+
+/* SCORING PANEL */
+.scoring-table{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:0;overflow:hidden;margin-bottom:20px;}
+.scoring-table table{margin:0;}
+.scoring-table th{background:var(--surface-2);}
+.score-row-plus td:last-child{color:var(--green);}
+.score-row-zero td:last-child{color:var(--text-3);}
+
+/* LEAD MAGNETS */
+.magnets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.magnet-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;}
+.magnet-card .m-icon{font-size:1.4rem;margin-bottom:10px;}
+.magnet-card .m-title{font-family:"Palatino Linotype",Palatino,serif;font-size:.95rem;font-weight:normal;margin-bottom:5px;line-height:1.4;}
+.magnet-card .m-desc{font-size:.76rem;color:var(--text-3);line-height:1.5;margin-bottom:12px;}
+.magnet-card .m-meta{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;color:var(--text-3);margin-bottom:12px;}
+.magnet-card .m-downloads{color:var(--green);}
+
+/* FORM BUILDER */
+.form-builder-grid{display:grid;grid-template-columns:340px 1fr;gap:20px;}
+@media(max-width:800px){.form-builder-grid{grid-template-columns:1fr;}}
+.config-panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;}
+.config-panel h3{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px;}
+.checkbox-group{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.checkbox-row{display:flex;align-items:center;gap:8px;font-size:.82rem;cursor:pointer;}
+.checkbox-row input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);}
+.preview-panel h3{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px;}
+.code-block{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;font-family:monospace;font-size:.75rem;line-height:1.6;white-space:pre-wrap;word-break:break-all;max-height:400px;overflow-y:auto;color:var(--text-2);}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.form-group label{font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);}
+.form-group textarea{resize:vertical;min-height:80px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:28px;width:100%;max-width:560px;}
+.modal h2{font-family:"Palatino Linotype",Palatino,serif;font-size:1.15rem;font-weight:normal;margin-bottom:18px;}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-3);}
+.empty-state .icon{font-size:2rem;margin-bottom:12px;}
+.empty-state p{font-size:.85rem;margin-bottom:16px;}
+
+/* CONFIG */
+.config-section{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;}
+.config-section h3{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px;}
+.config-row{display:grid;grid-template-columns:200px 1fr;gap:10px;align-items:center;margin-bottom:10px;}
+.config-row label{font-size:.78rem;color:var(--text-2);}
+.config-row input{width:100%;}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--text-3);display:inline-block;}
+.status-dot.ok{background:var(--green);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);padding:10px 18px;border-radius:4px;font-size:.82rem;z-index:200;transform:translateY(100px);opacity:0;transition:transform .25s,opacity .25s;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+.section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:14px;}
+.section-note{font-size:.78rem;color:var(--text-3);margin-bottom:14px;line-height:1.5;}
+hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+
+footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+
+@media(max-width:600px){
+  header{padding:16px 20px;flex-wrap:wrap;}
+  .stats-row,.tab-bar,.tab-content{padding-left:20px;padding-right:20px;}
+  .tab-btn{padding:10px 12px;font-size:.78rem;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="index.html">← CRM</a>
+  <div class="header-text">
+    <h1>Lead Generation Hub</h1>
+    <p>MOD-04 · Lead Capture · Scoring · Impartiality Gate · Form Builder</p>
+  </div>
+</header>
+
+<!-- IMPARTIALITY GLOBAL ALERT -->
+<div class="imp-alert" id="impGlobalAlert" style="margin:16px 40px 0;display:none">
+  <div class="icon">⚠️</div>
+  <p><strong>Peringatan Impartiality (ISO/IEC 17021-1 Clause 5):</strong> Ada <span id="impCount">0</span> lead yang memiliki konflik dengan klien konsultasi aktif. Lead ini <strong>tidak boleh diaudit</strong> dalam kapasitas auditor TSI. Tandai sebagai CONFLICT dan eskalasi ke manajemen.</p>
+</div>
+
+<div class="stats-row">
+  <div class="stat-chip" onclick="filterByScore('')">
+    <div class="num" id="statTotal">—</div><div class="lbl">Total Leads</div>
+  </div>
+  <div class="stat-chip hot" onclick="filterByScore('HOT')">
+    <div class="num" id="statHot">—</div><div class="lbl">🔥 Hot</div>
+  </div>
+  <div class="stat-chip warm" onclick="filterByScore('WARM')">
+    <div class="num" id="statWarm">—</div><div class="lbl">♨ Warm</div>
+  </div>
+  <div class="stat-chip cold" onclick="filterByScore('COLD')">
+    <div class="num" id="statCold">—</div><div class="lbl">❄ Cold</div>
+  </div>
+  <div class="stat-chip conflict" onclick="filterByScore('CONFLICT')">
+    <div class="num" id="statConflict">—</div><div class="lbl">⚠ Conflict</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('leads')">Leads Masuk</button>
+  <button class="tab-btn" onclick="switchTab('scoring')">Scoring Matrix</button>
+  <button class="tab-btn" onclick="switchTab('magnets')">Lead Magnets</button>
+  <button class="tab-btn" onclick="switchTab('form')">Form Builder</button>
+  <button class="tab-btn" onclick="switchTab('config')">Config</button>
+</div>
+
+<!-- TAB 1: LEADS MASUK -->
+<div class="tab-content active" id="tab-leads">
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <input type="text" id="searchLead" placeholder="Cari nama, perusahaan, email…" style="min-width:200px" oninput="renderLeads()">
+      <select id="filterKategori" onchange="renderLeads()">
+        <option value="">Semua Kategori</option>
+        <option value="HOT">🔥 Hot</option>
+        <option value="WARM">♨ Warm</option>
+        <option value="COLD">❄ Cold</option>
+        <option value="CONFLICT">⚠ Conflict</option>
+      </select>
+      <select id="filterStatus" onchange="renderLeads()">
+        <option value="">Semua Status</option>
+        <option value="BARU">Baru</option>
+        <option value="DIHUBUNGI">Dihubungi</option>
+        <option value="KUALIFIKASI">Kualifikasi</option>
+        <option value="PROPOSAL">Proposal</option>
+        <option value="KONVERSI">Konversi</option>
+        <option value="DITOLAK">Ditolak</option>
+      </select>
+      <select id="filterNegara" onchange="renderLeads()">
+        <option value="">Semua Negara</option>
+      </select>
+    </div>
+    <button class="btn btn-outline btn-sm" onclick="refreshLeads()">↻ Sync</button>
+    <button class="btn btn-primary btn-sm" onclick="openLeadModal()">+ Tambah Lead</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Kontak</th>
+          <th>Negara</th>
+          <th>Standar ISO</th>
+          <th>Sumber</th>
+          <th>Score</th>
+          <th>Status</th>
+          <th>Tanggal</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="leadsBody"></tbody>
+    </table>
+    <div class="empty-state" id="leadsEmpty" style="display:none">
+      <div class="icon">📥</div>
+      <p>Belum ada lead. Leads masuk via form website atau tambah manual.</p>
+      <button class="btn btn-primary btn-sm" onclick="openLeadModal()">+ Tambah Lead Manual</button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: SCORING MATRIX -->
+<div class="tab-content" id="tab-scoring">
+  <p class="section-title">Sistem Lead Scoring — Cara Hitung Skor</p>
+  <p class="section-note">Setiap lead mendapat skor 0–100 berdasarkan faktor di bawah. Skor ≥70 = HOT, 40–69 = WARM, &lt;40 = COLD. Lead dengan impartiality conflict tidak diskor — langsung ditandai CONFLICT.</p>
+
+  <div class="scoring-table">
+    <table>
+      <thead><tr><th>Faktor</th><th>Kriteria</th><th>Poin</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="5" style="color:var(--text-3);vertical-align:top;padding-top:14px">Standar ISO</td><td>ISO 17021-1 (pendirian CB)</td><td style="color:var(--accent)">+35</td></tr>
+        <tr><td>ISO 27001, ISO 37001</td><td style="color:var(--orange)">+25</td></tr>
+        <tr><td>ISO 22000, ISO 31000, ISO 22301</td><td style="color:var(--orange)">+20</td></tr>
+        <tr><td>ISO 9001, ISO 14001, ISO 45001</td><td style="color:var(--blue)">+15</td></tr>
+        <tr><td>Umum / Belum tahu</td><td style="color:var(--text-3)">+5</td></tr>
+        <tr class="score-row-plus"><td rowspan="3" style="color:var(--text-3);vertical-align:top;padding-top:14px">Asal Negara</td><td>Middle East, South Asia, Africa (internasional premium)</td><td style="color:var(--accent)">+25</td></tr>
+        <tr><td>ASEAN non-Indonesia, lainnya</td><td style="color:var(--orange)">+20</td></tr>
+        <tr><td>Indonesia</td><td style="color:var(--blue)">+15</td></tr>
+        <tr><td rowspan="4" style="color:var(--text-3);vertical-align:top;padding-top:14px">Intent Signal<br><small>(dari pesan)</small></td><td>"pendirian CB", "certification body", "akreditasi"</td><td style="color:var(--accent)">+20</td></tr>
+        <tr><td>"tender", "kontrak", "vendor", "procurement"</td><td style="color:var(--orange)">+15</td></tr>
+        <tr><td>"biaya", "harga", "proposal"</td><td style="color:var(--blue)">+10</td></tr>
+        <tr><td>"info", "belajar", "tahu lebih lanjut"</td><td style="color:var(--text-3)">+5</td></tr>
+        <tr><td rowspan="3" style="color:var(--text-3);vertical-align:top;padding-top:14px">Lead Magnet</td><td>Checklist ISO 17021-1 / Template CB Setup</td><td style="color:var(--accent)">+15</td></tr>
+        <tr><td>Template Gap Analysis / Audit Checklist</td><td style="color:var(--blue)">+10</td></tr>
+        <tr><td>Checklist umum / panduan dasar</td><td style="color:var(--text-3)">+5</td></tr>
+        <tr><td rowspan="3" style="color:var(--text-3);vertical-align:top;padding-top:14px">Ukuran Perusahaan</td><td>Enterprise / Korporat (>500 karyawan)</td><td style="color:var(--accent)">+15</td></tr>
+        <tr><td>Medium (50–500 karyawan)</td><td style="color:var(--blue)">+10</td></tr>
+        <tr><td>UKM / Startup (&lt;50 karyawan)</td><td style="color:var(--text-3)">+5</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="section-title">Scoring Per Lead</p>
+  <div id="scoringDetail"></div>
+</div>
+
+<!-- TAB 3: LEAD MAGNETS -->
+<div class="tab-content" id="tab-magnets">
+  <p class="section-title">Aset Lead Magnet</p>
+  <p class="section-note">Checklist dan template yang ditawarkan secara gratis untuk menarik prospek. Setiap download yang mengisi form masuk sebagai lead baru.</p>
+  <div class="magnets-grid" id="magnetsGrid"></div>
+</div>
+
+<!-- TAB 4: FORM BUILDER -->
+<div class="tab-content" id="tab-form">
+  <p class="section-title">Form Builder — Generate Embed untuk VPS</p>
+  <p class="section-note">Konfigurasi form di sebelah kiri, lalu copy HTML ke VPS arafarnusa.com. Form akan POST ke n8n webhook, n8n forward ke CRM.</p>
+
+  <div class="form-builder-grid">
+    <div class="config-panel">
+      <h3>Konfigurasi Form</h3>
+      <div class="form-group">
+        <label>Judul Form</label>
+        <input type="text" id="fbTitle" value="Konsultasi ISO Gratis" oninput="updateFormPreview()">
+      </div>
+      <div class="form-group">
+        <label>Sub-judul / Deskripsi</label>
+        <textarea id="fbDesc" oninput="updateFormPreview()">Ceritakan kebutuhan ISO Anda — kami akan menghubungi dalam 24 jam.</textarea>
+      </div>
+      <div class="form-group">
+        <label>Lead Magnet yang Ditawarkan</label>
+        <select id="fbMagnet" onchange="updateFormPreview()">
+          <option value="">Tidak ada (hanya form)</option>
+          <option value="Checklist Persiapan Audit ISO 9001">Checklist Audit ISO 9001</option>
+          <option value="Template Gap Analysis ISO 14001">Template Gap Analysis ISO 14001</option>
+          <option value="Panduan Pendirian Lembaga Sertifikasi">Panduan Pendirian CB (ISO 17021-1)</option>
+          <option value="Checklist Internal Audit ISO 27001">Checklist Audit ISO 27001</option>
+          <option value="ROI Calculator Sertifikasi ISO">ROI Calculator Sertifikasi</option>
+        </select>
+      </div>
+      <h3 style="margin-top:14px">Field yang Ditampilkan</h3>
+      <div class="checkbox-group">
+        <label class="checkbox-row"><input type="checkbox" id="fb-nama" checked onchange="updateFormPreview()"> Nama Lengkap *</label>
+        <label class="checkbox-row"><input type="checkbox" id="fb-perusahaan" checked onchange="updateFormPreview()"> Nama Perusahaan *</label>
+        <label class="checkbox-row"><input type="checkbox" id="fb-email" checked onchange="updateFormPreview()"> Email *</label>
+        <label class="checkbox-row"><input type="checkbox" id="fb-telp" checked onchange="updateFormPreview()"> Nomor WhatsApp</label>
+        <label class="checkbox-row"><input type="checkbox" id="fb-negara" checked onchange="updateFormPreview()"> Negara / Kota</label>
+        <label class="checkbox-row"><input type="checkbox" id="fb-standar" checked onchange="updateFormPreview()"> Standar ISO yang Diminati</label>
+        <label class="checkbox-row"><input type="checkbox" id="fb-pesan" checked onchange="updateFormPreview()"> Pesan / Kebutuhan</label>
+        <label class="checkbox-row"><input type="checkbox" id="fb-ukuran" onchange="updateFormPreview()"> Ukuran Perusahaan</label>
+      </div>
+      <h3 style="margin-top:14px">Warna Tombol</h3>
+      <div class="form-group">
+        <select id="fbColor" onchange="updateFormPreview()">
+          <option value="#B84F1E">Terracotta (arafarnusa.com)</option>
+          <option value="#2D7A4F">Hijau</option>
+          <option value="#1A5F8A">Biru</option>
+          <option value="#333333">Hitam</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Webhook URL (dari Config)</label>
+        <input type="text" id="fbWebhook" placeholder="https://nusantara8n.my.id/webhook/…" oninput="updateFormPreview()">
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="copyFormCode()" style="margin-top:4px">📋 Copy HTML Form</button>
+    </div>
+
+    <div>
+      <div class="preview-panel">
+        <h3>Preview Form</h3>
+        <div id="formPreview" style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:24px;margin-bottom:16px;"></div>
+        <h3>HTML untuk VPS</h3>
+        <div class="code-block" id="formCode"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5: CONFIG -->
+<div class="tab-content" id="tab-config">
+  <div class="config-section" style="margin-bottom:16px">
+    <h3>Webhook & Integrasi n8n</h3>
+    <div class="config-row">
+      <label>Terima lead baru (n8n → CRM)</label>
+      <input type="text" id="cfg-receive" placeholder="URL webhook inbound dari n8n" oninput="saveLeadConfig()">
+    </div>
+    <div class="config-row">
+      <label>Notifikasi lead baru</label>
+      <input type="text" id="cfg-notify" placeholder="Telegram bot webhook URL" oninput="saveLeadConfig()">
+    </div>
+    <div class="config-row">
+      <label>Submit form → n8n</label>
+      <input type="text" id="cfg-form" placeholder="Webhook POST dari form website" oninput="saveLeadConfig()">
+    </div>
+    <p style="font-size:.72rem;color:var(--text-3);margin-top:10px">Alur: Form VPS → POST ke webhook → n8n memproses → CRM menerima via webhook inbound.</p>
+  </div>
+
+  <div class="config-section">
+    <h3>Impartiality Gate — Daftar Klien Konsultasi Aktif</h3>
+    <p class="section-note">Masukkan nama perusahaan klien konsultasi. Jika perusahaan yang sama mendaftar sebagai lead, sistem akan menandai CONFLICT sesuai ISO/IEC 17021-1 Clause 5.</p>
+    <div class="form-group">
+      <label>Daftar Klien (satu per baris)</label>
+      <textarea id="clientsList" rows="8" placeholder="PT Maju Bersama&#10;CV Sejahtera Mandiri&#10;Al-Noor Group" oninput="saveLeadConfig();recomputeAll()"></textarea>
+    </div>
+    <p style="font-size:.72rem;color:var(--text-3)">Pencocokan dilakukan dengan substring case-insensitive. "Maju Bersama" akan mencocokkan "PT Maju Bersama Tbk".</p>
+  </div>
+</div>
+
+<!-- MODAL: TAMBAH / EDIT LEAD -->
+<div class="modal-overlay" id="leadModal">
+  <div class="modal">
+    <h2 id="leadModalTitle">Tambah Lead Baru</h2>
+    <input type="hidden" id="editLeadId">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group">
+        <label>Nama *</label>
+        <input type="text" id="mNama" placeholder="Nama lengkap">
+      </div>
+      <div class="form-group">
+        <label>Perusahaan *</label>
+        <input type="text" id="mPerusahaan" placeholder="Nama perusahaan / organisasi">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="mEmail" placeholder="email@perusahaan.com">
+      </div>
+      <div class="form-group">
+        <label>WhatsApp / Telp</label>
+        <input type="tel" id="mTelp" placeholder="+62-811-…">
+      </div>
+      <div class="form-group">
+        <label>Negara</label>
+        <input type="text" id="mNegara" placeholder="Indonesia, UAE, India…">
+      </div>
+      <div class="form-group">
+        <label>Ukuran Perusahaan</label>
+        <select id="mUkuran">
+          <option value="">Tidak tahu</option>
+          <option value="enterprise">Enterprise (&gt;500 karyawan)</option>
+          <option value="medium">Medium (50–500)</option>
+          <option value="small">UKM / Startup (&lt;50)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Standar ISO yang Diminati</label>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface);border:1px solid var(--border);border-radius:3px" id="standarCheckboxes"></div>
+    </div>
+    <div class="form-group">
+      <label>Lead Magnet yang Diunduh</label>
+      <select id="mMagnet">
+        <option value="">Tidak ada</option>
+        <option value="Checklist Persiapan Audit ISO 9001">Checklist Audit ISO 9001</option>
+        <option value="Template Gap Analysis ISO 14001">Template Gap Analysis ISO 14001</option>
+        <option value="Panduan Pendirian Lembaga Sertifikasi">Panduan Pendirian CB (ISO 17021-1)</option>
+        <option value="Checklist Internal Audit ISO 27001">Checklist Audit ISO 27001</option>
+        <option value="ROI Calculator Sertifikasi ISO">ROI Calculator</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Sumber</label>
+      <select id="mSumber">
+        <option>Form Website</option>
+        <option>LinkedIn</option>
+        <option>Referral</option>
+        <option>WhatsApp</option>
+        <option>Email Inbound</option>
+        <option>Event / Webinar</option>
+        <option>Lainnya</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Pesan / Kebutuhan</label>
+      <textarea id="mPesan" rows="3" placeholder="Kebutuhan atau konteks dari lead…"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Status Pipeline</label>
+      <select id="mStatus">
+        <option value="BARU">Baru</option>
+        <option value="DIHUBUNGI">Dihubungi</option>
+        <option value="KUALIFIKASI">Kualifikasi</option>
+        <option value="PROPOSAL">Proposal</option>
+        <option value="KONVERSI">Konversi</option>
+        <option value="DITOLAK">Ditolak</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Catatan Internal</label>
+      <textarea id="mCatatan" rows="2" placeholder="Catatan pribadi, follow-up, dll…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeLeadModal()">Batal</button>
+      <button class="btn btn-primary" onclick="saveLead()">Simpan Lead</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>Lead Generation Hub · MOD-04 · CRM Konsultan ISO · arafarnusa.com</footer>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const LEADS_KEY   = 'crm_leads_v2';
+const CONFIG_KEY  = 'crm_lead_config';
+const ISO_STDS    = ['ISO 9001','ISO 14001','ISO 45001','ISO 27001','ISO 22000','ISO 37001','ISO 17021-1','ISO 31000','ISO 22301'];
+
+const SEED_LEADS = [
+  {id:1,nama:"Ahmad Fauzi",perusahaan:"PT Maju Bersama",email:"ahmad@majubersama.co.id",telp:"+62-811-1234567",negara:"Indonesia",standar:["ISO 9001","ISO 45001"],ukuran:"medium",sumber:"Form Website",pesan:"Kami butuh sertifikasi ISO 9001 dan ISO 45001 untuk memenuhi persyaratan tender PLN tahun depan.",leadMagnet:"Checklist Persiapan Audit ISO 9001",status:"KUALIFIKASI",catatan:"Sudah hubungi via WA. Siap meeting minggu depan.",tanggal:"2026-08-10"},
+  {id:2,nama:"Mohammed Al-Rasheed",perusahaan:"Al-Noor Trading LLC",email:"m.rasheed@alnoor.ae",telp:"+971-50-9876543",negara:"UAE",standar:["ISO 9001","ISO 14001"],ukuran:"enterprise",sumber:"LinkedIn",pesan:"We are interested in getting ISO 9001 and ISO 14001 certification for our operations in UAE and Saudi Arabia.",leadMagnet:"",status:"DIHUBUNGI",catatan:"Sent intro email. Waiting for reply.",tanggal:"2026-08-08"},
+  {id:3,nama:"Rajesh Kumar",perusahaan:"Quality Cert Solutions Pvt Ltd",email:"rajesh@qcsindia.com",telp:"+91-98765-43210",negara:"India",standar:["ISO 17021-1"],ukuran:"medium",sumber:"Form Website",pesan:"We are planning to establish a certification body in India. We need guidance on ISO 17021-1 requirements and KAN/NABCB accreditation pathway.",leadMagnet:"Panduan Pendirian Lembaga Sertifikasi",status:"BARU",catatan:"",tanggal:"2026-08-14"},
+  {id:4,nama:"Siti Rahayu",perusahaan:"RSU Harapan Sehat",email:"s.rahayu@rsuharapan.co.id",telp:"+62-812-5678901",negara:"Indonesia",standar:["ISO 9001","ISO 22000"],ukuran:"small",sumber:"Referral",pesan:"Rumah sakit kami ingin mendapat sertifikasi ISO untuk meningkatkan kepercayaan pasien dan akreditasi JCI.",leadMagnet:"",status:"PROPOSAL",catatan:"Proposal sudah dikirim. Tunggu keputusan direksi.",tanggal:"2026-08-05"},
+  {id:5,nama:"Kwame Asante",perusahaan:"GhanaTest & Inspection Ltd",email:"kwame.asante@ghanatest.gh",telp:"+233-20-1234567",negara:"Ghana",standar:["ISO 17021-1"],ukuran:"medium",sumber:"Email Inbound",pesan:"Our company wants to expand from inspection to certification. We need to understand the requirements for setting up an accredited CB under GNAS (Ghana Accreditation Board).",leadMagnet:"Panduan Pendirian Lembaga Sertifikasi",status:"BARU",catatan:"",tanggal:"2026-08-13"},
+  {id:6,nama:"Budi Santoso",perusahaan:"PT Teknologi Prima",email:"budi@tekprima.co.id",telp:"+62-813-2345678",negara:"Indonesia",standar:["ISO 27001"],ukuran:"medium",sumber:"Form Website",pesan:"Klien korporat kami meminta kami memiliki ISO 27001 sebelum mereka bisa melanjutkan kontrak senilai 5 miliar.",leadMagnet:"Checklist Internal Audit ISO 27001",status:"DIHUBUNGI",catatan:"Hot lead — ada deadline kontrak.",tanggal:"2026-08-12"},
+  {id:7,nama:"Nadia Mahmoud",perusahaan:"Cairo Food Processing Co.",email:"nadia@cairofood.eg",telp:"+20-100-9876543",negara:"Egypt",standar:["ISO 22000","ISO 9001"],ukuran:"enterprise",sumber:"LinkedIn",pesan:"We are a major food processor in Egypt. ISO 22000 is now required by our European buyers.",leadMagnet:"Template Gap Analysis ISO 14001",status:"KUALIFIKASI",catatan:"",tanggal:"2026-08-07"},
+  {id:8,nama:"Dewi Kusuma",perusahaan:"PT Maju Bersama",email:"dewi@majubersama.co.id",telp:"+62-814-3456789",negara:"Indonesia",standar:["ISO 9001"],ukuran:"medium",sumber:"Form Website",pesan:"Follow up dari kolega Ahmad Fauzi untuk pertanyaan lebih lanjut.",leadMagnet:"",status:"BARU",catatan:"IMPARTIALITY CHECK: Perusahaan sama dengan klien aktif!",tanggal:"2026-08-15"},
+];
+
+const LEAD_MAGNETS = [
+  {id:1,icon:"✅",title:"Checklist Persiapan Audit ISO 9001",desc:"57 poin checklist yang digunakan auditor sertifikasi ISO 9001. Ideal untuk persiapan audit pertama atau surveillance.",standar:"ISO 9001",type:"PDF",downloads:143},
+  {id:2,icon:"📊",title:"Template Gap Analysis ISO 14001",desc:"Spreadsheet siap pakai untuk mengidentifikasi gap antara sistem saat ini dan persyaratan ISO 14001:2015.",standar:"ISO 14001",type:"XLSX",downloads:89},
+  {id:3,icon:"🏛",title:"Panduan Pendirian Lembaga Sertifikasi (CB)",desc:"Panduan eksklusif 28 halaman tentang persyaratan ISO/IEC 17021-1, proses akreditasi, dan langkah awal mendirikan CB.",standar:"ISO 17021-1",type:"PDF",downloads:34},
+  {id:4,icon:"🔒",title:"Checklist Internal Audit ISO 27001",desc:"Checklist berbasis Annex A ISO 27001:2022 untuk tim IT melakukan internal audit keamanan informasi.",standar:"ISO 27001",type:"PDF",downloads:112},
+  {id:5,icon:"💰",title:"ROI Calculator Sertifikasi ISO",desc:"Spreadsheet untuk menghitung Return on Investment sertifikasi ISO berdasarkan peningkatan akses tender dan efisiensi operasional.",standar:"Umum",type:"XLSX",downloads:67},
+];
+
+function loadLeads(){ const r=localStorage.getItem(LEADS_KEY); if(r) return JSON.parse(r); localStorage.setItem(LEADS_KEY,JSON.stringify(SEED_LEADS)); return SEED_LEADS; }
+function saveLeads(d){ localStorage.setItem(LEADS_KEY,JSON.stringify(d)); }
+function loadLeadConfig(){ return JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}'); }
+function saveLeadConfig(){
+  const cfg={receive:_v('cfg-receive'),notify:_v('cfg-notify'),form:_v('cfg-form'),clients:_v('clientsList')};
+  localStorage.setItem(CONFIG_KEY,JSON.stringify(cfg));
+  document.getElementById('fbWebhook').value=cfg.form||'';
+  updateFormPreview();
+}
+function loadLeadConfigUI(){
+  const cfg=loadLeadConfig();
+  _sv('cfg-receive',cfg.receive||'');_sv('cfg-notify',cfg.notify||'');_sv('cfg-form',cfg.form||'');
+  _sv('clientsList',cfg.clients||'');
+  _sv('fbWebhook',cfg.form||'');
+}
+function _v(id){return document.getElementById(id)?.value?.trim()||'';}
+function _sv(id,v){const el=document.getElementById(id);if(el)el.value=v;}
+
+// ─── SCORING ─────────────────────────────────────────────────────────────────
+function isConflict(perusahaan){
+  const cfg=loadLeadConfig();
+  const clients=(cfg.clients||'').toLowerCase().split('\n').map(s=>s.trim()).filter(Boolean);
+  const p=(perusahaan||'').toLowerCase();
+  return clients.some(c=>c&&p.includes(c)||c&&c.includes(p));
+}
+function scoreBreakdown(lead){
+  const breakdown=[];let total=0;
+  // Standar
+  const stdPts={'ISO 17021-1':35,'ISO 27001':25,'ISO 37001':25,'ISO 22000':20,'ISO 31000':20,'ISO 22301':20,'ISO 9001':15,'ISO 14001':15,'ISO 45001':15};
+  const stds=lead.standar||[];
+  const bestStd=stds.reduce((m,s)=>Math.max(m,stdPts[s]||5),stds.length?5:0);
+  const stdLabel=stds.find(s=>stdPts[s]===bestStd)||stds[0]||'Umum';
+  if(bestStd>0){breakdown.push({label:`Standar: ${stdLabel}`,pts:bestStd});total+=bestStd;}
+  // Negara
+  const premME=['UAE','Saudi Arabia','Qatar','Kuwait','Bahrain','Oman','Jordan','Lebanon','Egypt','Iraq','Yemen'];
+  const premSA=['India','Pakistan','Bangladesh','Sri Lanka','Nepal'];
+  const premAF=['Nigeria','Ghana','Kenya','Ethiopia','Tanzania','South Africa','Senegal'];
+  const asean=['Malaysia','Singapore','Thailand','Vietnam','Philippines','Myanmar','Cambodia','Laos','Brunei'];
+  let geoP=15; let geoL='Indonesia';
+  const n=(lead.negara||'').trim();
+  if(premME.some(c=>n.toLowerCase().includes(c.toLowerCase()))){geoP=25;geoL=n;}
+  else if(premSA.some(c=>n.toLowerCase().includes(c.toLowerCase()))){geoP=25;geoL=n;}
+  else if(premAF.some(c=>n.toLowerCase().includes(c.toLowerCase()))){geoP=25;geoL=n;}
+  else if(asean.some(c=>n.toLowerCase().includes(c.toLowerCase()))){geoP=20;geoL=n;}
+  else if(n&&!n.toLowerCase().includes('indonesia')){geoP=20;geoL=n;}
+  breakdown.push({label:`Negara: ${geoL||n||'Indonesia'}`,pts:geoP});total+=geoP;
+  // Intent
+  const msg=(lead.pesan||'').toLowerCase();
+  let intentP=0,intentL='';
+  if(/pendirian cb|certification body|cb setup|akreditasi|accreditati/.test(msg)){intentP=20;intentL='Intent: CB Setup';}
+  else if(/tender|kontrak|vendor|procurement|required by/.test(msg)){intentP=15;intentL='Intent: Tender/Kontrak';}
+  else if(/biaya|harga|proposal|cost|price/.test(msg)){intentP=10;intentL='Intent: Pricing';}
+  else if(/info|pelajar|tahu|understand|interested/.test(msg)){intentP=5;intentL='Intent: Info';}
+  if(intentP>0){breakdown.push({label:intentL,pts:intentP});total+=intentP;}
+  // Lead Magnet
+  const lmPts={'Panduan Pendirian Lembaga Sertifikasi':15,'Checklist Internal Audit ISO 27001':10,'Checklist Persiapan Audit ISO 9001':10,'Template Gap Analysis ISO 14001':10,'ROI Calculator Sertifikasi ISO':5};
+  const lmP=lmPts[lead.leadMagnet]||0;
+  if(lmP>0){breakdown.push({label:`Lead Magnet: ${lead.leadMagnet}`,pts:lmP});total+=lmP;}
+  // Ukuran
+  const ukP={enterprise:15,medium:10,small:5}[lead.ukuran]||0;
+  if(ukP>0){breakdown.push({label:`Ukuran: ${lead.ukuran}`,pts:ukP});total+=ukP;}
+  return{breakdown,total:Math.min(total,100)};
+}
+function getKategori(lead){
+  if(isConflict(lead.perusahaan)) return 'CONFLICT';
+  const{total}=scoreBreakdown(lead);
+  if(total>=70) return 'HOT';
+  if(total>=40) return 'WARM';
+  return 'COLD';
+}
+function recomputeAll(){
+  // recheck conflict on all leads
+  renderLeads();updateStats();
+}
+
+// ─── STATS ───────────────────────────────────────────────────────────────────
+function updateStats(){
+  const data=loadLeads();
+  const cats=data.map(d=>getKategori(d));
+  _sv('statTotal',(data.length||'0')+'');
+  document.getElementById('statTotal').textContent=data.length;
+  document.getElementById('statHot').textContent=cats.filter(c=>c==='HOT').length;
+  document.getElementById('statWarm').textContent=cats.filter(c=>c==='WARM').length;
+  document.getElementById('statCold').textContent=cats.filter(c=>c==='COLD').length;
+  const nConflict=cats.filter(c=>c==='CONFLICT').length;
+  document.getElementById('statConflict').textContent=nConflict;
+  const alert=document.getElementById('impGlobalAlert');
+  if(nConflict>0){alert.style.display='flex';document.getElementById('impCount').textContent=nConflict;}
+  else{alert.style.display='none';}
+}
+
+// ─── TABLE ───────────────────────────────────────────────────────────────────
+function statusBadge(s){
+  const m={'BARU':'badge-baru','DIHUBUNGI':'badge-dihubungi','KUALIFIKASI':'badge-kualifikasi','PROPOSAL':'badge-proposal','KONVERSI':'badge-konversi','DITOLAK':'badge-ditolak'};
+  return `<span class="badge ${m[s]||'badge-baru'}">${s}</span>`;
+}
+function kategoriEl(k){
+  const m={'HOT':'badge-hot','WARM':'badge-warm','COLD':'badge-cold','CONFLICT':'badge-conflict'};
+  const icons={'HOT':'🔥 ','WARM':'♨ ','COLD':'❄ ','CONFLICT':'⚠ '};
+  return `<span class="badge ${m[k]||'badge-cold'}">${icons[k]||''}${k}</span>`;
+}
+function scoreEl(lead){
+  if(getKategori(lead)==='CONFLICT') return '<span style="color:var(--red);font-size:.8rem">N/A</span>';
+  const{total}=scoreBreakdown(lead);
+  const color=total>=70?'var(--accent)':total>=40?'var(--orange)':'var(--blue)';
+  return `<div class="score-wrap"><div class="score-bar"><div class="score-fill" style="width:${total}%;background:${color}"></div></div><span class="score-num" style="color:${color}">${total}</span></div>`;
+}
+function renderLeads(){
+  const data=loadLeads();
+  const q=_v('searchLead').toLowerCase();
+  const fK=_v('filterKategori');
+  const fS=_v('filterStatus');
+  const fN=_v('filterNegara');
+
+  // Populate negara filter
+  const negaraSet=[...new Set(data.map(d=>d.negara).filter(Boolean))].sort();
+  const negSel=document.getElementById('filterNegara');
+  const curNeg=negSel.value;
+  negSel.innerHTML='<option value="">Semua Negara</option>'+negaraSet.map(n=>`<option ${n===curNeg?'selected':''}>${esc(n)}</option>`).join('');
+
+  const filtered=data.filter(d=>{
+    const k=getKategori(d);
+    if(fK&&k!==fK) return false;
+    if(fS&&d.status!==fS) return false;
+    if(fN&&d.negara!==fN) return false;
+    if(q&&![d.nama,d.perusahaan,d.email,d.negara].join(' ').toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b)=>{
+    // Sort: CONFLICT first, then HOT, WARM, COLD; then by date desc
+    const order={CONFLICT:0,HOT:1,WARM:2,COLD:3};
+    const ka=order[getKategori(a)]??4, kb=order[getKategori(b)]??4;
+    return ka!==kb?ka-kb:(b.tanggal||'').localeCompare(a.tanggal||'');
+  });
+
+  const tbody=document.getElementById('leadsBody');
+  const empty=document.getElementById('leadsEmpty');
+  if(!filtered.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+
+  tbody.innerHTML=filtered.map((d,i)=>`
+    <tr>
+      <td style="color:var(--text-3);font-size:.75rem">${i+1}</td>
+      <td class="person-cell">
+        <div class="name">${esc(d.nama)}</div>
+        <div class="company">${esc(d.perusahaan)}</div>
+        ${d.email?`<div class="email">${esc(d.email)}</div>`:''}
+      </td>
+      <td style="font-size:.8rem">${esc(d.negara||'—')}</td>
+      <td>${(d.standar||[]).map(s=>`<span class="standar-tag">${esc(s)}</span>`).join(' ')}</td>
+      <td style="font-size:.76rem;color:var(--text-3)">${esc(d.sumber||'—')}</td>
+      <td>${scoreEl(d)}</td>
+      <td>${statusBadge(d.status)} ${getKategori(d)==='CONFLICT'?'<br>'+kategoriEl('CONFLICT'):''}</td>
+      <td style="font-size:.74rem;color:var(--text-3);white-space:nowrap">${d.tanggal||'—'}</td>
+      <td>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" onclick="editLead(${d.id})">Edit</button>
+          <button class="btn btn-outline btn-sm" onclick="cycleLeadStatus(${d.id})" title="Maju status">→</button>
+          <button class="btn btn-outline btn-sm" onclick="deleteLead(${d.id})" style="color:var(--red)" title="Hapus">×</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterByScore(cat){
+  document.getElementById('filterKategori').value=cat;
+  renderLeads();
+}
+
+const STATUS_CYCLE=['BARU','DIHUBUNGI','KUALIFIKASI','PROPOSAL','KONVERSI'];
+function cycleLeadStatus(id){
+  const data=loadLeads();const idx=data.findIndex(d=>d.id===id);if(idx<0)return;
+  const cur=STATUS_CYCLE.indexOf(data[idx].status);
+  data[idx].status=STATUS_CYCLE[(cur+1)%STATUS_CYCLE.length];
+  saveLeads(data);renderLeads();updateStats();showToast(`Status: ${data[idx].status}`);
+}
+function deleteLead(id){
+  if(!confirm('Hapus lead ini?'))return;
+  saveLeads(loadLeads().filter(d=>d.id!==id));
+  renderLeads();updateStats();renderScoringDetail();showToast('Lead dihapus');
+}
+
+// ─── LEAD MODAL ──────────────────────────────────────────────────────────────
+function buildStandarCheckboxes(selected=[]){
+  const wrap=document.getElementById('standarCheckboxes');
+  wrap.innerHTML=ISO_STDS.map(s=>`
+    <label style="display:flex;align-items:center;gap:5px;font-size:.79rem;cursor:pointer;margin:2px 4px">
+      <input type="checkbox" value="${s}" ${selected.includes(s)?'checked':''} style="accent-color:var(--accent)"> ${s}
+    </label>
+  `).join('');
+}
+function getSelectedStandards(){
+  return [...document.querySelectorAll('#standarCheckboxes input:checked')].map(el=>el.value);
+}
+function openLeadModal(){
+  document.getElementById('leadModalTitle').textContent='Tambah Lead Baru';
+  document.getElementById('editLeadId').value='';
+  ['mNama','mPerusahaan','mEmail','mTelp','mNegara','mPesan','mCatatan'].forEach(id=>_sv(id,''));
+  _sv('mUkuran','');_sv('mSumber','Form Website');_sv('mStatus','BARU');_sv('mMagnet','');
+  buildStandarCheckboxes([]);
+  document.getElementById('leadModal').classList.add('open');
+}
+function closeLeadModal(){ document.getElementById('leadModal').classList.remove('open'); }
+document.getElementById('leadModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLeadModal();});
+function editLead(id){
+  const d=loadLeads().find(l=>l.id===id);if(!d)return;
+  document.getElementById('leadModalTitle').textContent='Edit Lead';
+  document.getElementById('editLeadId').value=id;
+  _sv('mNama',d.nama||'');_sv('mPerusahaan',d.perusahaan||'');_sv('mEmail',d.email||'');
+  _sv('mTelp',d.telp||'');_sv('mNegara',d.negara||'');_sv('mPesan',d.pesan||'');
+  _sv('mCatatan',d.catatan||'');_sv('mUkuran',d.ukuran||'');_sv('mSumber',d.sumber||'Form Website');
+  _sv('mStatus',d.status||'BARU');_sv('mMagnet',d.leadMagnet||'');
+  buildStandarCheckboxes(d.standar||[]);
+  document.getElementById('leadModal').classList.add('open');
+}
+function saveLead(){
+  const nama=_v('mNama'),perusahaan=_v('mPerusahaan');
+  if(!nama||!perusahaan){showToast('Nama dan Perusahaan wajib diisi');return;}
+  const entry={nama,perusahaan,email:_v('mEmail'),telp:_v('mTelp'),negara:_v('mNegara'),
+    standar:getSelectedStandards(),ukuran:_v('mUkuran'),sumber:_v('mSumber'),
+    pesan:_v('mPesan'),leadMagnet:_v('mMagnet'),status:_v('mStatus'),catatan:_v('mCatatan'),
+    tanggal:new Date().toISOString().slice(0,10)};
+  const data=loadLeads();
+  const editId=parseInt(_v('editLeadId')||'0');
+  if(editId){const idx=data.findIndex(d=>d.id===editId);if(idx>=0)data[idx]={...data[idx],...entry};}
+  else{const maxId=data.reduce((m,d)=>Math.max(m,d.id||0),0);data.push({id:maxId+1,...entry});}
+  saveLeads(data);closeLeadModal();renderLeads();updateStats();renderScoringDetail();
+  showToast(editId?'Lead diperbarui ✓':'Lead baru disimpan ✓');
+}
+
+// ─── SCORING DETAIL ──────────────────────────────────────────────────────────
+function renderScoringDetail(){
+  const data=loadLeads().filter(d=>getKategori(d)!=='CONFLICT').sort((a,b)=>scoreBreakdown(b).total-scoreBreakdown(a).total);
+  const el=document.getElementById('scoringDetail');
+  if(!data.length){el.innerHTML='<p class="section-note">Belum ada lead.</p>';return;}
+  el.innerHTML=`<div class="table-wrap"><table>
+    <thead><tr><th>Nama / Perusahaan</th><th>Standar</th><th>Faktor Skor</th><th>Total</th><th>Kategori</th></tr></thead>
+    <tbody>${data.map(d=>{
+      const{breakdown,total}=scoreBreakdown(d);
+      return `<tr>
+        <td><div style="font-size:.85rem">${esc(d.nama)}</div><div style="font-size:.73rem;color:var(--text-3)">${esc(d.perusahaan)}</div></td>
+        <td>${(d.standar||[]).map(s=>`<span class="standar-tag">${esc(s)}</span>`).join(' ')}</td>
+        <td style="font-size:.76rem;color:var(--text-3)">${breakdown.map(b=>`<span title="+${b.pts}">+${b.pts} ${esc(b.label)}</span>`).join('<br>')}</td>
+        <td>${scoreEl(d)}</td>
+        <td>${kategoriEl(getKategori(d))}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table></div>`;
+}
+
+// ─── LEAD MAGNETS ────────────────────────────────────────────────────────────
+function renderMagnets(){
+  const el=document.getElementById('magnetsGrid');
+  el.innerHTML=LEAD_MAGNETS.map(m=>`
+    <div class="magnet-card">
+      <div class="m-icon">${m.icon}</div>
+      <div class="m-title">${esc(m.title)}</div>
+      <div class="m-desc">${esc(m.desc)}</div>
+      <div class="m-meta">
+        <span class="standar-tag">${esc(m.standar)}</span>
+        <span class="m-downloads">↓ ${m.downloads} download</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" onclick="copyMagnetLink(${m.id})">Copy Link</button>
+        <span style="font-size:.72rem;padding:5px 0;color:var(--text-3)">${m.type}</span>
+      </div>
+    </div>
+  `).join('');
+}
+function copyMagnetLink(id){
+  const m=LEAD_MAGNETS.find(l=>l.id===id);
+  const slug=m.title.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  const url=`https://arafarnusa.com/lead-magnet/${slug}`;
+  navigator.clipboard?.writeText(url).then(()=>showToast('Link disalin: '+url)).catch(()=>showToast(url));
+}
+
+// ─── FORM BUILDER ────────────────────────────────────────────────────────────
+function updateFormPreview(){
+  const title=_v('fbTitle')||'Konsultasi ISO Gratis';
+  const desc=document.getElementById('fbDesc')?.value?.trim()||'';
+  const magnet=_v('fbMagnet');
+  const color=_v('fbColor')||'#B84F1E';
+  const webhook=_v('fbWebhook');
+  const fields={nama:document.getElementById('fb-nama')?.checked,perusahaan:document.getElementById('fb-perusahaan')?.checked,email:document.getElementById('fb-email')?.checked,telp:document.getElementById('fb-telp')?.checked,negara:document.getElementById('fb-negara')?.checked,standar:document.getElementById('fb-standar')?.checked,pesan:document.getElementById('fb-pesan')?.checked,ukuran:document.getElementById('fb-ukuran')?.checked};
+
+  // Preview
+  let previewHtml=`<h2 style="font-family:Georgia,serif;font-size:1.2rem;font-weight:normal;margin-bottom:8px;color:#1A1510">${esc(title)}</h2>`;
+  if(desc) previewHtml+=`<p style="font-size:.83rem;color:#5A5048;margin-bottom:16px;line-height:1.5">${esc(desc)}</p>`;
+  if(magnet) previewHtml+=`<div style="background:#FFF8F0;border:1px solid #B84F1E;border-radius:3px;padding:10px 14px;margin-bottom:16px;font-size:.8rem;color:#B84F1E">🎁 Dapatkan gratis: <strong>${esc(magnet)}</strong></div>`;
+  previewHtml+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">`;
+  if(fields.nama) previewHtml+=`<div><label style="font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:#8A7E72">Nama Lengkap *</label><input disabled style="width:100%;border:1px solid #C8BFB0;border-radius:3px;padding:7px;margin-top:4px;background:#F0EDE6;font-size:.83rem"></div>`;
+  if(fields.perusahaan) previewHtml+=`<div><label style="font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:#8A7E72">Perusahaan *</label><input disabled style="width:100%;border:1px solid #C8BFB0;border-radius:3px;padding:7px;margin-top:4px;background:#F0EDE6;font-size:.83rem"></div>`;
+  if(fields.email) previewHtml+=`<div><label style="font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:#8A7E72">Email *</label><input disabled style="width:100%;border:1px solid #C8BFB0;border-radius:3px;padding:7px;margin-top:4px;background:#F0EDE6;font-size:.83rem"></div>`;
+  if(fields.telp) previewHtml+=`<div><label style="font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:#8A7E72">WhatsApp</label><input disabled style="width:100%;border:1px solid #C8BFB0;border-radius:3px;padding:7px;margin-top:4px;background:#F0EDE6;font-size:.83rem"></div>`;
+  if(fields.negara) previewHtml+=`<div><label style="font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:#8A7E72">Negara</label><input disabled style="width:100%;border:1px solid #C8BFB0;border-radius:3px;padding:7px;margin-top:4px;background:#F0EDE6;font-size:.83rem"></div>`;
+  if(fields.ukuran) previewHtml+=`<div><label style="font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:#8A7E72">Ukuran Perusahaan</label><select disabled style="width:100%;border:1px solid #C8BFB0;border-radius:3px;padding:7px;margin-top:4px;background:#F0EDE6;font-size:.83rem"><option></option></select></div>`;
+  previewHtml+=`</div>`;
+  if(fields.standar) previewHtml+=`<div style="margin-top:10px"><label style="font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:#8A7E72">Standar ISO yang Diminati</label><div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px">${ISO_STDS.map(s=>`<label style="display:flex;align-items:center;gap:4px;font-size:.78rem"><input type="checkbox" disabled> ${s}</label>`).join('')}</div></div>`;
+  if(fields.pesan) previewHtml+=`<div style="margin-top:10px"><label style="font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:#8A7E72">Pesan / Kebutuhan</label><textarea disabled style="width:100%;border:1px solid #C8BFB0;border-radius:3px;padding:7px;margin-top:4px;background:#F0EDE6;font-size:.83rem;height:60px;resize:none"></textarea></div>`;
+  previewHtml+=`<button disabled style="margin-top:14px;background:${color};color:#fff;border:none;border-radius:3px;padding:10px 24px;font-size:.88rem;cursor:pointer">${magnet?'Download Gratis + Kirim':'Kirim Pesan'}</button>`;
+  document.getElementById('formPreview').innerHTML=previewHtml;
+
+  // Generate HTML code
+  const standarFields=fields.standar?`\n      <div class="arfiso-field">\n        <label>Standar ISO yang Diminati</label>\n        <div class="arfiso-checks">\n          ${ISO_STDS.map(s=>`<label><input type="checkbox" name="standar[]" value="${s}"> ${s}</label>`).join('\n          ')}\n        </div>\n      </div>`:'';
+  const code=`<!-- Form Konsultasi ISO — arafarnusa.com -->
+<style>
+.arfiso-form{font-family:"Trebuchet MS",sans-serif;max-width:560px;padding:28px;background:#F0EDE6;border-radius:6px;}
+.arfiso-form h2{font-family:Georgia,serif;font-size:1.2rem;font-weight:normal;margin-bottom:8px;}
+.arfiso-form p{font-size:.83rem;color:#5A5048;margin-bottom:16px;line-height:1.5;}
+.arfiso-magnet{background:#FFF8F0;border:1px solid ${color};border-radius:3px;padding:10px 14px;margin-bottom:16px;font-size:.8rem;color:${color};}
+.arfiso-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.arfiso-field{display:flex;flex-direction:column;gap:4px;margin-bottom:2px;}
+.arfiso-field label{font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:#8A7E72;}
+.arfiso-field input,.arfiso-field select,.arfiso-field textarea{border:1px solid #C8BFB0;border-radius:3px;padding:7px;font-size:.83rem;background:#fff;font-family:inherit;}
+.arfiso-field textarea{height:80px;resize:vertical;}
+.arfiso-checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.arfiso-checks label{display:flex;align-items:center;gap:4px;font-size:.79rem;}
+.arfiso-btn{margin-top:14px;background:${color};color:#fff;border:none;border-radius:3px;padding:10px 24px;font-size:.88rem;cursor:pointer;width:100%;}
+.arfiso-success{display:none;background:#E8F5EE;border:1px solid #2D7A4F;border-radius:3px;padding:12px;text-align:center;color:#2D7A4F;font-size:.85rem;}
+@media(max-width:480px){.arfiso-grid{grid-template-columns:1fr;}}
+</style>
+
+<div class="arfiso-form">
+  <h2>${title}</h2>
+  ${desc?`<p>${desc}</p>`:''}${magnet?`\n  <div class="arfiso-magnet">🎁 Dapatkan gratis: <strong>${magnet}</strong></div>`:''}
+  <form id="arafiso-form">
+    <div class="arfiso-grid">${fields.nama?`\n      <div class="arfiso-field"><label>Nama Lengkap *</label><input type="text" name="nama" required></div>`:''}${fields.perusahaan?`\n      <div class="arfiso-field"><label>Perusahaan *</label><input type="text" name="perusahaan" required></div>`:''}${fields.email?`\n      <div class="arfiso-field"><label>Email *</label><input type="email" name="email" required></div>`:''}${fields.telp?`\n      <div class="arfiso-field"><label>WhatsApp</label><input type="tel" name="telp"></div>`:''}${fields.negara?`\n      <div class="arfiso-field"><label>Negara / Kota</label><input type="text" name="negara"></div>`:''}${fields.ukuran?`\n      <div class="arfiso-field"><label>Ukuran Perusahaan</label><select name="ukuran"><option value="">—</option><option value="enterprise">Enterprise (&gt;500)</option><option value="medium">Medium (50-500)</option><option value="small">UKM (&lt;50)</option></select></div>`:''}
+    </div>${standarFields}${fields.pesan?`\n    <div class="arfiso-field" style="margin-top:10px"><label>Pesan / Kebutuhan</label><textarea name="pesan"></textarea></div>`:''}
+    <button type="submit" class="arfiso-btn">${magnet?'Download Gratis + Kirim':'Kirim Pesan'}</button>
+  </form>
+  <div class="arfiso-success" id="arfiso-success">✓ Terima kasih! Kami akan menghubungi Anda dalam 24 jam.${magnet?'\nLink download akan dikirim ke email Anda.':''}</div>
+</div>
+
+<script>
+document.getElementById('arafiso-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(this).entries());
+  data.standar = [...this.querySelectorAll('[name="standar[]"]:checked')].map(el=>el.value);
+  data.sumber = 'Form Website';
+  data.leadMagnet = '${magnet}';
+  try{
+    await fetch('${webhook||'WEBHOOK_URL_DISINI'}', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+  }catch(_){}
+  this.style.display='none';
+  document.getElementById('arfiso-success').style.display='block';
+});
+<\/script>`;
+  document.getElementById('formCode').textContent=code;
+}
+
+function copyFormCode(){
+  const code=document.getElementById('formCode').textContent;
+  navigator.clipboard?.writeText(code).then(()=>showToast('HTML form disalin ke clipboard ✓')).catch(()=>showToast('Tidak bisa copy — seleksi manual'));
+}
+
+// ─── REFRESH ─────────────────────────────────────────────────────────────────
+async function refreshLeads(){
+  const cfg=loadLeadConfig();
+  if(!cfg.receive){showToast('Webhook inbound belum dikonfigurasi');return;}
+  showToast('Mengambil leads dari n8n…');
+  try{
+    const res=await fetch(cfg.receive);
+    const json=await res.json();
+    if(Array.isArray(json)&&json.length){
+      const existing=loadLeads();
+      const newOnes=json.filter(j=>!existing.some(e=>e.email===j.email&&e.perusahaan===j.perusahaan));
+      if(newOnes.length){
+        const maxId=existing.reduce((m,d)=>Math.max(m,d.id||0),0);
+        const merged=[...existing,...newOnes.map((j,i)=>({id:maxId+i+1,...j,tanggal:j.tanggal||new Date().toISOString().slice(0,10)}))];
+        saveLeads(merged);renderLeads();updateStats();renderScoringDetail();
+        showToast(`${newOnes.length} lead baru dari n8n ✓`);
+      } else showToast('Tidak ada lead baru');
+    }
+  } catch(_){ showToast('Gagal sync dari n8n'); }
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function switchTab(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const tabs=['leads','scoring','magnets','form','config'];
+  document.querySelectorAll('.tab-btn')[tabs.indexOf(id)]?.classList.add('active');
+  if(id==='scoring') renderScoringDetail();
+  if(id==='form') updateFormPreview();
+}
+
+// ─── UTILITIES ───────────────────────────────────────────────────────────────
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+let toastT;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200);}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+(function init(){
+  renderLeads();
+  updateStats();
+  renderMagnets();
+  loadLeadConfigUI();
+  updateFormPreview();
+})();
+</script>
+</body>
+</html>
