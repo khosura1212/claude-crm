@@ -389,9 +389,6 @@ select.filter-sel:focus { outline: 2px solid var(--accent); outline-offset: -1px
       </div>
     </div>
 
-    <div class="sidebar-foot">
-      <button class="btn-theme" onclick="toggleTheme()">Ganti Tema</button>
-    </div>
   </aside>
 
   <!-- Main -->
@@ -515,8 +512,6 @@ function toast(msg) {
 function init() {
   try { const s=localStorage.getItem('iso-prospects-v1'); if(s) state.prospects=JSON.parse(s); } catch(e){}
   if (!state.prospects.length) state.prospects = SEED.map(p=>({...p}));
-  const t = localStorage.getItem('iso-theme');
-  if (t) document.documentElement.setAttribute('data-theme', t);
   renderAll();
   buildFilters();
 }
@@ -712,16 +707,6 @@ function submitModal() {
   });
   closeModal(); persist(); buildFilters(); renderAll(); selectProspect(id);
   toast('Prospek ditambahkan');
-}
-
-/* ── Theme ────────────────────────────────────────── */
-function toggleTheme() {
-  const root=document.documentElement;
-  const cur=root.getAttribute('data-theme');
-  const isDark=cur==='dark'||(cur===null&&window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const next=isDark?'light':'dark';
-  root.setAttribute('data-theme',next);
-  try{localStorage.setItem('iso-theme',next);}catch(e){}
 }
 
 /* ── Keyboard ─────────────────────────────────────── */
