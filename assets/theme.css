@@ -10,22 +10,22 @@
 
 /* ---- 1. Design tokens --------------------------------------------------- */
 :root{
-  --bg:#F7F5F0;
-  --surface:#FFFFFF;
-  --surface-2:#F1EDE4;
-  --surface-hover:#FBFAF6;
-  --surface-hi:#FFFFFF;
-  --border:#E3DDCF;
-  --border-s:#D6CDB8;
-  --border-strong:#CFC4AC;
+  --bg:#DFF1FC;
+  --surface:#F6FBFE;
+  --surface-2:#CFE9F9;
+  --surface-hover:#EAF6FD;
+  --surface-hi:#FBFEFF;
+  --border:#A9D9F5;
+  --border-s:#8AC9EE;
+  --border-strong:#5FB0E0;
 
-  --text:#221A10;
-  --text-2:#5B5142;
-  --text-3:#8B806C;
+  --text:#0D2B3D;
+  --text-2:#3C5D72;
+  --text-3:#6D8CA0;
 
   --accent:#0EA5E9;
   --accent-hover:#0284C7;
-  --accent-dim:rgba(14,165,233,.12);
+  --accent-dim:rgba(14,165,233,.16);
   --accent-2:#0369A1;
 
   --green:#1E7A50;      --green-dim:rgba(30,122,80,.11);
@@ -35,12 +35,12 @@
   --purple:#6B3C9C;     --purple-dim:rgba(107,60,156,.11);
   --teal:#177A73;       --teal-dim:rgba(23,122,115,.11);
 
-  --shadow-xs:0 1px 2px rgba(30,22,10,.05);
-  --shadow-sm:0 1px 2px rgba(30,22,10,.04),0 3px 8px rgba(30,22,10,.06);
-  --shadow-md:0 2px 6px rgba(30,22,10,.05),0 10px 24px rgba(30,22,10,.08);
-  --shadow-lg:0 8px 16px rgba(30,22,10,.06),0 24px 48px rgba(30,22,10,.14);
+  --shadow-xs:0 1px 2px rgba(9,42,66,.08);
+  --shadow-sm:0 1px 2px rgba(9,42,66,.07),0 3px 8px rgba(9,42,66,.10);
+  --shadow-md:0 2px 6px rgba(9,42,66,.08),0 10px 24px rgba(9,42,66,.13);
+  --shadow-lg:0 8px 16px rgba(9,42,66,.10),0 24px 48px rgba(9,42,66,.20);
   --shadow-focus:0 0 0 3px var(--accent-dim);
-  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.5);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.6);
 
   --r-sm:6px; --r:10px; --r-lg:14px; --r-xl:18px; --r-full:999px;
   --r-2:10px; /* alias used by a couple of pages that already define --r */
@@ -61,21 +61,21 @@
    palette, so OS/browser dark preference can never change the app's
    appearance. */
 @media(prefers-color-scheme:dark){:root{
-  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EDE4; --surface-hover:#FBFAF6; --surface-hi:#FFFFFF;
-  --border:#E3DDCF; --border-s:#D6CDB8; --border-strong:#CFC4AC;
-  --text:#221A10; --text-2:#5B5142; --text-3:#8B806C;
-  --accent:#0EA5E9; --accent-hover:#0284C7; --accent-dim:rgba(14,165,233,.12); --accent-2:#0369A1;
+  --bg:#DFF1FC; --surface:#F6FBFE; --surface-2:#CFE9F9; --surface-hover:#EAF6FD; --surface-hi:#FBFEFF;
+  --border:#A9D9F5; --border-s:#8AC9EE; --border-strong:#5FB0E0;
+  --text:#0D2B3D; --text-2:#3C5D72; --text-3:#6D8CA0;
+  --accent:#0EA5E9; --accent-hover:#0284C7; --accent-dim:rgba(14,165,233,.16); --accent-2:#0369A1;
   --green:#1E7A50;   --green-dim:rgba(30,122,80,.11);
   --blue:#1B5F8F;    --blue-dim:rgba(27,95,143,.11);
   --orange:#AD720F;  --orange-dim:rgba(173,114,15,.12);
   --red:#B0332B;     --red-dim:rgba(176,51,43,.11);
   --purple:#6B3C9C;  --purple-dim:rgba(107,60,156,.11);
   --teal:#177A73;    --teal-dim:rgba(23,122,115,.11);
-  --shadow-xs:0 1px 2px rgba(30,22,10,.05);
-  --shadow-sm:0 1px 2px rgba(30,22,10,.04),0 3px 8px rgba(30,22,10,.06);
-  --shadow-md:0 2px 6px rgba(30,22,10,.05),0 10px 24px rgba(30,22,10,.08);
-  --shadow-lg:0 8px 16px rgba(30,22,10,.06),0 24px 48px rgba(30,22,10,.14);
-  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.5);
+  --shadow-xs:0 1px 2px rgba(9,42,66,.08);
+  --shadow-sm:0 1px 2px rgba(9,42,66,.07),0 3px 8px rgba(9,42,66,.10);
+  --shadow-md:0 2px 6px rgba(9,42,66,.08),0 10px 24px rgba(9,42,66,.13);
+  --shadow-lg:0 8px 16px rgba(9,42,66,.10),0 24px 48px rgba(9,42,66,.20);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.6);
   color-scheme:light;
 }}
 /* Manual dark toggle intentionally disabled. Kept only so any leftover
@@ -83,35 +83,35 @@
    a returning visitor's cached localStorage value) still resolves to the
    light palette instead of a stale dark one. */
 :root[data-theme="dark"]{
-  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EDE4; --surface-hover:#FBFAF6; --surface-hi:#FFFFFF;
-  --border:#E3DDCF; --border-s:#D6CDB8; --border-strong:#CFC4AC;
-  --text:#221A10; --text-2:#5B5142; --text-3:#8B806C;
-  --accent:#0EA5E9; --accent-hover:#0284C7; --accent-dim:rgba(14,165,233,.12); --accent-2:#0369A1;
+  --bg:#DFF1FC; --surface:#F6FBFE; --surface-2:#CFE9F9; --surface-hover:#EAF6FD; --surface-hi:#FBFEFF;
+  --border:#A9D9F5; --border-s:#8AC9EE; --border-strong:#5FB0E0;
+  --text:#0D2B3D; --text-2:#3C5D72; --text-3:#6D8CA0;
+  --accent:#0EA5E9; --accent-hover:#0284C7; --accent-dim:rgba(14,165,233,.16); --accent-2:#0369A1;
   --green:#1E7A50;   --green-dim:rgba(30,122,80,.11);
   --blue:#1B5F8F;    --blue-dim:rgba(27,95,143,.11);
   --orange:#AD720F;  --orange-dim:rgba(173,114,15,.12);
   --red:#B0332B;     --red-dim:rgba(176,51,43,.11);
   --purple:#6B3C9C;  --purple-dim:rgba(107,60,156,.11);
   --teal:#177A73;    --teal-dim:rgba(23,122,115,.11);
-  --shadow-xs:0 1px 2px rgba(30,22,10,.05);
-  --shadow-sm:0 1px 2px rgba(30,22,10,.04),0 3px 8px rgba(30,22,10,.06);
-  --shadow-md:0 2px 6px rgba(30,22,10,.05),0 10px 24px rgba(30,22,10,.08);
-  --shadow-lg:0 8px 16px rgba(30,22,10,.06),0 24px 48px rgba(30,22,10,.14);
-  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.5);
+  --shadow-xs:0 1px 2px rgba(9,42,66,.08);
+  --shadow-sm:0 1px 2px rgba(9,42,66,.07),0 3px 8px rgba(9,42,66,.10);
+  --shadow-md:0 2px 6px rgba(9,42,66,.08),0 10px 24px rgba(9,42,66,.13);
+  --shadow-lg:0 8px 16px rgba(9,42,66,.10),0 24px 48px rgba(9,42,66,.20);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.6);
   color-scheme:light;
 }
 :root[data-theme="light"]{
-  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EDE4; --surface-hover:#FBFAF6; --surface-hi:#FFFFFF;
-  --border:#E3DDCF; --border-s:#D6CDB8; --border-strong:#CFC4AC;
-  --text:#221A10; --text-2:#5B5142; --text-3:#8B806C;
-  --accent:#0EA5E9; --accent-hover:#0284C7; --accent-dim:rgba(14,165,233,.12); --accent-2:#0369A1;
+  --bg:#DFF1FC; --surface:#F6FBFE; --surface-2:#CFE9F9; --surface-hover:#EAF6FD; --surface-hi:#FBFEFF;
+  --border:#A9D9F5; --border-s:#8AC9EE; --border-strong:#5FB0E0;
+  --text:#0D2B3D; --text-2:#3C5D72; --text-3:#6D8CA0;
+  --accent:#0EA5E9; --accent-hover:#0284C7; --accent-dim:rgba(14,165,233,.16); --accent-2:#0369A1;
   --green:#1E7A50; --green-dim:rgba(30,122,80,.11);
   --blue:#1B5F8F; --blue-dim:rgba(27,95,143,.11);
   --orange:#AD720F; --orange-dim:rgba(173,114,15,.12);
   --red:#B0332B; --red-dim:rgba(176,51,43,.11);
   --purple:#6B3C9C; --purple-dim:rgba(107,60,156,.11);
   --teal:#177A73; --teal-dim:rgba(23,122,115,.11);
-  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.5);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.6);
   color-scheme:light;
 }
 
@@ -238,7 +238,7 @@ html.crm-has-shell body>.header{
 .app-icon-btn:hover{border-color:var(--accent);color:var(--accent);}
 .app-icon-btn:active{transform:scale(.94);}
 .app-overlay{
-  position:fixed;inset:0;background:rgba(10,8,4,.45);z-index:55;opacity:0;pointer-events:none;
+  position:fixed;inset:0;background:rgba(6,20,32,.45);z-index:55;opacity:0;pointer-events:none;
   transition:opacity .2s ease;
 }
 .app-overlay.show{opacity:1;pointer-events:auto;}
@@ -444,7 +444,7 @@ input::placeholder,textarea::placeholder{color:var(--text-3);opacity:.8;}
 }
 
 /* ---- 13. Modals ------------------------------------------------------------ */
-.modal-overlay,.modal-bg{background:rgba(10,8,4,.5) !important;backdrop-filter:blur(3px);}
+.modal-overlay,.modal-bg{background:rgba(6,20,32,.5) !important;backdrop-filter:blur(3px);}
 .modal{
   border-radius:var(--r-lg) !important;
   border:1px solid var(--border) !important;
