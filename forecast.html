@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Revenue Intelligence — CRM ISO</title>
+<style>
+:root{
+  --bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CC;--border:#C8BFB0;
+  --text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;
+  --accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);
+  --green:#2D6A3F;--green-dim:rgba(45,106,63,.12);
+  --blue:#1A4F7A;--blue-dim:rgba(26,79,122,.12);
+  --orange:#B86A1E;--orange-dim:rgba(184,106,30,.12);
+  --red:#8A1E2A;--red-dim:rgba(138,30,42,.1);
+  --purple:#5A1A7A;--purple-dim:rgba(90,26,122,.1);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0F1820;--surface:#182230;--surface-2:#1F2D40;--border:#2A3A4A;
+  --text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;
+  --accent:#D06528;--accent-dim:rgba(208,101,40,.15);
+  --green:#3A9068;--green-dim:rgba(58,144,104,.15);
+  --blue:#3A80B8;--blue-dim:rgba(58,128,184,.15);
+  --orange:#C08030;--orange-dim:rgba(192,128,48,.15);
+  --red:#C04050;--red-dim:rgba(192,64,80,.12);
+  --purple:#8A50CC;--purple-dim:rgba(138,80,204,.12);
+}}
+:root[data-theme=light]{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CC;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D6A3F;--green-dim:rgba(45,106,63,.12);--blue:#1A4F7A;--blue-dim:rgba(26,79,122,.12);--orange:#B86A1E;--orange-dim:rgba(184,106,30,.12);}
+:root[data-theme=dark]{--bg:#0F1820;--surface:#182230;--surface-2:#1F2D40;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3A9068;--green-dim:rgba(58,144,104,.15);--blue:#3A80B8;--blue-dim:rgba(58,128,184,.15);--orange:#C08030;--orange-dim:rgba(192,128,48,.15);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+
+.header{padding:24px 32px 16px;border-bottom:3px solid var(--accent);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.header-back{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);padding:5px 10px;border:1px solid var(--border);border-radius:2px;transition:border-color .15s,color .15s;}
+.header-back:hover{border-color:var(--accent);color:var(--accent);}
+.header-main{flex:1;}
+.header-title{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.3rem;font-weight:normal;}
+.header-sub{font-size:.72rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;}
+
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 32px;overflow-x:auto;}
+.tab{padding:12px 18px;font-size:.78rem;letter-spacing:.04em;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s,border-color .15s;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:hover:not(.active){color:var(--text-2);}
+
+.content{flex:1;padding:24px 32px;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:14px 16px;}
+.kpi-label{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;}
+.kpi-value{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.5rem;color:var(--text);}
+.kpi-sub{font-size:.7rem;color:var(--text-2);margin-top:3px;}
+.kpi.accent{border-left:3px solid var(--accent);}
+.kpi.green{border-left:3px solid var(--green);}
+.kpi.blue{border-left:3px solid var(--blue);}
+.kpi.orange{border-left:3px solid var(--orange);}
+
+/* Scenario selector */
+.scenario-bar{display:flex;gap:8px;margin-bottom:20px;align-items:center;}
+.scenario-btn{font-size:.74rem;padding:6px 14px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text-2);cursor:pointer;font-family:inherit;transition:all .15s;}
+.scenario-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.scenario-label{font-size:.72rem;color:var(--text-3);margin-left:8px;}
+
+/* Forecast chart */
+.fc-wrap{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:20px;margin-bottom:20px;overflow-x:auto;}
+.fc-title{font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);margin-bottom:16px;}
+.fc-chart{display:flex;align-items:flex-end;gap:6px;height:180px;min-width:580px;}
+.fc-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.fc-bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%;}
+.fc-bar{width:100%;border-radius:2px 2px 0 0;transition:height .3s;min-height:3px;position:relative;}
+.fc-bar:hover::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:.63rem;padding:3px 7px;border-radius:2px;white-space:nowrap;margin-bottom:4px;pointer-events:none;}
+.fc-month{font-size:.62rem;color:var(--text-3);text-align:center;margin-top:4px;}
+.fc-val{font-size:.62rem;color:var(--text-2);text-align:center;}
+
+/* Pipeline table */
+.pipe-table{width:100%;border-collapse:collapse;font-size:.78rem;margin-bottom:16px;}
+.pipe-table th{text-align:left;padding:7px 10px;font-size:.63rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);background:var(--surface);border-bottom:1px solid var(--border);font-weight:normal;}
+.pipe-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:middle;}
+.pipe-table td:first-child{color:var(--text);}
+.pipe-table tr:last-child td{border-bottom:none;}
+.pipe-table tr:hover td{background:var(--surface);}
+.prob-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;}
+
+/* MRR section */
+.mrr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:24px;}
+.mrr-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:16px;}
+.mrr-client{font-size:.85rem;color:var(--text);margin-bottom:4px;}
+.mrr-std{font-size:.7rem;color:var(--text-3);margin-bottom:8px;}
+.mrr-row{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-2);margin-bottom:4px;}
+.mrr-row strong{color:var(--text);}
+.expiry-ok{color:var(--green);}
+.expiry-warn{color:var(--orange);}
+.expiry-late{color:var(--red);}
+
+/* Goals */
+.goal-list{display:flex;flex-direction:column;gap:12px;}
+.goal-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:16px 18px;}
+.goal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.goal-name{font-size:.88rem;color:var(--text);}
+.goal-pct{font-size:.78rem;color:var(--accent);font-weight:bold;}
+.goal-bar-track{background:var(--surface-2);height:8px;border-radius:2px;overflow:hidden;margin-bottom:6px;}
+.goal-bar-fill{height:100%;border-radius:2px;transition:width .4s;}
+.goal-meta{display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-3);}
+
+/* Btn */
+.btn{font-size:.74rem;padding:6px 14px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text-2);cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn-primary:hover{background:var(--orange);border-color:var(--orange);color:#fff;}
+
+/* Goal modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:24px;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:24px;max-width:440px;width:100%;}
+.modal h2{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1rem;font-weight:normal;margin-bottom:16px;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.fg label{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);}
+.fg input,.fg select{font-size:.8rem;padding:7px 10px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text);font-family:inherit;outline:none;}
+.fg input:focus{border-color:var(--accent);}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+
+@media(max-width:640px){
+  .header{padding:16px 18px 12px;}
+  .content{padding:16px 18px;}
+  .tabs{padding:0 18px;}
+  .kpi-row{grid-template-columns:1fr 1fr;}
+  .mrr-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <a class="header-back" href="index.html">← CRM</a>
+  <div class="header-main">
+    <div class="header-title">Revenue Intelligence</div>
+    <div class="header-sub">MOD-17 · Forecast 12 Bulan · MRR · Goal Tracker</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('forecast')">Forecast 12 Bulan</div>
+  <div class="tab" onclick="switchTab('mrr')">MRR / ARR Klien</div>
+  <div class="tab" onclick="switchTab('goals')">Goal Tracker</div>
+</div>
+
+<div class="content">
+
+<!-- FORECAST -->
+<div class="panel active" id="tab-forecast">
+  <div class="kpi-row" id="kpi-row"></div>
+  <div class="scenario-bar">
+    <button class="scenario-btn active" onclick="setScenario('base',this)">Base</button>
+    <button class="scenario-btn" onclick="setScenario('bull',this)">Optimis (+30%)</button>
+    <button class="scenario-btn" onclick="setScenario('bear',this)">Konservatif (−30%)</button>
+    <span class="scenario-label">Skenario berbasis pipeline weighted conversion</span>
+  </div>
+  <div class="fc-wrap">
+    <div class="fc-title">Proyeksi Revenue 12 Bulan ke Depan (IDR Juta)</div>
+    <div class="fc-chart" id="fc-chart"></div>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="pipe-table" id="pipe-table">
+      <thead><tr>
+        <th>Nama / Perusahaan</th><th>Standar ISO</th><th>Nilai Est.</th>
+        <th>Tahap</th><th>Win Rate</th><th>Weighted</th><th>Est. Close</th>
+      </tr></thead>
+      <tbody id="pipe-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MRR -->
+<div class="panel" id="tab-mrr">
+  <div class="kpi-row" id="mrr-kpis"></div>
+  <div class="mrr-grid" id="mrr-grid"></div>
+</div>
+
+<!-- GOALS -->
+<div class="panel" id="tab-goals">
+  <div style="display:flex;gap:10px;margin-bottom:20px;">
+    <button class="btn btn-primary" onclick="openGoalModal()">+ Tambah Goal</button>
+  </div>
+  <div class="goal-list" id="goal-list"></div>
+</div>
+
+</div>
+
+<div class="modal-bg" id="goal-modal" onclick="closeGoalModal(event)">
+  <div class="modal">
+    <h2>Tambah Revenue Goal</h2>
+    <div class="fg"><label>Nama Goal</label><input id="gf-name" placeholder="Target Revenue Q3 2026"/></div>
+    <div class="fg"><label>Target (IDR Juta)</label><input id="gf-target" type="number" placeholder="500"/></div>
+    <div class="fg"><label>Aktual Saat Ini (IDR Juta)</label><input id="gf-actual" type="number" placeholder="180"/></div>
+    <div class="fg"><label>Deadline</label><input id="gf-deadline" type="date"/></div>
+    <div class="fg"><label>Warna</label>
+      <select id="gf-color">
+        <option value="var(--accent)">Oranye (default)</option>
+        <option value="var(--green)">Hijau</option>
+        <option value="var(--blue)">Biru</option>
+        <option value="var(--purple)">Ungu</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeGoalModal()">Batal</button>
+      <button class="btn btn-primary" onclick="saveGoal()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STAGES = {BARU:0.1, DIHUBUNGI:0.2, KUALIFIKASI:0.35, PROPOSAL:0.55, KONVERSI:1, DITOLAK:0};
+const ISO_VALUE = {'ISO 9001':45,'ISO 14001':50,'ISO 45001':55,'ISO 27001':80,'ISO 37001':70,'ISO 22000':60,'ISO 17021-1':120};
+
+let scenario = 'base';
+let goals = [];
+
+function loadGoals(){ goals = JSON.parse(localStorage.getItem('crm_forecast_goals')||'[]'); }
+function saveGoals(){ localStorage.setItem('crm_forecast_goals', JSON.stringify(goals)); }
+
+function getLeads(){
+  const raw = localStorage.getItem('crm_leads_v2');
+  if(!raw) return seedLeads();
+  return JSON.parse(raw);
+}
+function getClients(){ return JSON.parse(localStorage.getItem('crm_clients')||'[]'); }
+
+function seedLeads(){
+  return [
+    {nama:'PT Maju Bersama',standar:'ISO 9001',negara:'Indonesia',tahap:'PROPOSAL',nilai:45},
+    {nama:'CV Teknindo',standar:'ISO 14001',negara:'Indonesia',tahap:'KUALIFIKASI',nilai:50},
+    {nama:'Al-Fajr Trading',standar:'ISO 45001',negara:'UAE',tahap:'PROPOSAL',nilai:70},
+    {nama:'Green Build Co',standar:'ISO 27001',negara:'Malaysia',tahap:'DIHUBUNGI',nilai:90},
+    {nama:'PT Pangan Jaya',standar:'ISO 22000',negara:'Indonesia',tahap:'KONVERSI',nilai:65},
+    {nama:'Rizq Manufacturing',standar:'ISO 9001',negara:'Arab Saudi',tahap:'KUALIFIKASI',nilai:55},
+    {nama:'Pacific Foods',standar:'ISO 22000',negara:'Filipina',tahap:'BARU',nilai:60},
+    {nama:'PT Adhika Konstruksi',standar:'ISO 45001',negara:'Indonesia',tahap:'DIHUBUNGI',nilai:55},
+  ];
+}
+
+function estimateClose(lead, monthIdx){
+  const speedMap = {KONVERSI:0, PROPOSAL:1, KUALIFIKASI:2, DIHUBUNGI:3, BARU:4};
+  return (speedMap[lead.tahap]||3) === monthIdx;
+}
+
+function scenarioMult(){ return {base:1, bull:1.3, bear:0.7}[scenario]||1; }
+
+function buildMonthlyForecast(leads){
+  const now = new Date(); const months = [];
+  for(let i=0;i<12;i++){
+    const d = new Date(now.getFullYear(), now.getMonth()+i, 1);
+    months.push({label:d.toLocaleString('id',{month:'short',year:'2-digit'}), value:0});
+  }
+  leads.filter(l=>l.tahap!=='DITOLAK').forEach(l=>{
+    const prob = STAGES[l.tahap]||0;
+    const val = (l.nilai||estimateValue(l)) * prob * scenarioMult();
+    const mIdx = {KONVERSI:0,PROPOSAL:1,KUALIFIKASI:2,DIHUBUNGI:3,BARU:4}[l.tahap]||3;
+    if(mIdx<12) months[mIdx].value += val;
+  });
+  // Add recurring from clients
+  const clients = getClients();
+  clients.forEach(c=>{
+    const survVal = 15; // surveillance IDR juta
+    for(let i=0;i<12;i+=12){ if(i<12) months[Math.min(i,11)].value += survVal * scenarioMult(); }
+  });
+  return months;
+}
+
+function estimateValue(lead){
+  return ISO_VALUE[lead.standar]||45;
+}
+
+function renderForecast(){
+  const leads = getLeads();
+  const months = buildMonthlyForecast(leads);
+  const total = months.reduce((s,m)=>s+m.value,0);
+  const pipeline = leads.filter(l=>!['DITOLAK','KONVERSI'].includes(l.tahap));
+  const weighted = pipeline.reduce((s,l)=>s+(l.nilai||estimateValue(l))*(STAGES[l.tahap]||0)*scenarioMult(),0);
+  const won = leads.filter(l=>l.tahap==='KONVERSI').reduce((s,l)=>s+(l.nilai||estimateValue(l)),0);
+
+  document.getElementById('kpi-row').innerHTML = `
+    <div class="kpi accent"><div class="kpi-label">Total Forecast 12 Bln</div><div class="kpi-value">IDR ${fmt(total)}jt</div><div class="kpi-sub">Skenario: ${scenario}</div></div>
+    <div class="kpi green"><div class="kpi-label">Weighted Pipeline</div><div class="kpi-value">IDR ${fmt(weighted)}jt</div><div class="kpi-sub">${pipeline.length} deals aktif</div></div>
+    <div class="kpi blue"><div class="kpi-label">Won YTD</div><div class="kpi-value">IDR ${fmt(won)}jt</div><div class="kpi-sub">${leads.filter(l=>l.tahap==='KONVERSI').length} klien</div></div>
+    <div class="kpi orange"><div class="kpi-label">Avg Deal Size</div><div class="kpi-value">IDR ${pipeline.length?fmt(weighted/pipeline.length):0}jt</div><div class="kpi-sub">Weighted avg</div></div>
+  `;
+
+  const max = Math.max(...months.map(m=>m.value),1);
+  document.getElementById('fc-chart').innerHTML = months.map(m=>{
+    const h = Math.max(4, Math.round((m.value/max)*160));
+    const color = m.value>0?'var(--accent)':'var(--surface-2)';
+    return `<div class="fc-col">
+      <div class="fc-bar-wrap"><div class="fc-bar" style="height:${h}px;background:${color};" data-tip="IDR ${fmt(m.value)}jt"></div></div>
+      <div class="fc-val">${m.value>0?fmt(m.value):'—'}</div>
+      <div class="fc-month">${m.label}</div>
+    </div>`;
+  }).join('');
+
+  const stageColor = {KONVERSI:'var(--green)',PROPOSAL:'var(--blue)',KUALIFIKASI:'var(--orange)',DIHUBUNGI:'var(--text-3)',BARU:'var(--border)',DITOLAK:'var(--red)'};
+  document.getElementById('pipe-body').innerHTML = leads.map(l=>{
+    const prob = STAGES[l.tahap]||0;
+    const val = l.nilai||estimateValue(l);
+    const weighted2 = val*prob*scenarioMult();
+    return `<tr>
+      <td>${esc(l.nama||l.perusahaan||'—')}</td>
+      <td>${esc(l.standar||'—')}</td>
+      <td>IDR ${val}jt</td>
+      <td><span class="prob-dot" style="background:${stageColor[l.tahap]||'var(--border)'}"></span>${l.tahap}</td>
+      <td>${Math.round(prob*100)}%</td>
+      <td><strong>IDR ${fmt(weighted2)}jt</strong></td>
+      <td>${{KONVERSI:'Closed',PROPOSAL:'1–2 bln',KUALIFIKASI:'2–3 bln',DIHUBUNGI:'3–4 bln',BARU:'4+ bln',DITOLAK:'—'}[l.tahap]||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function setScenario(s, btn){
+  scenario = s;
+  document.querySelectorAll('.scenario-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderForecast();
+}
+
+// ── MRR ─────────────────────────────────────────────────
+function renderMRR(){
+  const clients = getClients();
+  const seedC = clients.length ? clients : [
+    {nama:'PT Maju Bersama',standar:'ISO 9001',expiry:'2027-03-15',survFee:15,certFee:45},
+    {nama:'CV Delta Utama',standar:'ISO 14001',expiry:'2026-11-20',survFee:18,certFee:50},
+    {nama:'PT Cipta Karya',standar:'ISO 45001',expiry:'2027-06-01',survFee:20,certFee:55},
+  ];
+
+  const totalSurv = seedC.reduce((s,c)=>s+(c.survFee||15),0);
+  const totalCert = seedC.reduce((s,c)=>s+(c.certFee||45),0);
+  const arr = totalCert + totalSurv;
+
+  document.getElementById('mrr-kpis').innerHTML = `
+    <div class="kpi green"><div class="kpi-label">ARR (Annual)</div><div class="kpi-value">IDR ${fmt(arr)}jt</div><div class="kpi-sub">${seedC.length} klien aktif</div></div>
+    <div class="kpi blue"><div class="kpi-label">Surveillance/Thn</div><div class="kpi-value">IDR ${fmt(totalSurv)}jt</div><div class="kpi-sub">Renewal tahunan</div></div>
+    <div class="kpi accent"><div class="kpi-label">Recertification/3Thn</div><div class="kpi-value">IDR ${fmt(totalCert)}jt</div><div class="kpi-sub">Per 3 tahun</div></div>
+    <div class="kpi orange"><div class="kpi-label">Avg per Klien</div><div class="kpi-value">IDR ${seedC.length?fmt(arr/seedC.length):0}jt</div><div class="kpi-sub">ARR rata-rata</div></div>
+  `;
+
+  const today = new Date();
+  document.getElementById('mrr-grid').innerHTML = seedC.map(c=>{
+    const exp = c.expiry ? new Date(c.expiry) : null;
+    const dd = exp ? Math.ceil((exp-today)/86400000) : null;
+    const cls = dd===null?'':dd<0?'expiry-late':dd<90?'expiry-warn':'expiry-ok';
+    const expLabel = dd===null?'—':dd<0?`Expired ${Math.abs(dd)} hari lalu`:dd===0?'Hari ini':dd<90?`${dd} hari lagi`:`${dd} hari lagi`;
+    return `<div class="mrr-card">
+      <div class="mrr-client">${esc(c.nama||'—')}</div>
+      <div class="mrr-std">${esc(c.standar||'—')}</div>
+      <div class="mrr-row"><span>Surveillance/thn</span><strong>IDR ${c.survFee||15}jt</strong></div>
+      <div class="mrr-row"><span>Recertification</span><strong>IDR ${c.certFee||45}jt</strong></div>
+      <div class="mrr-row"><span>Expiry</span><strong class="${cls}">${expLabel}</strong></div>
+    </div>`;
+  }).join('');
+}
+
+// ── GOALS ────────────────────────────────────────────────
+function renderGoals(){
+  loadGoals();
+  if(!goals.length){
+    document.getElementById('goal-list').innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-3);">
+      <div style="font-size:1.8rem;margin-bottom:12px;">🎯</div>
+      <p style="font-size:.82rem;">Belum ada goal. Klik <strong>+ Tambah Goal</strong> untuk menetapkan target revenue.</p>
+    </div>`;
+    return;
+  }
+  document.getElementById('goal-list').innerHTML = goals.map((g,i)=>{
+    const pct = Math.min(100, Math.round((g.actual/g.target)*100));
+    const daysLeft = g.deadline ? Math.ceil((new Date(g.deadline)-new Date())/86400000) : null;
+    return `<div class="goal-card">
+      <div class="goal-head">
+        <div class="goal-name">${esc(g.name)}</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="goal-pct">${pct}%</span>
+          <button style="font-size:.65rem;padding:3px 7px;border:1px solid var(--border);border-radius:2px;background:none;color:var(--text-3);cursor:pointer;" onclick="deleteGoal(${i})">Hapus</button>
+        </div>
+      </div>
+      <div class="goal-bar-track"><div class="goal-bar-fill" style="width:${pct}%;background:${g.color||'var(--accent)'};"></div></div>
+      <div class="goal-meta">
+        <span>IDR ${g.actual}jt / IDR ${g.target}jt</span>
+        <span>${daysLeft!==null?(daysLeft<0?'Melewati deadline':daysLeft+' hari lagi'):'Tanpa deadline'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openGoalModal(){ document.getElementById('goal-modal').classList.add('open'); }
+function closeGoalModal(e){ if(!e||e.target===document.getElementById('goal-modal')) document.getElementById('goal-modal').classList.remove('open'); }
+function saveGoal(){
+  const name = document.getElementById('gf-name').value.trim();
+  if(!name) return alert('Nama goal wajib diisi.');
+  loadGoals();
+  goals.push({name, target:parseFloat(document.getElementById('gf-target').value)||100, actual:parseFloat(document.getElementById('gf-actual').value)||0, deadline:document.getElementById('gf-deadline').value, color:document.getElementById('gf-color').value});
+  saveGoals(); closeGoalModal(); renderGoals();
+}
+function deleteGoal(i){ loadGoals(); goals.splice(i,1); saveGoals(); renderGoals(); }
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>{ el.classList.toggle('active',['forecast','mrr','goals'][i]===t); });
+  document.querySelectorAll('.panel').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='mrr') renderMRR();
+  if(t==='goals') renderGoals();
+}
+
+function fmt(n){ return Math.round(n).toLocaleString('id'); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+renderForecast();
+loadGoals();
+</script>
+</body>
+</html>
