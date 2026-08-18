@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Lead Enrichment — CRM ISO</title>
+<style>
+:root{
+  --bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CC;--border:#C8BFB0;
+  --text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;
+  --accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);
+  --green:#2D6A3F;--green-dim:rgba(45,106,63,.12);
+  --blue:#1A4F7A;--blue-dim:rgba(26,79,122,.12);
+  --orange:#B86A1E;--orange-dim:rgba(184,106,30,.12);
+  --red:#8A1E2A;--red-dim:rgba(138,30,42,.1);
+  --purple:#5A1A7A;--purple-dim:rgba(90,26,122,.1);
+  --teal:#1A6A5A;--teal-dim:rgba(26,106,90,.1);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0F1820;--surface:#182230;--surface-2:#1F2D40;--border:#2A3A4A;
+  --text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;
+  --accent:#D06528;--accent-dim:rgba(208,101,40,.15);
+  --green:#3A9068;--green-dim:rgba(58,144,104,.15);
+  --blue:#3A80B8;--blue-dim:rgba(58,128,184,.15);
+  --orange:#C08030;--orange-dim:rgba(192,128,48,.15);
+  --red:#C04050;--red-dim:rgba(192,64,80,.12);
+  --purple:#8A50CC;--purple-dim:rgba(138,80,204,.12);
+  --teal:#3AA090;--teal-dim:rgba(58,160,144,.12);
+}}
+:root[data-theme=light]{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CC;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D6A3F;--green-dim:rgba(45,106,63,.12);--blue:#1A4F7A;--blue-dim:rgba(26,79,122,.12);--orange:#B86A1E;--orange-dim:rgba(184,106,30,.12);--red:#8A1E2A;--red-dim:rgba(138,30,42,.1);--purple:#5A1A7A;--purple-dim:rgba(90,26,122,.1);--teal:#1A6A5A;--teal-dim:rgba(26,106,90,.1);}
+:root[data-theme=dark]{--bg:#0F1820;--surface:#182230;--surface-2:#1F2D40;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3A9068;--green-dim:rgba(58,144,104,.15);--blue:#3A80B8;--blue-dim:rgba(58,128,184,.15);--orange:#C08030;--orange-dim:rgba(192,128,48,.15);--red:#C04050;--red-dim:rgba(192,64,80,.12);--purple:#8A50CC;--purple-dim:rgba(138,80,204,.12);--teal:#3AA090;--teal-dim:rgba(58,160,144,.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+.header{padding:24px 32px 16px;border-bottom:3px solid var(--accent);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.header-back{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);padding:5px 10px;border:1px solid var(--border);border-radius:2px;transition:border-color .15s,color .15s;}
+.header-back:hover{border-color:var(--accent);color:var(--accent);}
+.header-main{flex:1;}
+.header-title{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.3rem;font-weight:normal;}
+.header-sub{font-size:.72rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 32px;overflow-x:auto;}
+.tab{padding:12px 18px;font-size:.78rem;letter-spacing:.04em;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s,border-color .15s;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:hover:not(.active){color:var(--text-2);}
+.content{flex:1;padding:24px 32px;}
+.panel{display:none;}
+.panel.active{display:block;}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:14px 16px;}
+.kpi-label{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;}
+.kpi-value{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.5rem;color:var(--text);}
+.kpi-sub{font-size:.7rem;color:var(--text-2);margin-top:3px;}
+.kpi.accent{border-left:3px solid var(--accent);}
+.kpi.green{border-left:3px solid var(--green);}
+.kpi.blue{border-left:3px solid var(--blue);}
+.kpi.orange{border-left:3px solid var(--orange);}
+.kpi.red{border-left:3px solid var(--red);}
+.kpi.teal{border-left:3px solid var(--teal);}
+.section-title{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.btn{font-family:inherit;font-size:.75rem;padding:7px 14px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text-2);cursor:pointer;transition:all .15s;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn.primary:hover{opacity:.9;}
+.btn.danger{border-color:var(--red);color:var(--red);}
+.btn.danger:hover{background:var(--red-dim);}
+.btn.sm{font-size:.68rem;padding:4px 9px;}
+.btn.teal{background:var(--teal);border-color:var(--teal);color:#fff;}
+.btn.teal:hover{opacity:.9;}
+/* Lead queue */
+.queue-list{display:grid;gap:10px;}
+.queue-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.queue-card:hover{border-color:var(--accent);}
+.queue-info{flex:1;min-width:0;}
+.queue-company{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:.9rem;font-weight:normal;margin-bottom:3px;}
+.queue-meta{font-size:.7rem;color:var(--text-3);display:flex;gap:8px;flex-wrap:wrap;}
+.queue-completion{flex-shrink:0;text-align:right;}
+.completion-ring{width:48px;height:48px;position:relative;}
+.completion-ring svg{transform:rotate(-90deg);}
+.completion-ring circle{fill:none;stroke-width:4;}
+.completion-ring .track{stroke:var(--surface-2);}
+.completion-ring .fill{stroke:var(--green);stroke-dasharray:125.6;stroke-linecap:round;transition:stroke-dashoffset .4s;}
+.completion-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:.65rem;font-weight:bold;}
+.queue-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+/* Progress bar */
+.progress-wrap{background:var(--surface-2);border-radius:2px;height:5px;overflow:hidden;margin-top:4px;}
+.progress-bar{height:100%;border-radius:2px;transition:width .3s;}
+/* Intel form */
+.intel-panel{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start;}
+@media(max-width:800px){.intel-panel{grid-template-columns:1fr;}}
+.intel-sidebar{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:0;overflow:hidden;}
+.intel-sidebar-header{background:var(--surface-2);padding:12px 14px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);}
+.intel-lead-list{max-height:500px;overflow-y:auto;}
+.intel-lead-item{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;}
+.intel-lead-item:hover{background:var(--accent-dim);}
+.intel-lead-item.active{background:var(--accent-dim);border-left:3px solid var(--accent);}
+.intel-lead-name{font-size:.82rem;font-weight:normal;}
+.intel-lead-pct{font-size:.65rem;color:var(--text-3);margin-top:2px;}
+.intel-form{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:20px;}
+.intel-form-header{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.intel-form-company{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.1rem;font-weight:normal;}
+.intel-form-stage{font-size:.72rem;color:var(--text-3);margin-top:3px;}
+.enrich-section{margin-bottom:18px;}
+.enrich-section-title{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.enrich-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:600px){.enrich-grid{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-group.full{grid-column:1/-1;}
+.form-group label{font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);}
+.form-group input,.form-group select,.form-group textarea{font-family:inherit;font-size:.82rem;padding:6px 10px;border:1px solid var(--border);border-radius:2px;background:var(--bg);color:var(--text);outline:none;transition:border-color .15s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);}
+.form-group textarea{resize:vertical;min-height:60px;}
+.field-filled{border-color:var(--green) !important;}
+.score-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.score-bar-wrap{flex:1;background:var(--surface-2);border-radius:2px;height:10px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:2px;transition:width .3s;}
+.score-pct{font-size:.78rem;font-weight:bold;min-width:40px;}
+.source-badge{display:inline-block;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:10px;}
+.source-badge.manual{background:var(--blue-dim);color:var(--blue);}
+.source-badge.n8n{background:var(--teal-dim);color:var(--teal);}
+.source-badge.apollo{background:var(--purple-dim);color:var(--purple);}
+/* Toolbar */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.search-box{font-family:inherit;font-size:.78rem;padding:6px 12px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text);outline:none;flex:1;max-width:260px;}
+.search-box:focus{border-color:var(--accent);}
+/* Webhook config */
+.config-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:20px;margin-bottom:16px;}
+.config-card h3{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:.95rem;font-weight:normal;margin-bottom:4px;}
+.config-card p{font-size:.78rem;color:var(--text-2);line-height:1.6;margin-bottom:14px;}
+.webhook-input-wrap{display:flex;gap:8px;margin-bottom:10px;}
+.webhook-input-wrap input{flex:1;font-family:inherit;font-size:.78rem;padding:7px 10px;border:1px solid var(--border);border-radius:2px;background:var(--bg);color:var(--text);outline:none;}
+.webhook-input-wrap input:focus{border-color:var(--accent);}
+.batch-panel{background:var(--surface-2);border-radius:3px;padding:16px;margin-bottom:16px;}
+.batch-panel h4{font-size:.8rem;font-weight:normal;margin-bottom:8px;color:var(--text-2);}
+.batch-list{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;}
+.batch-item{display:flex;justify-content:space-between;align-items:center;font-size:.76rem;padding:6px 8px;background:var(--surface);border-radius:2px;border:1px solid var(--border);}
+.batch-item-name{color:var(--text-2);}
+.n8n-log{background:var(--surface-2);border-radius:2px;padding:12px;font-family:monospace;font-size:.72rem;color:var(--text-3);max-height:200px;overflow-y:auto;white-space:pre-wrap;line-height:1.6;}
+/* Badge table */
+.badge{display:inline-block;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:10px;}
+.badge.rich{background:var(--green-dim);color:var(--green);}
+.badge.partial{background:var(--orange-dim);color:var(--orange);}
+.badge.empty{background:var(--surface-2);color:var(--text-3);border:1px solid var(--border);}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:24px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.modal-header h2{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1rem;font-weight:normal;}
+.modal-close{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text-3);padding:0 4px;}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-3);font-size:.82rem;}
+.empty-state .icon{font-size:2.5rem;margin-bottom:12px;display:block;}
+footer{padding:16px 32px;border-top:1px solid var(--border);font-size:.7rem;color:var(--text-3);}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);font-size:.76rem;padding:10px 18px;border-radius:3px;z-index:2000;opacity:0;transition:opacity .2s;pointer-events:none;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="header">
+  <a class="header-back" href="index.html">← CRM</a>
+  <div class="header-main">
+    <div class="header-title">Lead Enrichment Hub</div>
+    <div class="header-sub">MOD-20 · Enrich Queue · Company Intel · n8n Webhook</div>
+  </div>
+  <button class="btn teal" onclick="triggerBatchEnrich()">⚡ Enrich Semua via n8n</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('queue',this)">Enrich Queue</div>
+  <div class="tab" onclick="switchTab('intel',this)">Company Intel</div>
+  <div class="tab" onclick="switchTab('config',this)">Konfigurasi Webhook</div>
+</div>
+
+<div class="content">
+
+  <!-- TAB: Queue -->
+  <div class="panel active" id="panel-queue">
+    <div class="kpi-row" id="kpi-queue"></div>
+    <div class="toolbar">
+      <input class="search-box" id="search-queue" placeholder="Cari perusahaan..." oninput="renderQueue()"/>
+      <select class="btn" id="filter-enrich-status" style="font-size:.74rem;" onchange="renderQueue()">
+        <option value="">Semua Status</option>
+        <option value="rich">Lengkap (≥80%)</option>
+        <option value="partial">Sebagian (30-79%)</option>
+        <option value="empty">Kosong (&lt;30%)</option>
+      </select>
+      <button class="btn sm" onclick="renderQueue()">Refresh dari Lead</button>
+    </div>
+    <div class="queue-list" id="queue-list"></div>
+  </div>
+
+  <!-- TAB: Intel -->
+  <div class="panel" id="panel-intel">
+    <div class="intel-panel">
+      <div class="intel-sidebar">
+        <div class="intel-sidebar-header">Daftar Lead</div>
+        <div class="intel-lead-list" id="intel-lead-list"></div>
+      </div>
+      <div id="intel-form-wrap">
+        <div class="empty-state"><span class="icon">🔍</span><p>Pilih lead dari daftar kiri untuk mengisi data enrichment.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Config -->
+  <div class="panel" id="panel-config">
+    <div class="config-card">
+      <h3>Webhook Enrichment — n8n</h3>
+      <p>Kirim data lead ke workflow n8n untuk enrichment otomatis. Workflow n8n akan mengambil data perusahaan dari Apollo, LinkedIn, atau sumber lain lalu menulis kembali ke CRM via webhook response.</p>
+      <div class="webhook-input-wrap">
+        <input id="cfg-webhook-url" placeholder="https://nusantara8n.my.id/webhook/lead-enrichment"/>
+        <button class="btn primary" onclick="saveWebhookUrl()">Simpan</button>
+      </div>
+      <p style="font-size:.7rem;color:var(--text-3);">URL tersimpan di <code>crm_settings.webhookEnrichment</code></p>
+    </div>
+
+    <div class="config-card">
+      <h3>Payload Format</h3>
+      <p>Setiap request enrichment mengirim payload berikut ke n8n:</p>
+      <div class="n8n-log">{
+  "leadId": "string — ID lead dari crm_leads_v2",
+  "company": "string — nama perusahaan",
+  "website": "string — domain perusahaan (jika ada)",
+  "country": "string — negara lead",
+  "iso": "string — standar ISO yang diminati",
+  "stage": "string — tahap pipeline saat ini"
+}</div>
+      <p style="margin-top:12px;font-size:.74rem;color:var(--text-2);">n8n dapat merespons dengan data enrichment yang langsung tersimpan ke <code>crm_enrichment</code> via JavaScript postMessage atau manual update.</p>
+    </div>
+
+    <div class="config-card">
+      <h3>Batch Enrichment Queue</h3>
+      <p>Lead-lead berikut belum dienrich dan dapat dikirim ke n8n sekaligus:</p>
+      <div class="batch-panel">
+        <h4>Lead tanpa data enrichment lengkap:</h4>
+        <div class="batch-list" id="batch-list"></div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn teal" onclick="triggerBatchEnrich()">⚡ Enrich Semua via n8n</button>
+        <button class="btn" onclick="exportEnrichmentCsv()">Export Data CSV</button>
+      </div>
+    </div>
+
+    <div class="config-card">
+      <h3>Log Aktivitas</h3>
+      <div class="n8n-log" id="enrich-log">Belum ada aktivitas enrichment di sesi ini.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Enrich Manual -->
+<div class="modal-overlay" id="modal-quick">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-quick-title">Quick Enrich</h2>
+      <button class="modal-close" onclick="closeModal('quick')">×</button>
+    </div>
+    <div id="modal-quick-content"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('quick')">Batal</button>
+      <button class="btn primary" onclick="saveQuickEnrich()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<footer>MOD-20 · Lead Enrichment Hub · Konsultan ISO · arafarnusa.com</footer>
+
+<script>
+let enrichments = [];
+let leads = [];
+let selectedLeadId = null;
+let sessionLog = [];
+
+function loadData(){
+  enrichments = JSON.parse(localStorage.getItem('crm_enrichment')||'[]');
+  leads = JSON.parse(localStorage.getItem('crm_leads_v2')||'[]');
+  if(!leads.length) seedLeads();
+  loadWebhookUrl();
+}
+
+function saveEnrichments(){ localStorage.setItem('crm_enrichment', JSON.stringify(enrichments)); }
+
+function seedLeads(){
+  leads = [
+    {id:'l1',company:'PT. Makmur Jaya Nusantara',negara:'Indonesia',iso:'ISO 9001',tahap:'PROPOSAL',pic:'Budi Santoso',email:'budi@makmurjaya.co.id'},
+    {id:'l2',company:'Koperasi Pangan Nusantara',negara:'Indonesia',iso:'ISO 22000',tahap:'KUALIFIKASI',pic:'Sari Wulandari',email:'sari@kopangan.co.id'},
+    {id:'l3',company:'PT. Digital Nusa Teknologi',negara:'Indonesia',iso:'ISO 27001',tahap:'DIHUBUNGI',pic:'Ahmad Fadli',email:'ahmad@digitalnusa.id'},
+    {id:'l4',company:'Neon Systems Sdn Bhd',negara:'Malaysia',iso:'ISO 9001',tahap:'BARU',pic:'Raj Kumar',email:'raj@neonsystems.my'},
+    {id:'l5',company:'Apex Construction Pte Ltd',negara:'Singapore',iso:'ISO 45001',tahap:'BARU',pic:'Li Wei',email:'li.wei@apexconstruct.sg'},
+    {id:'l6',company:'GreenFood Vietnam Co.',negara:'Vietnam',iso:'ISO 22000',tahap:'DIHUBUNGI',pic:'Nguyen Thi Lan',email:'lan@greenfood.vn'},
+  ];
+  localStorage.setItem('crm_leads_v2', JSON.stringify(leads));
+}
+
+function getEnrichment(leadId){ return enrichments.find(e=>e.leadId===leadId); }
+
+const ENRICH_FIELDS = ['companySize','revenue','founded','industryDetail','website','linkedin','contactPerson','contactTitle','contactPhone','contactLinkedin','techStack','certHistory','notes'];
+
+function calcCompletion(e){
+  if(!e) return 0;
+  const filled = ENRICH_FIELDS.filter(f=>e[f]&&e[f].toString().trim()).length;
+  return Math.round(filled/ENRICH_FIELDS.length*100);
+}
+
+function completionStatus(pct){
+  if(pct>=80) return 'rich';
+  if(pct>=30) return 'partial';
+  return 'empty';
+}
+
+function completionColor(pct){
+  if(pct>=80) return 'var(--green)';
+  if(pct>=30) return 'var(--orange)';
+  return 'var(--red)';
+}
+
+function switchTab(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='queue'){ renderKpiQueue(); renderQueue(); }
+  if(id==='intel'){ renderIntelSidebar(); }
+  if(id==='config'){ loadWebhookUrl(); renderBatchList(); renderLog(); }
+}
+
+function renderKpiQueue(){
+  const total = leads.length;
+  const rich = leads.filter(l=>calcCompletion(getEnrichment(l.id))>=80).length;
+  const partial = leads.filter(l=>{const p=calcCompletion(getEnrichment(l.id)); return p>=30&&p<80;}).length;
+  const empty = leads.filter(l=>calcCompletion(getEnrichment(l.id))<30).length;
+  const avgPct = total ? Math.round(leads.reduce((s,l)=>s+calcCompletion(getEnrichment(l.id)),0)/total) : 0;
+  document.getElementById('kpi-queue').innerHTML = `
+    <div class="kpi accent"><div class="kpi-label">Total Lead</div><div class="kpi-value">${total}</div><div class="kpi-sub">dari crm_leads_v2</div></div>
+    <div class="kpi green"><div class="kpi-label">Lengkap</div><div class="kpi-value">${rich}</div><div class="kpi-sub">data ≥80% terisi</div></div>
+    <div class="kpi orange"><div class="kpi-label">Sebagian</div><div class="kpi-value">${partial}</div><div class="kpi-sub">data 30–79% terisi</div></div>
+    <div class="kpi red"><div class="kpi-label">Kosong</div><div class="kpi-value">${empty}</div><div class="kpi-sub">data &lt;30% terisi</div></div>
+    <div class="kpi teal"><div class="kpi-label">Rata-rata</div><div class="kpi-value">${avgPct}%</div><div class="kpi-sub">completeness semua lead</div></div>
+  `;
+}
+
+function renderQueue(){
+  const q = (document.getElementById('search-queue')?.value||'').toLowerCase();
+  const fStatus = document.getElementById('filter-enrich-status')?.value||'';
+  let list = leads;
+  if(q) list = list.filter(l=>(l.company+l.negara+l.iso).toLowerCase().includes(q));
+  if(fStatus) list = list.filter(l=>completionStatus(calcCompletion(getEnrichment(l.id)))===fStatus);
+
+  const el = document.getElementById('queue-list');
+  if(!list.length){ el.innerHTML='<div class="empty-state"><span class="icon">🔍</span><p>Tidak ada lead yang cocok.</p></div>'; return; }
+
+  el.innerHTML = list.map(l => {
+    const e = getEnrichment(l.id);
+    const pct = calcCompletion(e);
+    const color = completionColor(pct);
+    const status = completionStatus(pct);
+    const circumference = 125.6;
+    const offset = circumference - (pct/100*circumference);
+    const ringColor = pct>=80?'var(--green)':pct>=30?'var(--orange)':'var(--red)';
+    const fields = [
+      e?.companySize?'Ukuran':'',e?.revenue?'Revenue':'',e?.linkedin?'LinkedIn':'',
+      e?.contactPerson?'Kontak':'',e?.certHistory?'Riwayat Sertifikasi':''
+    ].filter(Boolean);
+    return `<div class="queue-card">
+      <div class="queue-completion">
+        <div class="completion-ring">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <circle class="track" cx="24" cy="24" r="20"/>
+            <circle class="fill" cx="24" cy="24" r="20" style="stroke:${ringColor};stroke-dashoffset:${offset}"/>
+          </svg>
+          <div class="completion-pct" style="color:${ringColor}">${pct}%</div>
+        </div>
+      </div>
+      <div class="queue-info">
+        <div class="queue-company">${l.company}</div>
+        <div class="queue-meta">
+          <span>${l.negara||'–'}</span>
+          <span>${l.iso||'–'}</span>
+          <span class="badge ${status}">${status==='rich'?'Lengkap':status==='partial'?'Sebagian':'Kosong'}</span>
+          ${e?.enrichSource?`<span class="source-badge ${e.enrichSource}">${e.enrichSource}</span>`:''}
+          ${fields.length?`<span style="color:var(--text-3)">${fields.join(' · ')}</span>`:'<span style="color:var(--text-3)">Belum ada data</span>'}
+        </div>
+      </div>
+      <div class="queue-actions">
+        <button class="btn sm" onclick="openIntelLead('${l.id}')">✏️ Isi Data</button>
+        <button class="btn sm teal" onclick="sendToN8n('${l.id}')">⚡ n8n</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openIntelLead(leadId){
+  selectedLeadId = leadId;
+  switchTab('intel', document.querySelectorAll('.tab')[1]);
+  setTimeout(()=>renderIntelForm(leadId), 50);
+}
+
+function renderIntelSidebar(){
+  const el = document.getElementById('intel-lead-list');
+  el.innerHTML = leads.map(l => {
+    const pct = calcCompletion(getEnrichment(l.id));
+    const color = completionColor(pct);
+    return `<div class="intel-lead-item ${selectedLeadId===l.id?'active':''}" onclick="selectIntelLead('${l.id}')">
+      <div class="intel-lead-name">${l.company}</div>
+      <div class="intel-lead-pct" style="color:${color}">${pct}% lengkap · ${l.negara||''}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectIntelLead(id){
+  selectedLeadId = id;
+  renderIntelSidebar();
+  renderIntelForm(id);
+}
+
+function renderIntelForm(leadId){
+  const l = leads.find(x=>x.id===leadId);
+  if(!l){ document.getElementById('intel-form-wrap').innerHTML='<div class="empty-state"><span class="icon">🔍</span><p>Lead tidak ditemukan.</p></div>'; return; }
+  const e = getEnrichment(leadId) || {};
+  const pct = calcCompletion(e.leadId ? e : null);
+  const color = completionColor(pct);
+  const src = e.enrichSource||'manual';
+
+  document.getElementById('intel-form-wrap').innerHTML = `
+    <div class="intel-form">
+      <div class="intel-form-header">
+        <div class="intel-form-company">${l.company}</div>
+        <div class="intel-form-stage">${l.negara||''} · ${l.iso||''} · Tahap: ${l.tahap||'–'} · PIC: ${l.pic||'–'}</div>
+        <div class="score-bar" style="margin-top:10px;">
+          <div class="score-bar-wrap"><div class="score-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+          <div class="score-pct" style="color:${color}">${pct}%</div>
+        </div>
+      </div>
+
+      <div class="enrich-section">
+        <div class="enrich-section-title">Company Intelligence</div>
+        <div class="enrich-grid">
+          <div class="form-group">
+            <label>Ukuran Perusahaan</label>
+            <select id="ei-size">
+              <option value="" ${!e.companySize?'selected':''}>–</option>
+              <option value="1-10" ${e.companySize==='1-10'?'selected':''}>1–10 karyawan</option>
+              <option value="11-50" ${e.companySize==='11-50'?'selected':''}>11–50 karyawan</option>
+              <option value="51-200" ${e.companySize==='51-200'?'selected':''}>51–200 karyawan</option>
+              <option value="201-500" ${e.companySize==='201-500'?'selected':''}>201–500 karyawan</option>
+              <option value="500+" ${e.companySize==='500+'?'selected':''}>500+ karyawan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Estimasi Revenue</label>
+            <input id="ei-revenue" value="${e.revenue||''}" placeholder="Rp 10 miliar/tahun" class="${e.revenue?'field-filled':''}"/>
+          </div>
+          <div class="form-group">
+            <label>Tahun Berdiri</label>
+            <input id="ei-founded" value="${e.founded||''}" placeholder="2010" class="${e.founded?'field-filled':''}"/>
+          </div>
+          <div class="form-group">
+            <label>Industri Detail</label>
+            <input id="ei-industry" value="${e.industryDetail||''}" placeholder="Manufaktur otomotif" class="${e.industryDetail?'field-filled':''}"/>
+          </div>
+          <div class="form-group">
+            <label>Website</label>
+            <input id="ei-website" value="${e.website||''}" placeholder="https://perusahaan.com" class="${e.website?'field-filled':''}"/>
+          </div>
+          <div class="form-group">
+            <label>LinkedIn Company</label>
+            <input id="ei-linkedin" value="${e.linkedin||''}" placeholder="linkedin.com/company/..." class="${e.linkedin?'field-filled':''}"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="enrich-section">
+        <div class="enrich-section-title">Kontak Utama</div>
+        <div class="enrich-grid">
+          <div class="form-group">
+            <label>Nama Kontak</label>
+            <input id="ei-contact" value="${e.contactPerson||''}" placeholder="${l.pic||'Nama PIC'}" class="${e.contactPerson?'field-filled':''}"/>
+          </div>
+          <div class="form-group">
+            <label>Jabatan / Title</label>
+            <input id="ei-title" value="${e.contactTitle||''}" placeholder="Direktur Operasional" class="${e.contactTitle?'field-filled':''}"/>
+          </div>
+          <div class="form-group">
+            <label>Nomor HP / WhatsApp</label>
+            <input id="ei-phone" value="${e.contactPhone||''}" placeholder="+62 812 3456 7890" class="${e.contactPhone?'field-filled':''}"/>
+          </div>
+          <div class="form-group">
+            <label>LinkedIn Kontak</label>
+            <input id="ei-clink" value="${e.contactLinkedin||''}" placeholder="linkedin.com/in/..." class="${e.contactLinkedin?'field-filled':''}"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="enrich-section">
+        <div class="enrich-section-title">Riwayat & Konteks ISO</div>
+        <div class="enrich-grid">
+          <div class="form-group full">
+            <label>Riwayat Sertifikasi ISO</label>
+            <input id="ei-cert" value="${e.certHistory||''}" placeholder="ISO 9001 dari 2018, habis 2024" class="${e.certHistory?'field-filled':''}"/>
+          </div>
+          <div class="form-group full">
+            <label>Tech Stack / ERP / Platform</label>
+            <input id="ei-tech" value="${e.techStack||''}" placeholder="SAP, Oracle, Google Workspace" class="${e.techStack?'field-filled':''}"/>
+          </div>
+          <div class="form-group full">
+            <label>Catatan Intel</label>
+            <textarea id="ei-notes" placeholder="Ekspansi ke Vietnam 2027, kompetitor utama PT X...">${e.notes||''}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn primary" onclick="saveEnrichment('${leadId}')">Simpan Data Enrichment</button>
+        <button class="btn teal" onclick="sendToN8n('${leadId}')">⚡ Kirim ke n8n</button>
+        <select class="btn" id="ei-source" style="font-size:.72rem;">
+          <option value="manual" ${src==='manual'?'selected':''}>Manual</option>
+          <option value="n8n" ${src==='n8n'?'selected':''}>n8n Otomatis</option>
+          <option value="apollo" ${src==='apollo'?'selected':''}>Apollo.io</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+function saveEnrichment(leadId){
+  const l = leads.find(x=>x.id===leadId);
+  if(!l) return;
+  const data = {
+    leadId,
+    companySize: document.getElementById('ei-size')?.value||'',
+    revenue: document.getElementById('ei-revenue')?.value.trim()||'',
+    founded: document.getElementById('ei-founded')?.value.trim()||'',
+    industryDetail: document.getElementById('ei-industry')?.value.trim()||'',
+    website: document.getElementById('ei-website')?.value.trim()||'',
+    linkedin: document.getElementById('ei-linkedin')?.value.trim()||'',
+    contactPerson: document.getElementById('ei-contact')?.value.trim()||'',
+    contactTitle: document.getElementById('ei-title')?.value.trim()||'',
+    contactPhone: document.getElementById('ei-phone')?.value.trim()||'',
+    contactLinkedin: document.getElementById('ei-clink')?.value.trim()||'',
+    certHistory: document.getElementById('ei-cert')?.value.trim()||'',
+    techStack: document.getElementById('ei-tech')?.value.trim()||'',
+    notes: document.getElementById('ei-notes')?.value.trim()||'',
+    enrichSource: document.getElementById('ei-source')?.value||'manual',
+    enrichedAt: new Date().toISOString(),
+  };
+  const idx = enrichments.findIndex(e=>e.leadId===leadId);
+  if(idx>=0) enrichments[idx]=data; else enrichments.push(data);
+  saveEnrichments();
+  renderIntelSidebar();
+  renderIntelForm(leadId);
+  addLog(`✅ Enrichment disimpan manual: ${l.company} (${calcCompletion(data)}% lengkap)`);
+  showToast('Data enrichment disimpan');
+}
+
+async function sendToN8n(leadId){
+  const l = leads.find(x=>x.id===leadId);
+  if(!l){ showToast('Lead tidak ditemukan',true); return; }
+  const cfg = JSON.parse(localStorage.getItem('crm_settings')||'{}');
+  const wh = cfg.webhookEnrichment || document.getElementById('cfg-webhook-url')?.value?.trim();
+  if(!wh){
+    showToast('URL webhook belum dikonfigurasi. Masuk ke tab Konfigurasi Webhook.',true);
+    return;
+  }
+  addLog(`📤 Mengirim enrichment request: ${l.company}...`);
+  showToast('Mengirim ke n8n...');
+  try {
+    const res = await fetch(wh, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        leadId: l.id,
+        company: l.company,
+        website: l.website||getEnrichment(l.id)?.website||'',
+        country: l.negara||'',
+        iso: l.iso||'',
+        stage: l.tahap||'',
+      })
+    });
+    if(res.ok){
+      addLog(`✅ Request diterima n8n: ${l.company} (${res.status})`);
+      showToast('Request enrichment dikirim ke n8n');
+    } else {
+      addLog(`❌ n8n error ${res.status}: ${l.company}`);
+      showToast('n8n error: '+res.status,true);
+    }
+  } catch(err){
+    addLog(`❌ Gagal menghubungi n8n: ${err.message}`);
+    showToast('Gagal menghubungi n8n: '+err.message,true);
+  }
+}
+
+async function triggerBatchEnrich(){
+  const cfg = JSON.parse(localStorage.getItem('crm_settings')||'{}');
+  const wh = cfg.webhookEnrichment || document.getElementById('cfg-webhook-url')?.value?.trim();
+  if(!wh){ showToast('URL webhook belum dikonfigurasi',true); return; }
+  const needEnrich = leads.filter(l=>calcCompletion(getEnrichment(l.id))<80);
+  if(!needEnrich.length){ showToast('Semua lead sudah dienrich!'); return; }
+  if(!confirm(`Kirim ${needEnrich.length} lead ke n8n untuk enrichment?`)) return;
+  addLog(`📦 Batch enrichment dimulai — ${needEnrich.length} lead...`);
+  let ok=0, fail=0;
+  for(const l of needEnrich){
+    try{
+      const res = await fetch(wh, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({leadId:l.id,company:l.company,website:getEnrichment(l.id)?.website||'',country:l.negara||'',iso:l.iso||'',stage:l.tahap||''})
+      });
+      if(res.ok){ ok++; addLog(`  ✅ ${l.company}`); }
+      else { fail++; addLog(`  ❌ ${l.company} (${res.status})`); }
+    } catch(e){ fail++; addLog(`  ❌ ${l.company}: ${e.message}`); }
+    await new Promise(r=>setTimeout(r,300));
+  }
+  addLog(`📦 Batch selesai: ${ok} berhasil, ${fail} gagal`);
+  showToast(`Batch enrichment: ${ok}/${needEnrich.length} berhasil`);
+}
+
+function renderBatchList(){
+  const el = document.getElementById('batch-list');
+  if(!el) return;
+  const needEnrich = leads.filter(l=>calcCompletion(getEnrichment(l.id))<80);
+  if(!needEnrich.length){ el.innerHTML='<div style="font-size:.75rem;color:var(--green);padding:6px;">Semua lead sudah dienrich ✓</div>'; return; }
+  el.innerHTML = needEnrich.map(l => {
+    const pct = calcCompletion(getEnrichment(l.id));
+    const color = completionColor(pct);
+    return `<div class="batch-item">
+      <span class="batch-item-name">${l.company} · ${l.negara||''}</span>
+      <span style="color:${color};font-size:.65rem;">${pct}% lengkap</span>
+    </div>`;
+  }).join('');
+}
+
+function renderLog(){
+  const el = document.getElementById('enrich-log');
+  if(!el) return;
+  el.textContent = sessionLog.length ? sessionLog.join('\n') : 'Belum ada aktivitas enrichment di sesi ini.';
+  el.scrollTop = el.scrollHeight;
+}
+
+function addLog(msg){
+  const ts = new Date().toLocaleTimeString('id');
+  sessionLog.push(`[${ts}] ${msg}`);
+  if(sessionLog.length>50) sessionLog.shift();
+  renderLog();
+}
+
+function loadWebhookUrl(){
+  const cfg = JSON.parse(localStorage.getItem('crm_settings')||'{}');
+  const el = document.getElementById('cfg-webhook-url');
+  if(el && cfg.webhookEnrichment) el.value = cfg.webhookEnrichment;
+}
+
+function saveWebhookUrl(){
+  const url = document.getElementById('cfg-webhook-url').value.trim();
+  const cfg = JSON.parse(localStorage.getItem('crm_settings')||'{}');
+  cfg.webhookEnrichment = url;
+  localStorage.setItem('crm_settings', JSON.stringify(cfg));
+  showToast('URL webhook disimpan');
+  addLog(`⚙️ Webhook URL disimpan: ${url}`);
+}
+
+function exportEnrichmentCsv(){
+  const header = 'Perusahaan,Negara,ISO,Stage,Kelengkapan,Ukuran,Revenue,LinkedIn,Kontak,Jabatan,Sumber';
+  const rows = leads.map(l => {
+    const e = getEnrichment(l.id)||{};
+    const pct = calcCompletion(e.leadId?e:null);
+    return `"${l.company}","${l.negara||''}","${l.iso||''}","${l.tahap||''}","${pct}%","${e.companySize||''}","${e.revenue||''}","${e.linkedin||''}","${e.contactPerson||''}","${e.contactTitle||''}","${e.enrichSource||''}"`;
+  });
+  const csv = [header,...rows].join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='lead-enrichment.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function closeModal(which){
+  document.getElementById('modal-'+which).classList.remove('open');
+}
+
+function showToast(msg, isErr=false){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isErr ? 'var(--red)' : 'var(--text)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function init(){
+  loadData();
+  renderKpiQueue();
+  renderQueue();
+  renderBatchList();
+}
+init();
+</script>
+</body>
+</html>
