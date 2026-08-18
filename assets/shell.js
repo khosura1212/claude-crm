@@ -55,38 +55,16 @@
     });
   }
 
-  /* ---------- Theme handling (shared across every page) ------------------ */
-  var THEME_KEY = "iso-theme";
-  function getTheme(){
-    try{ return localStorage.getItem(THEME_KEY) || ""; }catch(e){ return ""; }
-  }
-  function applyTheme(mode){
-    var root = document.documentElement;
-    if(mode === "light" || mode === "dark"){
-      root.setAttribute("data-theme", mode);
-    } else {
-      root.removeAttribute("data-theme");
-    }
-  }
-  function toggleTheme(){
-    var cur = getTheme();
-    var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    var effectiveDark = cur ? cur === "dark" : prefersDark;
-    var next = effectiveDark ? "light" : "dark";
-    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
-    applyTheme(next);
-    updateThemeIcons();
-  }
-  function updateThemeIcons(){
-    var cur = getTheme();
-    var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    var effectiveDark = cur ? cur === "dark" : prefersDark;
-    document.querySelectorAll(".js-theme-toggle").forEach(function(btn){
-      btn.textContent = effectiveDark ? "\u2600\uFE0F" : "\u{1F319}";
-      btn.title = effectiveDark ? "Ganti ke mode terang" : "Ganti ke mode gelap";
-    });
-  }
-  applyTheme(getTheme());
+  /* ---------- Theme handling: dark mode removed app-wide -----------------
+     theme.css now forces the light, sky-blue palette regardless of
+     data-theme or OS preference. This just proactively clears any stale
+     state left over from the old light/dark toggle (either shell.js's own,
+     or a page's native "Ganti Tema" button) so nothing dead lingers in the
+     DOM or localStorage. */
+  try{
+    document.documentElement.removeAttribute("data-theme");
+    localStorage.removeItem("iso-theme");
+  }catch(e){}
 
   /* ---------- Extract old page title/subtitle before hiding header ------- */
   function extractHeaderInfo(){
@@ -145,7 +123,6 @@
         (info.subtitle ? '<span class="sub">' + esc(info.subtitle) + '</span>' : '') +
       '</div>' +
       '<div class="app-topbar-actions">' +
-        '<button class="app-icon-btn js-theme-toggle" title="Ganti tema">\u{1F319}</button>' +
         '<a class="app-icon-btn" href="index.html" title="Dashboard" style="text-decoration:none">\u{1F3E0}</a>' +
       '</div>';
     return header;
@@ -165,8 +142,7 @@
       '<a class="home" href="index.html">\u2190 CRM</a>' +
       '<span class="crumb">/</span>' +
       '<span class="title">' + esc(info.title) + '</span>' +
-      '<span class="spacer"></span>' +
-      '<button class="app-icon-btn js-theme-toggle" title="Ganti tema" style="width:30px;height:30px">\u{1F319}</button>';
+      '<span class="spacer"></span>';
     return bar;
   }
 
@@ -213,13 +189,6 @@
       }
     }
 
-    document.querySelectorAll(".js-theme-toggle").forEach(function(btn){
-      btn.addEventListener("click", toggleTheme);
-    });
-    updateThemeIcons();
-    if(window.matchMedia){
-      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", updateThemeIcons);
-    }
   }
 
   if(document.readyState === "loading"){
