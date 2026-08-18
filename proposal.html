@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Proposal & Pricing Suite — CRM Konsultan ISO</title>
+<style>
+:root{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D7A4F;--green-dim:rgba(45,122,79,.12);--blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);--orange:#C47A20;--orange-dim:rgba(196,122,32,.12);}
+@media(prefers-color-scheme:dark){:root{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3DAF72;--green-dim:rgba(61,175,114,.12);--blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);--orange:#E09030;--orange-dim:rgba(224,144,48,.12);}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{padding:24px 40px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--accent);text-decoration:none;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);padding:5px 12px;border-radius:3px;}
+.back-link:hover{background:var(--accent-dim);}
+.header-text h1{font-family:"Palatino Linotype",Palatino,serif;font-size:1.5rem;font-weight:normal;}
+.header-text p{font-size:.75rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+.tab-bar{display:flex;padding:20px 40px 0;border-bottom:1px solid var(--border);}
+.tab-btn{background:none;border:none;padding:10px 20px;font-family:inherit;font-size:.82rem;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;padding:28px 40px;}
+.tab-content.active{display:block;}
+.gen-grid{display:grid;grid-template-columns:380px 1fr;gap:20px;}
+@media(max-width:800px){.gen-grid{grid-template-columns:1fr;}}
+.form-panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;}
+.form-panel h3{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.form-group label{font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);}
+input,select,textarea{background:var(--bg);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:inherit;font-size:.83rem;padding:7px 12px;width:100%;transition:border-color .15s;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);}
+textarea{resize:vertical;min-height:60px;}
+.btn{border:none;border-radius:3px;padding:8px 16px;font-family:inherit;font-size:.82rem;cursor:pointer;transition:opacity .15s;letter-spacing:.03em;}
+.btn-primary{background:var(--accent);color:#fff;width:100%;margin-top:8px;}.btn-primary:hover{opacity:.88;}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--text-2);}.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-sm{padding:5px 10px;font-size:.75rem;}
+.proposal-preview{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:24px;min-height:400px;}
+.proposal-preview h2{font-family:"Palatino Linotype",Palatino,serif;font-size:1.2rem;font-weight:normal;border-bottom:2px solid var(--accent);padding-bottom:8px;margin-bottom:16px;}
+.proposal-preview h3{font-family:"Palatino Linotype",Palatino,serif;font-size:.95rem;font-weight:normal;color:var(--accent);margin:16px 0 8px;}
+.proposal-preview p,.proposal-preview li{font-size:.83rem;line-height:1.7;color:var(--text-2);}
+.proposal-preview ul{padding-left:18px;margin-bottom:8px;}
+.proposal-preview .price-box{background:var(--bg);border:1px solid var(--accent);border-radius:4px;padding:14px;margin:12px 0;}
+.proposal-preview .price-box .p-val{font-family:"Palatino Linotype",Palatino,serif;font-size:1.5rem;color:var(--accent);}
+.proposal-preview .price-box .p-note{font-size:.74rem;color:var(--text-3);margin-top:4px;}
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:700px){.pricing-grid{grid-template-columns:1fr;}}
+.price-result{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;}
+.price-result h3{font-family:"Palatino Linotype",Palatino,serif;font-size:1rem;font-weight:normal;margin-bottom:14px;}
+.price-line{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:.83rem;}
+.price-line:last-child{border:none;font-weight:normal;font-size:.95rem;}
+.price-line .pl-val{color:var(--accent);font-family:"Palatino Linotype",Palatino,serif;}
+/* TRACKER */
+table{width:100%;border-collapse:collapse;font-size:.82rem;}
+th{text-align:left;padding:9px 12px;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);border-bottom:2px solid var(--border);font-weight:normal;}
+td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+tr:hover td{background:var(--surface);}
+.badge{display:inline-block;font-size:.68rem;padding:3px 8px;border-radius:2px;white-space:nowrap;}
+.badge-dikirim{background:var(--blue-dim);color:var(--blue);}
+.badge-viewed{background:var(--orange-dim);color:var(--orange);}
+.badge-signed{background:var(--green-dim);color:var(--green);}
+.badge-rejected{background:var(--surface-2);color:var(--text-3);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:28px;width:100%;max-width:480px;}
+.modal h2{font-family:"Palatino Linotype",Palatino,serif;font-size:1.1rem;font-weight:normal;margin-bottom:14px;}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);padding:10px 18px;border-radius:4px;font-size:.82rem;z-index:200;transform:translateY(100px);opacity:0;transition:transform .25s,opacity .25s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:14px;}
+footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-link" href="index.html">← CRM</a>
+  <div class="header-text"><h1>Proposal & Pricing Suite</h1><p>MOD-07 · Proposal Generator · Pricing Calculator · Tracker</p></div>
+</header>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="sw('generator')">Proposal Generator</button>
+  <button class="tab-btn" onclick="sw('pricing')">Pricing Calculator</button>
+  <button class="tab-btn" onclick="sw('tracker')">Proposal Tracker</button>
+</div>
+
+<!-- GENERATOR -->
+<div class="tab-content active" id="tab-generator">
+  <div class="gen-grid">
+    <div class="form-panel">
+      <h3>Data Klien</h3>
+      <div class="form-group"><label>Nama Kontak</label><input id="gNama" placeholder="Nama decision maker"></div>
+      <div class="form-group"><label>Jabatan</label><input id="gJabatan" placeholder="CEO, Quality Manager…"></div>
+      <div class="form-group"><label>Perusahaan</label><input id="gPerusahaan" placeholder="Nama perusahaan / organisasi"></div>
+      <div class="form-group"><label>Negara</label><input id="gNegara" placeholder="Indonesia, UAE, India…"></div>
+      <div class="form-group"><label>Standar ISO</label>
+        <select id="gStandar"><option>ISO 9001</option><option>ISO 14001</option><option>ISO 45001</option><option>ISO 27001</option><option>ISO 22000</option><option>ISO 37001</option><option>ISO 17021-1</option><option>ISO 9001 + ISO 14001</option><option>ISO 9001 + ISO 45001</option><option>ISO 9001 + ISO 14001 + ISO 45001</option></select></div>
+      <div class="form-group"><label>Ukuran Perusahaan</label>
+        <select id="gUkuran"><option value="small">UKM / Startup (&lt;50 karyawan)</option><option value="medium">Medium (50–500)</option><option value="enterprise">Enterprise (&gt;500)</option></select></div>
+      <div class="form-group"><label>Bahasa Proposal</label>
+        <select id="gBahasa"><option value="id">Bahasa Indonesia</option><option value="en">English</option></select></div>
+      <div class="form-group"><label>Pain Point Utama</label><textarea id="gPain" placeholder="Kebutuhan spesifik, deadline, atau konteks penting…"></textarea></div>
+      <button class="btn btn-primary" onclick="generateProposal()">Generate Proposal</button>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <p class="section-title" style="margin:0">Preview Proposal</p>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="copyProposal()">📋 Copy Teks</button>
+          <button class="btn btn-outline btn-sm" onclick="saveToTracker()">+ Simpan ke Tracker</button>
+        </div>
+      </div>
+      <div class="proposal-preview" id="proposalPreview"><p style="color:var(--text-3);font-size:.83rem">Isi form di sebelah kiri dan klik <strong>Generate Proposal</strong> untuk membuat draft proposal.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="tab-content" id="tab-pricing">
+  <div class="pricing-grid">
+    <div class="form-panel">
+      <h3>Parameter Pricing</h3>
+      <div class="form-group"><label>Standar ISO</label>
+        <select id="pStandar" onchange="calcPrice()">
+          <option value="single">Single Standard (ISO 9001 / 14001 / 45001)</option>
+          <option value="premium">Premium Standard (ISO 27001 / 22000 / 37001)</option>
+          <option value="integrated">Integrated (2 Standar sekaligus)</option>
+          <option value="integrated3">Integrated (3 Standar sekaligus)</option>
+          <option value="cb">ISO 17021-1 — CB Setup (Premium)</option>
+        </select></div>
+      <div class="form-group"><label>Ukuran Organisasi</label>
+        <select id="pUkuran" onchange="calcPrice()">
+          <option value="small">UKM (&lt;50 karyawan)</option>
+          <option value="medium">Medium (50–500)</option>
+          <option value="enterprise">Enterprise (&gt;500)</option>
+        </select></div>
+      <div class="form-group"><label>Lokasi Klien</label>
+        <select id="pNegara" onchange="calcPrice()">
+          <option value="id">Indonesia (IDR)</option>
+          <option value="asean">ASEAN non-Indonesia (USD)</option>
+          <option value="me">Middle East (USD)</option>
+          <option value="sa">South Asia (USD)</option>
+          <option value="af">Africa (USD)</option>
+          <option value="other">Lainnya (USD)</option>
+        </select></div>
+      <div class="form-group"><label>Kondisi Awal</label>
+        <select id="pKondisi" onchange="calcPrice()">
+          <option value="new">Dari nol (belum ada sistem)</option>
+          <option value="partial">Sudah ada sebagian sistem</option>
+          <option value="gap">Hanya Gap Analysis + Perbaikan</option>
+        </select></div>
+      <div class="form-group"><label>Termasuk Pelatihan Internal?</label>
+        <select id="pTraining" onchange="calcPrice()">
+          <option value="no">Tidak</option>
+          <option value="yes">Ya (+20%)</option>
+        </select></div>
+    </div>
+    <div class="price-result" id="priceResult">
+      <h3>Estimasi Harga</h3>
+      <p style="color:var(--text-3);font-size:.8rem">Pilih parameter di sebelah kiri untuk melihat estimasi.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TRACKER -->
+<div class="tab-content" id="tab-tracker">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+    <button class="btn btn-outline btn-sm" onclick="openPropModal()">+ Tambah Manual</button>
+  </div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>#</th><th>Klien</th><th>Standar</th><th>Nilai (USD)</th><th>Tanggal Kirim</th><th>Status</th><th>Aksi</th></tr></thead>
+      <tbody id="propTracker"></tbody>
+    </table>
+    <div id="propEmpty" style="text-align:center;padding:50px;color:var(--text-3);display:none"><p>Belum ada proposal. Generate dari tab Proposal Generator.</p></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="propModal">
+  <div class="modal">
+    <h2>Log Proposal</h2>
+    <input type="hidden" id="ePropId">
+    <div class="form-group"><label>Klien</label><input id="pNama" placeholder="Nama kontak / perusahaan"></div>
+    <div class="form-group"><label>Standar ISO</label><input id="pStandarT" placeholder="ISO 9001, ISO 17021-1…"></div>
+    <div class="form-group"><label>Nilai Deal (USD)</label><input type="number" id="pNilai" placeholder="8000"></div>
+    <div class="form-group"><label>Tanggal Kirim</label><input id="pTanggal" placeholder="YYYY-MM-DD"></div>
+    <div class="form-group"><label>Status</label>
+      <select id="pStatus"><option value="DIKIRIM">Dikirim</option><option value="VIEWED">Viewed</option><option value="SIGNED">Signed / Won</option><option value="REJECTED">Rejected</option></select></div>
+    <div class="form-group"><label>Catatan</label><textarea id="pCatatan" rows="2"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeP()">Batal</button>
+      <button class="btn btn-primary" onclick="saveProp()">Simpan</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<footer>Proposal & Pricing Suite · MOD-07 · CRM Konsultan ISO · arafarnusa.com</footer>
+<script>
+const KEY='crm_proposals';
+const SEED_P=[
+  {id:1,klien:"Al-Noor Trading LLC / Mohammed Al-Rasheed",standar:"ISO 9001 + ISO 14001",nilai:18000,tanggal:"2026-08-11",status:"VIEWED",catatan:"Sudah dilihat, menunggu persetujuan board"},
+  {id:2,klien:"RSU Harapan Sehat",standar:"ISO 9001",nilai:6000,tanggal:"2026-08-06",status:"SIGNED",catatan:""},
+];
+function loadP(){const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);localStorage.setItem(KEY,JSON.stringify(SEED_P));return SEED_P;}
+function saveP(d){localStorage.setItem(KEY,JSON.stringify(d));}
+function v(id){return document.getElementById(id)?.value?.trim()||'';}
+function sv(id,val){const e=document.getElementById(id);if(e)e.value=val;}
+
+// PPP pricing table [base USD]
+const PRICE_BASE={
+  small:{single:3000,premium:5000,integrated:5500,integrated3:7000,cb:20000},
+  medium:{single:7000,premium:12000,integrated:13000,integrated3:17000,cb:40000},
+  enterprise:{single:15000,premium:25000,integrated:28000,integrated3:35000,cb:80000},
+};
+const GEO_MULTIPLIER={id:.65,asean:.80,me:1.0,sa:.75,af:.75,other:.90};
+const CONDITION_MULT={new:1.0,partial:.75,gap:.50};
+
+function calcPrice(){
+  const std=v('pStandar')||'single',uk=v('pUkuran')||'small',neg=v('pNegara')||'id',cond=v('pKondisi')||'new',tr=v('pTraining')||'no';
+  const base=(PRICE_BASE[uk]||PRICE_BASE.small)[std]||5000;
+  const geo=GEO_MULTIPLIER[neg]||0.9;
+  const condM=CONDITION_MULT[cond]||1;
+  const trM=tr==='yes'?1.2:1;
+  const total=Math.round(base*geo*condM*trM/100)*100;
+  const currency=neg==='id'?'IDR':'USD';
+  const displayVal=neg==='id'?(total*15000).toLocaleString('id-ID'):total.toLocaleString();
+  document.getElementById('priceResult').innerHTML=`
+    <h3>Estimasi Harga</h3>
+    <div class="price-line"><span>Base price</span><span class="pl-val">${currency} ${neg==='id'?(base*15000).toLocaleString('id-ID'):base.toLocaleString()}</span></div>
+    <div class="price-line"><span>Geo adjustment (${neg.toUpperCase()})</span><span>${geo*100-100>=0?'+':''}${Math.round((geo-1)*100)}%</span></div>
+    <div class="price-line"><span>Kondisi awal</span><span>${Math.round(condM*100)}%</span></div>
+    ${tr==='yes'?`<div class="price-line"><span>Pelatihan internal</span><span>+20%</span></div>`:''}
+    <div class="price-line" style="padding-top:10px;border-top:2px solid var(--border)"><span><strong>Total Estimasi</strong></span><span class="pl-val" style="font-size:1.3rem">${currency} ${displayVal}</span></div>
+    <p style="font-size:.72rem;color:var(--text-3);margin-top:10px">Estimasi ini untuk diskusi awal. Harga final dikomunikasikan setelah discovery call dan gap analysis awal. Model: project-based, pembayaran per milestone.</p>
+  `;
+}
+
+let currentProposal='';
+function generateProposal(){
+  const nama=v('gNama'),jbt=v('gJabatan'),prs=v('gPerusahaan'),neg=v('gNegara'),std=v('gStandar'),uk=v('gUkuran'),lang=v('gBahasa'),pain=v('gPain');
+  if(!prs){toast('Isi nama perusahaan');return;}
+  const isEN=lang==='en';
+  const isCB=std.includes('17021-1');
+  const milestones=isCB?
+    ['Kick-off & Gap Analysis','Desain Sistem Manajemen CB','Pengembangan Dokumen & Prosedur','Pelatihan Tim Internal','Mock Assessment','Pendampingan Akreditasi']:
+    ['Kick-off & Orientasi Tim','Gap Analysis','Pengembangan Dokumen','Implementasi & Pelatihan','Internal Audit','Pendampingan Pre-Audit','Audit Sertifikasi'];
+
+  const html=isEN?`
+    <h2>Proposal: ${std} Consulting for ${prs}</h2>
+    <p>Prepared for: <strong>${nama||'[Contact Name]'}</strong>${jbt?`, ${jbt}`:''}<br>Organization: <strong>${prs}</strong><br>Country: ${neg||'[Country]'}</p>
+    <h3>Executive Summary</h3>
+    <p>arafarnusa.com proposes to guide ${prs} through the complete ${std} implementation and certification journey. ${pain?`Understanding your context: <em>${pain}</em>`:'Our approach is implementation-focused, not documentation-only.'}</p>
+    <h3>Our Approach</h3>
+    <ul>${milestones.map(m=>`<li>${m}</li>`).join('')}</ul>
+    <h3>Why arafarnusa.com</h3>
+    <ul><li>Dual perspective: consulting + auditor background (we know what assessors look for)</li><li>Global reach with local understanding</li>${isCB?'<li>One of very few consultants globally specializing in ISO/IEC 17021-1</li>':''}<li>Implementation-focused: real systems, not just documents</li></ul>
+    <h3>Investment</h3>
+    <div class="price-box"><div class="p-val">USD [To be confirmed]</div><div class="p-note">Project-based, milestone payment. Final fee confirmed after discovery call and initial gap assessment.</div></div>
+    <h3>Next Steps</h3>
+    <p>1. Discovery Call (30 min) to align on scope and timeline<br>2. Initial Gap Assessment (remote)<br>3. Project kick-off and detailed timeline</p>
+    <p style="margin-top:14px;font-size:.78rem;color:var(--text-3)">arafarnusa.com · hello@arafarnusa.com · arafarnusa.com</p>
+  `:`
+    <h2>Proposal Konsultasi ${std} untuk ${prs}</h2>
+    <p>Dipersiapkan untuk: <strong>${nama||'[Nama Kontak]'}</strong>${jbt?`, ${jbt}`:''}<br>Organisasi: <strong>${prs}</strong><br>Lokasi: ${neg||'[Negara]'}</p>
+    <h3>Ringkasan Eksekutif</h3>
+    <p>arafarnusa.com mengusulkan untuk mendampingi ${prs} dalam perjalanan implementasi dan sertifikasi ${std} secara menyeluruh. ${pain?`Memahami kebutuhan Anda: <em>${pain}</em>`:'Pendekatan kami berfokus pada implementasi nyata — bukan sekadar dokumen.'}</p>
+    <h3>Pendekatan Kami</h3>
+    <ul>${milestones.map(m=>`<li>${m}</li>`).join('')}</ul>
+    <h3>Mengapa arafarnusa.com</h3>
+    <ul><li>Perspektif ganda: konsultan sekaligus auditor (kami tahu apa yang dicari assessor)</li><li>Jangkauan global, pemahaman lokal</li>${isCB?'<li>Salah satu dari sedikit konsultan global yang menguasai ISO/IEC 17021-1</li>':''}<li>Berfokus pada implementasi: sistem yang benar-benar berjalan</li></ul>
+    <h3>Investasi</h3>
+    <div class="price-box"><div class="p-val">IDR / USD [Dikonfirmasi setelah discovery call]</div><div class="p-note">Project-based, pembayaran per milestone. Harga final dikonfirmasi setelah discovery call dan gap assessment awal.</div></div>
+    <h3>Langkah Selanjutnya</h3>
+    <p>1. Discovery Call (30 menit) untuk menyepakati scope dan timeline<br>2. Gap Assessment Awal (remote)<br>3. Kick-off proyek dan jadwal detail</p>
+    <p style="margin-top:14px;font-size:.78rem;color:var(--text-3)">arafarnusa.com · hello@arafarnusa.com · arafarnusa.com</p>
+  `;
+  document.getElementById('proposalPreview').innerHTML=html;
+  currentProposal=html;
+  toast('Proposal di-generate ✓');
+}
+function copyProposal(){
+  if(!currentProposal){toast('Generate proposal dulu');return;}
+  const txt=document.getElementById('proposalPreview').innerText;
+  navigator.clipboard?.writeText(txt).then(()=>toast('Proposal disalin ✓')).catch(()=>toast('Seleksi manual'));
+}
+function saveToTracker(){
+  if(!currentProposal){toast('Generate proposal dulu');return;}
+  const prs=v('gPerusahaan');const std=v('gStandar');
+  openPropModal();sv('pNama',`${v('gNama')} — ${prs}`);sv('pStandarT',std);sv('pTanggal',new Date().toISOString().slice(0,10));
+}
+function renderTracker(){
+  const d=loadP();
+  const tbody=document.getElementById('propTracker');
+  const empty=document.getElementById('propEmpty');
+  if(!d.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  const bmap={DIKIRIM:'badge-dikirim',VIEWED:'badge-viewed',SIGNED:'badge-signed',REJECTED:'badge-rejected'};
+  tbody.innerHTML=d.map((p,i)=>`<tr>
+    <td style="color:var(--text-3);font-size:.74rem">${i+1}</td>
+    <td style="font-size:.83rem">${p.klien||'—'}</td>
+    <td><span style="font-size:.72rem;padding:2px 7px;border-radius:2px;background:var(--accent-dim);color:var(--accent)">${p.standar||'—'}</span></td>
+    <td style="color:var(--green);font-size:.83rem">USD ${(p.nilai||0).toLocaleString()}</td>
+    <td style="font-size:.74rem;color:var(--text-3)">${p.tanggal||'—'}</td>
+    <td><span class="badge ${bmap[p.status]||'badge-dikirim'}">${p.status}</span></td>
+    <td><div style="display:flex;gap:4px"><button class="btn btn-outline btn-sm" onclick="editP(${p.id})">Edit</button><button class="btn btn-outline btn-sm" onclick="delP(${p.id})" style="color:var(--red)">×</button></div></td>
+  </tr>`).join('');
+}
+function openPropModal(id=''){document.getElementById('ePropId').value=id;document.getElementById('propModal').classList.add('open');}
+function closeP(){document.getElementById('propModal').classList.remove('open');}
+document.getElementById('propModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeP();}=e.curred('peditP(id){const p=loadP().find(x=>x.id===id);if(!p)return;sv('ePropId',id);sv('pNama',p.klien||'');sv('pStandarT',p.standar||'');sv('pNilai',p.nilai||'');sv('pTanggal',p.tanggal||'');sv('pStatus',p.status||'DIKIRIM');sv('pCatatan',p.catatan||'');openPropModal(id);}
+function delP(id){if(!confirm('Hapus?'))return;saveP(loadP().filter(x=>x.id!==id));renderTracker();}
+function saveProp(){
+  const entry={klien:v('pNama'),standar:v('pStandarT'),nilai:parseInt(v('pNilai')||'0'),tanggal:v('pTanggal'),status:v('pStatus'),catatan:v('pCatatan')};
+  const data=loadP();const eid=parseInt(v('ePropId')||'0');
+  if(eid){const i=data.findIndex(x=>x.id===eid);if(i>=0)data[i]={...data[i],...entry};}
+  else data.push({id:data.reduce((m,x)=>Math.max(m,x.id||0),0)+1,...entry});
+  saveP(data);closeP();renderTracker();toast('Proposal disimpan ✓');
+}
+function sw(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  ['generator','pricing','tracker'].forEach((t,i)=>document.querySelectorAll('.tab-btn')[i]?.classList[t===id?'add':'remove']('active'));
+  if(id==='tracker')renderTracker();
+}
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3000);}
+(function(){calcPrice();renderTracker();})();
+</script>
+</body></html>
