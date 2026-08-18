@@ -1,0 +1,703 @@
+<title>Pipeline Prospek ISO — Global</title>
+<style>
+:root {
+  --bg:        #F0EDE6; --surface:  #E8E4DA; --surface-hi: #EDE9DF;
+  --border:    #C8BFB0; --border-s: #DAD5CC;
+  --text:      #1A1510; --text-2:   #5A5048;  --text-3:    #8A7E72;
+  --accent:    #B84F1E; --accent-bg: rgba(184,79,30,.10);
+
+  --s-id-c:#5E6E7E; --s-id-bg:rgba(94,110,126,.11);
+  --s-ct-c:#7A6B1A; --s-ct-bg:rgba(122,107,26,.11);
+  --s-pr-c:#1A5785; --s-pr-bg:rgba(26,87,133,.11);
+  --s-ng-c:#8A4812; --s-ng-bg:rgba(138,72,18,.11);
+  --s-wn-c:#1A6444; --s-wn-bg:rgba(26,100,68,.11);
+  --s-ls-c:#7A1E1E; --s-ls-bg:rgba(122,30,30,.10);
+
+  --r-asean:#1A5785; --r-me:#8A4812; --r-sa:#1A6444; --r-af:#7A6B1A; --r-all:#5E6E7E;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0F1820; --surface:#182230; --surface-hi:#1F2D3D;
+  --border:#2A3A4A; --border-s:#233040;
+  --text:#E2DDD4; --text-2:#95A8BA; --text-3:#607080;
+  --accent:#D06528; --accent-bg:rgba(208,101,40,.12);
+  --s-id-c:#7A90A2;--s-id-bg:rgba(122,144,162,.11);
+  --s-ct-c:#B09A40;--s-ct-bg:rgba(176,154,64,.11);
+  --s-pr-c:#4A90C0;--s-pr-bg:rgba(74,144,192,.11);
+  --s-ng-c:#C07038;--s-ng-bg:rgba(192,112,56,.11);
+  --s-wn-c:#3AA870;--s-wn-bg:rgba(58,168,112,.11);
+  --s-ls-c:#B04444;--s-ls-bg:rgba(176,68,68,.10);
+}}
+:root[data-theme=light]{
+  --bg:#F0EDE6;--surface:#E8E4DA;--surface-hi:#EDE9DF;
+  --border:#C8BFB0;--border-s:#DAD5CC;
+  --text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;
+  --accent:#B84F1E;--accent-bg:rgba(184,79,30,.10);
+  --s-id-c:#5E6E7E;--s-id-bg:rgba(94,110,126,.11);
+  --s-ct-c:#7A6B1A;--s-ct-bg:rgba(122,107,26,.11);
+  --s-pr-c:#1A5785;--s-pr-bg:rgba(26,87,133,.11);
+  --s-ng-c:#8A4812;--s-ng-bg:rgba(138,72,18,.11);
+  --s-wn-c:#1A6444;--s-wn-bg:rgba(26,100,68,.11);
+  --s-ls-c:#7A1E1E;--s-ls-bg:rgba(122,30,30,.10);
+}
+:root[data-theme=dark]{
+  --bg:#0F1820;--surface:#182230;--surface-hi:#1F2D3D;
+  --border:#2A3A4A;--border-s:#233040;
+  --text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;
+  --accent:#D06528;--accent-bg:rgba(208,101,40,.12);
+  --s-id-c:#7A90A2;--s-id-bg:rgba(122,144,162,.11);
+  --s-ct-c:#B09A40;--s-ct-bg:rgba(176,154,64,.11);
+  --s-pr-c:#4A90C0;--s-pr-bg:rgba(74,144,192,.11);
+  --s-ng-c:#C07038;--s-ng-bg:rgba(192,112,56,.11);
+  --s-wn-c:#3AA870;--s-wn-bg:rgba(58,168,112,.11);
+  --s-ls-c:#B04444;--s-ls-bg:rgba(176,68,68,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:14px;}
+body{
+  font-family:"Trebuchet MS",Tahoma,Geneva,Verdana,sans-serif;
+  background:var(--bg);color:var(--text);height:100vh;overflow:hidden;
+}
+h1,h2,h3,.serif{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-weight:normal;}
+button,input,select,textarea{font-family:inherit;font-size:inherit;cursor:pointer;}
+
+/* layout */
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* sidebar */
+.sidebar{
+  width:252px;flex-shrink:0;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;
+}
+.sb-head{padding:18px 18px 14px;border-bottom:4px solid var(--accent);}
+.sb-head h1{font-size:1.05rem;line-height:1.25;}
+.sb-head .sub{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-top:3px;}
+.sb-sec{padding:13px 18px;border-bottom:1px solid var(--border-s);}
+.sb-lbl{font-size:.64rem;letter-spacing:.09em;text-transform:uppercase;color:var(--text-3);margin-bottom:9px;}
+
+/* region map */
+.region-map{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
+.rmap-cell{
+  padding:7px 8px;border-radius:3px;cursor:pointer;
+  border:1px solid transparent;transition:border-color .1s,background .1s;
+}
+.rmap-cell.active{border-color:var(--accent);background:var(--accent-bg);}
+.rmap-cell:hover:not(.active){background:var(--surface-hi);}
+.rmap-name{font-size:.74rem;font-weight:normal;color:var(--text-2);}
+.rmap-n{font-size:1.1rem;color:var(--accent);letter-spacing:-.02em;}
+.rmap-label{font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;}
+
+/* pipeline stats */
+.stat-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+.stat-name{font-size:.79rem;color:var(--text-2);display:flex;align-items:center;gap:6px;}
+.stat-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.stat-n{font-size:.79rem;font-variant-numeric:tabular-nums;color:var(--text);}
+.pipe-total{margin-top:11px;padding-top:10px;border-top:1px solid var(--border-s);}
+.pipe-total-lbl{font-size:.64rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);}
+.pipe-total-val{font-size:1.4rem;color:var(--accent);letter-spacing:-.02em;margin-top:2px;}
+
+/* filters */
+.fg{margin-bottom:8px;}
+.fg-lbl{font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:3px;}
+select.fsel{
+  width:100%;padding:5px 22px 5px 7px;font-size:.79rem;
+  background:var(--surface-hi);color:var(--text);
+  border:1px solid var(--border);border-radius:3px;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5'%3E%3Cpath d='M0 0l4.5 5L9 0' fill='none' stroke='%238A7E72' stroke-width='1.4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 7px center;
+}
+select.fsel:focus{outline:2px solid var(--accent);outline-offset:-1px;}
+:root[data-theme=dark] select.fsel,:root[data-theme=dark] select.fsel{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5'%3E%3Cpath d='M0 0l4.5 5L9 0' fill='none' stroke='%23607080' stroke-width='1.4'/%3E%3C/svg%3E");
+}
+@media(prefers-color-scheme:dark){select.fsel{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5'%3E%3Cpath d='M0 0l4.5 5L9 0' fill='none' stroke='%23607080' stroke-width='1.4'/%3E%3C/svg%3E");
+}}
+.sb-foot{margin-top:auto;padding:11px 18px;border-top:1px solid var(--border-s);}
+.btn-theme{
+  font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--text-3);background:none;border:1px solid var(--border);border-radius:3px;
+  padding:4px 9px;transition:color .12s,border-color .12s;
+}
+.btn-theme:hover{color:var(--text);border-color:var(--text-2);}
+
+/* main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{
+  display:flex;align-items:center;gap:9px;
+  padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.search-inp{
+  flex:1;padding:6px 10px;font-size:.85rem;
+  background:var(--bg);color:var(--text);
+  border:1px solid var(--border);border-radius:3px;
+}
+.search-inp::placeholder{color:var(--text-3);}
+.search-inp:focus{outline:2px solid var(--accent);outline-offset:-1px;}
+.btn-add{
+  font-size:.79rem;padding:6px 13px;white-space:nowrap;
+  background:var(--accent);color:#fff;border:none;border-radius:3px;
+  letter-spacing:.02em;transition:opacity .12s;
+}
+.btn-add:hover{opacity:.87;}
+
+/* region tabs */
+.region-tabs{
+  display:flex;gap:0;
+  border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;
+  overflow-x:auto;
+}
+.rtab{
+  padding:8px 16px;font-size:.76rem;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--text-3);background:none;border:none;border-bottom:2px solid transparent;
+  white-space:nowrap;transition:color .1s,border-color .1s;
+}
+.rtab:hover{color:var(--text-2);}
+.rtab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* list */
+.list-wrap{flex:1;overflow-y:auto;}
+.list-head{
+  display:grid;
+  grid-template-columns:2.2fr .9fr 1.1fr 1fr .85fr .85fr;
+  gap:10px;padding:7px 20px;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:2;
+}
+.col-h{
+  font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-3);user-select:none;cursor:pointer;
+}
+.col-h:hover{color:var(--text-2);}
+.col-h.sorted{color:var(--accent);}
+
+.prow{
+  display:grid;
+  grid-template-columns:2.2fr .9fr 1.1fr 1fr .85fr .85fr;
+  gap:10px;padding:10px 20px;
+  border-bottom:1px solid var(--border-s);
+  cursor:pointer;align-items:center;transition:background .08s;
+}
+.prow:hover{background:var(--surface);}
+.prow.active{background:var(--accent-bg);}
+
+.row-co{font-size:.87rem;color:var(--text);}
+.row-ct{font-size:.74rem;color:var(--text-3);margin-top:1px;}
+.row-ctry{font-size:.79rem;color:var(--text-2);}
+.row-std{font-size:.76rem;color:var(--text-2);}
+.row-val{font-size:.81rem;font-variant-numeric:tabular-nums;color:var(--text);text-align:right;}
+.row-dt{font-size:.74rem;color:var(--text-3);font-variant-numeric:tabular-nums;}
+
+/* region badge */
+.rbadge{
+  display:inline-block;font-size:.62rem;letter-spacing:.04em;text-transform:uppercase;
+  padding:1px 5px;border-radius:2px;white-space:nowrap;margin-top:2px;
+}
+.rbadge-ASEAN{background:rgba(26,87,133,.12);color:#1A5785;}
+.rbadge-ME{background:rgba(138,72,18,.12);color:#8A4812;}
+.rbadge-SA{background:rgba(26,100,68,.12);color:#1A6444;}
+.rbadge-AF{background:rgba(122,107,26,.12);color:#7A6B1A;}
+:root[data-theme=dark] .rbadge-ASEAN{background:rgba(74,144,192,.13);color:#5AAAD4;}
+:root[data-theme=dark] .rbadge-ME{background:rgba(192,112,56,.13);color:#D4906A;}
+:root[data-theme=dark] .rbadge-SA{background:rgba(58,168,112,.13);color:#5AC890;}
+:root[data-theme=dark] .rbadge-AF{background:rgba(176,154,64,.13);color:#C8B060;}
+@media(prefers-color-scheme:dark){
+  .rbadge-ASEAN{background:rgba(74,144,192,.13);color:#5AAAD4;}
+  .rbadge-ME{background:rgba(192,112,56,.13);color:#D4906A;}
+  .rbadge-SA{background:rgba(58,168,112,.13);color:#5AC890;}
+  .rbadge-AF{background:rgba(176,154,64,.13);color:#C8B060;}
+}
+
+/* stage chips */
+.chip{display:inline-block;font-size:.63rem;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;border-radius:2px;white-space:nowrap;}
+.chip-identified {color:var(--s-id-c);background:var(--s-id-bg);}
+.chip-contacted  {color:var(--s-ct-c);background:var(--s-ct-bg);}
+.chip-proposal   {color:var(--s-pr-c);background:var(--s-pr-bg);}
+.chip-negotiating{color:var(--s-ng-c);background:var(--s-ng-bg);}
+.chip-won        {color:var(--s-wn-c);background:var(--s-wn-bg);}
+.chip-lost       {color:var(--s-ls-c);background:var(--s-ls-bg);}
+
+.empty-state{padding:56px 24px;text-align:center;color:var(--text-3);font-size:.88rem;}
+
+@media(max-width:960px){
+  .list-head,.prow{grid-template-columns:2fr .9fr 1fr .85fr;}
+  .hide-sm{display:none;}
+}
+
+/* detail */
+.detail{
+  width:310px;flex-shrink:0;
+  background:var(--surface);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;
+}
+.detail.closed{display:none;}
+.det-head{
+  padding:15px 17px 12px;border-bottom:1px solid var(--border-s);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:8px;
+}
+.det-co{font-size:1.02rem;line-height:1.3;text-wrap:balance;}
+.btn-x{background:none;border:none;color:var(--text-3);font-size:.92rem;line-height:1;padding:1px;transition:color .1s;}
+.btn-x:hover{color:var(--text);}
+.det-body{padding:13px 17px;flex:1;}
+.df{margin-bottom:11px;}
+.df-lbl{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:3px;}
+.df input,.df select,.df textarea{
+  width:100%;padding:5px 8px;font-size:.83rem;
+  background:var(--bg);color:var(--text);
+  border:1px solid var(--border);border-radius:3px;
+}
+.df input:focus,.df select:focus,.df textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;}
+.df textarea{resize:vertical;min-height:60px;}
+.det-foot{padding:11px 17px;border-top:1px solid var(--border-s);display:flex;gap:6px;}
+.btn-save{flex:1;padding:7px;font-size:.79rem;background:var(--accent);color:#fff;border:none;border-radius:3px;transition:opacity .12s;}
+.btn-save:hover{opacity:.87;}
+.btn-del{padding:7px 10px;font-size:.79rem;background:none;color:var(--text-3);border:1px solid var(--border);border-radius:3px;transition:color .12s,border-color .12s;}
+.btn-del:hover{color:var(--s-ls-c);border-color:var(--s-ls-c);}
+
+/* modal */
+.backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.38);
+  display:flex;align-items:center;justify-content:center;
+  z-index:200;opacity:0;pointer-events:none;transition:opacity .14s;
+}
+.backdrop.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--surface-hi);border:1px solid var(--border);border-radius:5px;
+  width:420px;max-width:92vw;max-height:88vh;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.mod-head{padding:17px 21px 12px;border-bottom:1px solid var(--border-s);display:flex;justify-content:space-between;align-items:center;}
+.mod-title{font-size:.98rem;}
+.mod-body{padding:17px 21px;overflow-y:auto;display:grid;gap:11px;}
+.mf label{display:block;font-size:.64rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);margin-bottom:3px;}
+.mf input,.mf select,.mf textarea{width:100%;padding:6px 9px;font-size:.84rem;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:3px;}
+.mf input:focus,.mf select:focus,.mf textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;}
+.mod-foot{padding:11px 21px 17px;display:flex;gap:7px;justify-content:flex-end;border-top:1px solid var(--border-s);}
+.btn-cancel{padding:7px 13px;font-size:.81rem;background:none;color:var(--text-2);border:1px solid var(--border);border-radius:3px;transition:color .12s;}
+.btn-cancel:hover{color:var(--text);}
+
+/* toast */
+.toast{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  background:var(--text);color:var(--bg);
+  font-size:.78rem;padding:7px 14px;border-radius:3px;
+  opacity:0;transition:opacity .14s;pointer-events:none;z-index:300;white-space:nowrap;
+}
+.toast.show{opacity:1;}
+</style>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <h1 class="serif">Pipeline Global</h1>
+      <div class="sub">Konsultan ISO</div>
+    </div>
+
+    <div class="sb-sec">
+      <div class="sb-lbl">Pasar Target</div>
+      <div class="region-map" id="region-map"></div>
+    </div>
+
+    <div class="sb-sec">
+      <div class="sb-lbl">Pipeline per Tahap</div>
+      <div id="pipe-stats"></div>
+    </div>
+
+    <div class="sb-sec">
+      <div class="sb-lbl">Filter</div>
+      <div class="fg"><div class="fg-lbl">Tahap</div>
+        <select class="fsel" id="f-stage" onchange="applyFilters()">
+          <option value="">Semua Tahap</option>
+          <option value="identified">Teridentifikasi</option>
+          <option value="contacted">Dihubungi</option>
+          <option value="proposal">Proposal Dikirim</option>
+          <option value="negotiating">Negosiasi</option>
+          <option value="won">Menang</option>
+          <option value="lost">Kalah</option>
+        </select>
+      </div>
+      <div class="fg"><div class="fg-lbl">Standar ISO</div>
+        <select class="fsel" id="f-std" onchange="applyFilters()"><option value="">Semua Standar</option></select>
+      </div>
+      <div class="fg"><div class="fg-lbl">Pendekatan</div>
+        <select class="fsel" id="f-approach" onchange="applyFilters()">
+          <option value="">Semua Pendekatan</option>
+          <option value="LinkedIn">LinkedIn Outreach</option>
+          <option value="Email">Cold Email</option>
+          <option value="Referral">Referral</option>
+          <option value="Event">Event / Konferensi</option>
+          <option value="Platform">Platform Tender</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sb-foot">
+      <button class="btn-theme" onclick="toggleTheme()">Ganti Tema</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <input class="search-inp" type="search" id="s-q"
+        placeholder="Cari perusahaan, negara, atau standar…"
+        oninput="applyFilters()"/>
+      <button class="btn-add" onclick="openModal()">+ Tambah Prospek</button>
+    </div>
+
+    <div class="region-tabs" id="region-tabs"></div>
+
+    <div class="list-wrap">
+      <div class="list-head">
+        <div class="col-h" data-sort="company" onclick="setSort('company')">Perusahaan</div>
+        <div class="col-h" data-sort="country" onclick="setSort('country')">Negara</div>
+        <div class="col-h hide-sm" data-sort="standard" onclick="setSort('standard')">Standar</div>
+        <div class="col-h" data-sort="stage" onclick="setSort('stage')">Tahap</div>
+        <div class="col-h" data-sort="value" onclick="setSort('value')">Nilai (USD)</div>
+        <div class="col-h" data-sort="lastActivity" onclick="setSort('lastActivity')">Terakhir</div>
+      </div>
+      <div id="list-body"></div>
+    </div>
+  </main>
+
+  <!-- Detail -->
+  <div class="detail closed" id="detail">
+    <div class="det-head">
+      <div class="det-co serif" id="d-coname">—</div>
+      <button class="btn-x" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="det-body" id="d-body"></div>
+    <div class="det-foot">
+      <button class="btn-save" onclick="saveDetail()">Simpan</button>
+      <button class="btn-del" onclick="deleteSelected()">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="backdrop" id="backdrop" onclick="handleBd(event)">
+  <div class="modal">
+    <div class="mod-head">
+      <div class="mod-title serif">Tambah Prospek Global</div>
+      <button class="btn-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mod-body" id="mod-body"></div>
+    <div class="mod-foot">
+      <button class="btn-cancel" onclick="closeModal()">Batal</button>
+      <button class="btn-add" onclick="submitModal()">Tambah</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STAGES={
+  identified: {label:'Teridentifikasi',dot:'#5E6E7E'},
+  contacted:  {label:'Dihubungi',      dot:'#9A8B20'},
+  proposal:   {label:'Proposal',       dot:'#1A5785'},
+  negotiating:{label:'Negosiasi',      dot:'#8A4812'},
+  won:        {label:'Menang',         dot:'#1A6444'},
+  lost:       {label:'Kalah',          dot:'#8A2020'},
+};
+const STAGE_KEYS=Object.keys(STAGES);
+
+const REGIONS={
+  ALL: {label:'Semua',     short:'Semua'},
+  ASEAN:{label:'ASEAN',   short:'ASEAN'},
+  ME:   {label:'Middle East',short:'Mid-East'},
+  SA:   {label:'South Asia', short:'S.Asia'},
+  AF:   {label:'Africa',     short:'Africa'},
+};
+
+const APPROACHES=['LinkedIn','Email','Referral','Event','Platform'];
+
+const SEED=[
+  // ASEAN
+  {id:1, company:'Petronas',                   country:'Malaysia',     region:'ASEAN', standard:'ISO 14001 + ISO 45001', stage:'contacted',   value:28000, approach:'LinkedIn', contact:'Ahmad Zaki',       contactRole:'VP HSE',             email:'a.zaki@petronas.com.my',  lastActivity:'2026-08-03', notes:'Dihubungi via LinkedIn. Menunggu respons.'},
+  {id:2, company:'CIMB Group',                 country:'Malaysia',     region:'ASEAN', standard:'ISO 27001',             stage:'identified',  value:22000, approach:'LinkedIn', contact:'Nurul Ain',        contactRole:'Head IT Risk',       email:'',                         lastActivity:'2026-08-05', notes:'Profil lengkap di LinkedIn. Belum dihubungi.'},
+  {id:3, company:'Singapore Airlines',         country:'Singapura',    region:'ASEAN', standard:'ISO 9001 + ISO 14001',  stage:'proposal',    value:35000, approach:'Email',    contact:'James Tan',        contactRole:'Dir. Quality',       email:'j.tan@singaporeair.com',  lastActivity:'2026-07-28', notes:'Proposal dikirim email. Follow up minggu ini.'},
+  {id:4, company:'Grab Holdings',             country:'Singapura',    region:'ASEAN', standard:'ISO 27001',             stage:'identified',  value:30000, approach:'LinkedIn', contact:'',                 contactRole:'',                   email:'',                         lastActivity:'2026-08-06', notes:'Startup besar, butuh ISO 27001 untuk enterprise client.'},
+  {id:5, company:'CP Group',                  country:'Thailand',     region:'ASEAN', standard:'ISO 22000',             stage:'contacted',   value:25000, approach:'Event',    contact:'Surin Patel',      contactRole:'QA Director',        email:'s.patel@cpgroup.th',      lastActivity:'2026-07-30', notes:'Bertemu di food safety forum Bangkok.'},
+  {id:6, company:'Vingroup',                  country:'Vietnam',      region:'ASEAN', standard:'ISO 9001 + ISO 14001',  stage:'identified',  value:32000, approach:'Platform', contact:'',                 contactRole:'',                   email:'',                         lastActivity:'2026-08-04', notes:'Konglomerat besar Vietnam. Butuh multi-site certification.'},
+  {id:7, company:'San Miguel Corporation',    country:'Filipina',     region:'ASEAN', standard:'ISO 22000',             stage:'contacted',   value:20000, approach:'Referral', contact:'Maria Santos',     contactRole:'Food Safety Mgr',    email:'m.santos@sanmiguel.com.ph',lastActivity:'2026-07-25', notes:'Referral dari kontak lama. Meeting awal berjalan baik.'},
+  {id:8, company:'PTT Public Company',        country:'Thailand',     region:'ASEAN', standard:'ISO 14001 + ISO 45001', stage:'proposal',    value:40000, approach:'LinkedIn', contact:'Chai Wongkerd',   contactRole:'HSE Manager',        email:'c.wongkerd@ptt.co.th',    lastActivity:'2026-07-20', notes:'Proposal sudah di tangan. Competitor juga ikut tender.'},
+
+  // Middle East
+  {id:9,  company:'Saudi Aramco',             country:'Arab Saudi',   region:'ME',    standard:'ISO 14001 + ISO 55001', stage:'identified',  value:85000, approach:'Platform', contact:'',                 contactRole:'',                   email:'',                         lastActivity:'2026-08-06', notes:'Tender terbuka di Saudi e-procurement. Riset persyaratan vendor.'},
+  {id:10, company:'Emirates Group',           country:'UAE',          region:'ME',    standard:'ISO 9001',              stage:'contacted',   value:45000, approach:'LinkedIn', contact:'Rashid Al-Maktoum',contactRole:'GM Quality',         email:'r.almaktoum@emirates.com', lastActivity:'2026-08-01', notes:'Kontak diterima. Menunggu jadwal intro call.'},
+  {id:11, company:'ADNOC',                    country:'UAE',          region:'ME',    standard:'ISO 14001 + ISO 45001', stage:'identified',  value:70000, approach:'Platform', contact:'',                 contactRole:'',                   email:'',                         lastActivity:'2026-08-05', notes:'Abu Dhabi National Oil. Program sertifikasi supplier baru.'},
+  {id:12, company:'Qatar Airways',            country:'Qatar',        region:'ME',    standard:'ISO 9001 + ISO 14001',  stage:'contacted',   value:38000, approach:'Email',    contact:'Ahmed Al-Sayed',  contactRole:'Dir. Quality',       email:'a.alsayed@qatarairways.com',lastActivity:'2026-07-28', notes:'Email pertama terkirim. Menunggu respons tim procurement.'},
+  {id:13, company:'stc (Saudi Telecom)',      country:'Arab Saudi',   region:'ME',    standard:'ISO 27001',             stage:'proposal',    value:55000, approach:'LinkedIn', contact:'Khalid Al-Hassan', contactRole:'CISO',               email:'k.alhassan@stc.com.sa',   lastActivity:'2026-07-22', notes:'Presentasi online sukses. Proposal dalam review legal.'},
+  {id:14, company:'Aldar Properties',         country:'UAE',          region:'ME',    standard:'ISO 9001 + ISO 14001',  stage:'identified',  value:28000, approach:'LinkedIn', contact:'',                 contactRole:'',                   email:'',                         lastActivity:'2026-08-02', notes:'Developer properti terbesar Abu Dhabi.'},
+
+  // South Asia
+  {id:15, company:'Infosys',                  country:'India',        region:'SA',    standard:'ISO 27001 + ISO 9001',  stage:'proposal',    value:42000, approach:'LinkedIn', contact:'Priya Nair',       contactRole:'VP Compliance',      email:'p.nair@infosys.com',      lastActivity:'2026-07-26', notes:'Butuh re-certification ISO 27001. Proposal sudah dikirim.'},
+  {id:16, company:'Tata Consultancy Services',country:'India',        region:'SA',    standard:'ISO 9001',              stage:'contacted',   value:38000, approach:'Referral', contact:'Rajesh Kumar',     contactRole:'Quality Head',       email:'r.kumar@tcs.com',         lastActivity:'2026-07-31', notes:'Referral dari rekanan. Meeting online dijadwalkan.'},
+  {id:17, company:'BRAC',                     country:'Bangladesh',   region:'SA',    standard:'ISO 9001 + ISO 22000',  stage:'contacted',   value:15000, approach:'Email',    contact:'Fatima Begum',    contactRole:'Director Operations',email:'f.begum@brac.net',        lastActivity:'2026-08-02', notes:'NGO terbesar Bangladesh. Butuh ISO untuk funding donor.'},
+  {id:18, company:'HBL (Habib Bank)',         country:'Pakistan',     region:'SA',    standard:'ISO 27001',             stage:'identified',  value:25000, approach:'LinkedIn', contact:'',                 contactRole:'',                   email:'',                         lastActivity:'2026-08-04', notes:'Bank terbesar Pakistan. Regulasi OJK Pakistan dorong ISO 27001.'},
+  {id:19, company:'Mahindra Group',           country:'India',        region:'SA',    standard:'ISO 14001 + ISO 45001', stage:'identified',  value:50000, approach:'Platform', contact:'',                 contactRole:'',                   email:'',                         lastActivity:'2026-08-05', notes:'Konglomerat otomotif India. Program EHS besar-besaran.'},
+
+  // Africa
+  {id:20, company:'Dangote Group',            country:'Nigeria',      region:'AF',    standard:'ISO 9001 + ISO 14001',  stage:'contacted',   value:35000, approach:'LinkedIn', contact:'Emeka Okafor',     contactRole:'COO',                email:'e.okafor@dangote.com',    lastActivity:'2026-07-29', notes:'Konglomerat terbesar Africa. Dihubungi via LinkedIn.'},
+  {id:21, company:'Safaricom',                country:'Kenya',        region:'AF',    standard:'ISO 27001',             stage:'proposal',    value:22000, approach:'Email',    contact:'Grace Wanjiru',   contactRole:'Head IT Security',   email:'g.wanjiru@safaricom.co.ke',lastActivity:'2026-07-24', notes:'Telco terbesar Kenya. Proposal dalam review CISO.'},
+  {id:22, company:'MTN Group',                country:'Afrika Selatan',region:'AF',   standard:'ISO 27001 + ISO 9001',  stage:'identified',  value:45000, approach:'LinkedIn', contact:'',                 contactRole:'',                   email:'',                         lastActivity:'2026-08-03', notes:'Pan-Africa telco. Operasi di 18 negara.'},
+  {id:23, company:'Equity Group Holdings',    country:'Kenya',        region:'AF',    standard:'ISO 27001',             stage:'contacted',   value:18000, approach:'Referral', contact:'Peter Njoroge',   contactRole:'CISO',               email:'p.njoroge@equitybank.co.ke',lastActivity:'2026-08-01', notes:'Bank pan-Afrika. Referral dari kontak Kenya.'},
+  {id:24, company:'Jumia Technologies',       country:'Nigeria',      region:'AF',    standard:'ISO 27001 + ISO 9001',  stage:'identified',  value:20000, approach:'LinkedIn', contact:'',                 contactRole:'',                   email:'',                         lastActivity:'2026-08-05', notes:'E-commerce terbesar Afrika. Sedang ekspansi agresif.'},
+];
+
+const state={
+  prospects:[],
+  selectedId:null,
+  activeRegion:'ALL',
+  filters:{stage:'',std:'',approach:'',q:''},
+  sortBy:'lastActivity',
+  sortDir:'desc',
+};
+
+/* utils */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtVal(n){
+  if(!n)return'—';
+  if(n>=1000)return'$'+(n/1000).toFixed(0)+'K';
+  return'$'+n;
+}
+function fmtDate(d){
+  if(!d)return'—';
+  const[,m,day]=d.split('-');
+  return`${parseInt(day)} ${['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][parseInt(m)-1]}`;
+}
+function nextId(){return Math.max(0,...state.prospects.map(p=>p.id))+1;}
+function persist(){try{localStorage.setItem('iso-global-v1',JSON.stringify(state.prospects));}catch(e){}}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800);}
+
+/* init */
+function init(){
+  try{const s=localStorage.getItem('iso-global-v1');if(s)state.prospects=JSON.parse(s);}catch(e){}
+  if(!state.prospects.length)state.prospects=SEED.map(p=>({...p}));
+  const t=localStorage.getItem('iso-theme');
+  if(t)document.documentElement.setAttribute('data-theme',t);
+  buildRegionTabs();
+  buildRegionMap();
+  buildStdFilter();
+  renderAll();
+}
+
+function renderAll(){renderStats();renderList();}
+
+/* region tabs */
+function buildRegionTabs(){
+  const el=document.getElementById('region-tabs');
+  el.innerHTML=Object.entries(REGIONS).map(([k,v])=>
+    `<button class="rtab${state.activeRegion===k?' active':''}" onclick="setRegion('${k}')">${v.label}</button>`
+  ).join('');
+}
+function setRegion(r){
+  state.activeRegion=r;
+  buildRegionTabs();
+  renderAll();
+}
+
+/* region map in sidebar */
+function buildRegionMap(){
+  const counts={};
+  Object.keys(REGIONS).forEach(k=>counts[k]=0);
+  state.prospects.forEach(p=>{counts[p.region]=(counts[p.region]||0)+1; counts.ALL++;});
+  const el=document.getElementById('region-map');
+  el.innerHTML=Object.entries(REGIONS).filter(([k])=>k!=='ALL').map(([k,v])=>
+    `<div class="rmap-cell${state.activeRegion===k?' active':''}" onclick="setRegion('${k}')">
+      <div class="rmap-n">${counts[k]||0}</div>
+      <div class="rmap-label">${v.label}</div>
+    </div>`
+  ).join('');
+}
+
+/* pipeline stats */
+function renderStats(){
+  const ps=getFiltered();
+  const counts={};const vals={};
+  STAGE_KEYS.forEach(k=>{counts[k]=0;vals[k]=0;});
+  ps.forEach(p=>{if(counts[p.stage]!==undefined){counts[p.stage]++;vals[p.stage]+=(p.value||0);}});
+  const activeVal=STAGE_KEYS.filter(k=>k!=='lost').reduce((a,k)=>a+vals[k],0);
+  let html=STAGE_KEYS.map(k=>counts[k]?`<div class="stat-row">
+    <div class="stat-name"><div class="stat-dot" style="background:${STAGES[k].dot}"></div>${STAGES[k].label}</div>
+    <div class="stat-n">${counts[k]}</div></div>`:''
+  ).join('');
+  html+=`<div class="pipe-total"><div class="pipe-total-lbl">Pipeline Aktif</div>
+    <div class="pipe-total-val serif">${fmtVal(activeVal)}</div></div>`;
+  document.getElementById('pipe-stats').innerHTML=html;
+}
+
+/* filter + sort */
+function getFiltered(){
+  let list=[...state.prospects];
+  if(state.activeRegion!=='ALL')list=list.filter(p=>p.region===state.activeRegion);
+  const{stage,std,approach,q}=state.filters;
+  if(stage)list=list.filter(p=>p.stage===stage);
+  if(std)list=list.filter(p=>p.standard===std);
+  if(approach)list=list.filter(p=>p.approach===approach);
+  if(q){const qq=q.toLowerCase();list=list.filter(p=>(p.company||'').toLowerCase().includes(qq)||(p.country||'').toLowerCase().includes(qq)||(p.standard||'').toLowerCase().includes(qq));}
+  list.sort((a,b)=>{
+    let va=a[state.sortBy]||'',vb=b[state.sortBy]||'';
+    if(state.sortBy==='value'){va=a.value||0;vb=b.value||0;}
+    if(va<vb)return state.sortDir==='asc'?-1:1;
+    if(va>vb)return state.sortDir==='asc'?1:-1;
+    return 0;
+  });
+  return list;
+}
+
+function applyFilters(){
+  state.filters.stage=document.getElementById('f-stage').value;
+  state.filters.std=document.getElementById('f-std').value;
+  state.filters.approach=document.getElementById('f-approach').value;
+  state.filters.q=document.getElementById('s-q').value;
+  renderAll();
+}
+
+function setSort(col){
+  if(state.sortBy===col)state.sortDir=state.sortDir==='asc'?'desc':'asc';
+  else{state.sortBy=col;state.sortDir=col==='value'||col==='lastActivity'?'desc':'asc';}
+  renderList();
+}
+
+function buildStdFilter(){
+  const stds=[...new Set(state.prospects.map(p=>p.standard).filter(Boolean))].sort();
+  const el=document.getElementById('f-std');const cur=el.value;
+  el.innerHTML='<option value="">Semua Standar</option>'+stds.map(s=>`<option value="${esc(s)}"${cur===s?' selected':''}>${esc(s)}</option>`).join('');
+}
+
+/* render list */
+function renderList(){
+  document.querySelectorAll('.col-h').forEach(el=>el.classList.toggle('sorted',el.dataset.sort===state.sortBy));
+  buildRegionMap();
+  const rows=getFiltered();
+  if(!rows.length){document.getElementById('list-body').innerHTML='<div class="empty-state">Tidak ada prospek yang sesuai filter.</div>';return;}
+  document.getElementById('list-body').innerHTML=rows.map(p=>{
+    const stg=STAGES[p.stage]||STAGES.identified;
+    return`<div class="prow${state.selectedId===p.id?' active':''}" onclick="selectProspect(${p.id})">
+      <div>
+        <div class="row-co">${esc(p.company)}</div>
+        <span class="rbadge rbadge-${p.region}">${p.region}</span>
+      </div>
+      <div class="row-ctry">${esc(p.country||'')}</div>
+      <div class="row-std hide-sm">${esc(p.standard||'')}</div>
+      <div><span class="chip chip-${p.stage}">${stg.label}</span></div>
+      <div class="row-val">${p.value?fmtVal(p.value):'—'}</div>
+      <div class="row-dt">${fmtDate(p.lastActivity)}</div>
+    </div>`;
+  }).join('');
+}
+
+/* detail */
+function selectProspect(id){
+  state.selectedId=id;
+  const p=state.prospects.find(x=>x.id===id);if(!p)return;
+  document.getElementById('d-coname').textContent=p.company;
+  const stOpts=STAGE_KEYS.map(k=>`<option value="${k}"${p.stage===k?' selected':''}>${STAGES[k].label}</option>`).join('');
+  const appOpts=APPROACHES.map(a=>`<option value="${a}"${p.approach===a?' selected':''}>${a}</option>`).join('');
+  const regOpts=Object.entries(REGIONS).filter(([k])=>k!=='ALL').map(([k,v])=>`<option value="${k}"${p.region===k?' selected':''}>${v.label}</option>`).join('');
+  document.getElementById('d-body').innerHTML=`
+    <div class="df"><div class="df-lbl">Standar ISO</div><input id="di-std" value="${esc(p.standard||'')}"/></div>
+    <div class="df"><div class="df-lbl">Tahap Pipeline</div><select id="di-stage">${stOpts}</select></div>
+    <div class="df"><div class="df-lbl">Nilai Estimasi (USD)</div><input type="number" id="di-val" value="${p.value||''}"/></div>
+    <div class="df"><div class="df-lbl">Negara</div><input id="di-ctry" value="${esc(p.country||'')}"/></div>
+    <div class="df"><div class="df-lbl">Region</div><select id="di-reg">${regOpts}</select></div>
+    <div class="df"><div class="df-lbl">Pendekatan</div><select id="di-app"><option value="">—</option>${appOpts}</select></div>
+    <div class="df"><div class="df-lbl">Kontak PIC</div><input id="di-ct" value="${esc(p.contact||'')}"/></div>
+    <div class="df"><div class="df-lbl">Jabatan</div><input id="di-role" value="${esc(p.contactRole||'')}"/></div>
+    <div class="df"><div class="df-lbl">Email</div><input type="email" id="di-email" value="${esc(p.email||'')}"/></div>
+    <div class="df"><div class="df-lbl">Aktivitas Terakhir</div><input type="date" id="di-dt" value="${p.lastActivity||''}"/></div>
+    <div class="df"><div class="df-lbl">Catatan / Next Steps</div><textarea id="di-notes">${esc(p.notes||'')}</textarea></div>`;
+  document.getElementById('detail').classList.remove('closed');
+  renderList();
+}
+function closeDetail(){state.selectedId=null;document.getElementById('detail').classList.add('closed');renderList();}
+function saveDetail(){
+  const p=state.prospects.find(x=>x.id===state.selectedId);if(!p)return;
+  p.standard=document.getElementById('di-std').value;
+  p.stage=document.getElementById('di-stage').value;
+  p.value=parseInt(document.getElementById('di-val').value)||0;
+  p.country=document.getElementById('di-ctry').value;
+  p.region=document.getElementById('di-reg').value;
+  p.approach=document.getElementById('di-app').value;
+  p.contact=document.getElementById('di-ct').value;
+  p.contactRole=document.getElementById('di-role').value;
+  p.email=document.getElementById('di-email').value;
+  p.lastActivity=document.getElementById('di-dt').value;
+  p.notes=document.getElementById('di-notes').value;
+  document.getElementById('d-coname').textContent=p.company;
+  persist();buildStdFilter();renderAll();toast('Tersimpan');
+}
+function deleteSelected(){
+  if(!state.selectedId||!confirm('Hapus prospek ini?'))return;
+  state.prospects=state.prospects.filter(p=>p.id!==state.selectedId);
+  state.selectedId=null;document.getElementById('detail').classList.add('closed');
+  persist();buildStdFilter();renderAll();toast('Prospek dihapus');
+}
+
+/* modal */
+function openModal(){
+  const stOpts=STAGE_KEYS.map(k=>`<option value="${k}">${STAGES[k].label}</option>`).join('');
+  const appOpts=APPROACHES.map(a=>`<option value="${a}">${a}</option>`).join('');
+  const regOpts=Object.entries(REGIONS).filter(([k])=>k!=='ALL').map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+  document.getElementById('mod-body').innerHTML=`
+    <div class="mf"><label>Nama Perusahaan *</label><input id="mi-co" placeholder="Nama perusahaan"/></div>
+    <div class="mf"><label>Standar ISO *</label><input id="mi-std" placeholder="ISO 9001, ISO 27001, …"/></div>
+    <div class="mf"><label>Negara</label><input id="mi-ctry" placeholder="Malaysia, UAE, India, …"/></div>
+    <div class="mf"><label>Region</label><select id="mi-reg">${regOpts}</select></div>
+    <div class="mf"><label>Pendekatan</label><select id="mi-app"><option value="">Pilih pendekatan</option>${appOpts}</select></div>
+    <div class="mf"><label>Tahap Awal</label><select id="mi-stage">${stOpts}</select></div>
+    <div class="mf"><label>Kontak PIC</label><input id="mi-ct" placeholder="Nama kontak"/></div>
+    <div class="mf"><label>Jabatan</label><input id="mi-role" placeholder="Jabatan PIC"/></div>
+    <div class="mf"><label>Email</label><input type="email" id="mi-email" placeholder="email@company.com"/></div>
+    <div class="mf"><label>Nilai Estimasi (USD)</label><input type="number" id="mi-val" placeholder="25000"/></div>
+    <div class="mf"><label>Catatan</label><textarea id="mi-notes" rows="3" placeholder="Konteks, sumber, next steps…"></textarea></div>`;
+  document.getElementById('backdrop').classList.add('open');
+  setTimeout(()=>document.getElementById('mi-co').focus(),60);
+}
+function closeModal(){document.getElementById('backdrop').classList.remove('open');}
+function handleBd(e){if(e.target===document.getElementById('backdrop'))closeModal();}
+function submitModal(){
+  const co=document.getElementById('mi-co').value.trim();
+  const std=document.getElementById('mi-std').value.trim();
+  if(!co){alert('Nama perusahaan wajib diisi.');return;}
+  const id=nextId();const today=new Date().toISOString().slice(0,10);
+  state.prospects.push({
+    id,company:co,standard:std,
+    country:document.getElementById('mi-ctry').value.trim(),
+    region:document.getElementById('mi-reg').value||'ASEAN',
+    approach:document.getElementById('mi-app').value,
+    stage:document.getElementById('mi-stage').value,
+    contact:document.getElementById('mi-ct').value.trim(),
+    contactRole:document.getElementById('mi-role').value.trim(),
+    email:document.getElementById('mi-email').value.trim(),
+    value:parseInt(document.getElementById('mi-val').value)||0,
+    lastActivity:today,
+    notes:document.getElementById('mi-notes').value.trim(),
+  });
+  closeModal();persist();buildStdFilter();renderAll();selectProspect(id);toast('Prospek ditambahkan');
+}
+
+/* theme */
+function toggleTheme(){
+  const root=document.documentElement;
+  const cur=root.getAttribute('data-theme');
+  const isDark=cur==='dark'||(cur===null&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  const next=isDark?'light':'dark';
+  root.setAttribute('data-theme',next);
+  try{localStorage.setItem('iso-theme',next);}catch(e){}
+}
+
+/* keyboard */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(document.getElementById('backdrop').classList.contains('open'))closeModal();
+    else if(state.selectedId)closeDetail();
+  }
+});
+
+init();
+</script>
