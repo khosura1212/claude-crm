@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Document Center — CRM Konsultan ISO</title>
+<style>
+:root{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D7A4F;--green-dim:rgba(45,122,79,.12);--blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);--orange:#C47A20;--orange-dim:rgba(196,122,32,.12);--red:#C03030;--red-dim:rgba(192,48,48,.12);}
+@media(prefers-color-scheme:dark){:root{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3DAF72;--green-dim:rgba(61,175,114,.12);--blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);--orange:#E09030;--orange-dim:rgba(224,144,48,.12);--red:#E05050;--red-dim:rgba(224,80,80,.12);}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{padding:24px 40px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--accent);text-decoration:none;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);padding:5px 12px;border-radius:3px;}
+.back-link:hover{background:var(--accent-dim);}
+.header-text h1{font-family:"Palatino Linotype",Palatino,serif;font-size:1.5rem;font-weight:normal;}
+.header-text p{font-size:.75rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+.tab-bar{display:flex;padding:20px 40px 0;border-bottom:1px solid var(--border);gap:4px;}
+.tab-btn{background:none;border:none;padding:10px 20px;font-family:inherit;font-size:.82rem;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;padding:28px 40px;}
+.tab-content.active{display:block;}
+.toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.toolbar select,.toolbar input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:3px;font-size:.82rem;font-family:inherit;}
+.btn{background:none;border:1px solid var(--border);color:var(--text-2);padding:7px 14px;border-radius:3px;font-size:.82rem;cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s;}
+.btn:hover{background:var(--surface-2);border-color:var(--accent);}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-accent:hover{opacity:.9;}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.doc-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px;cursor:pointer;transition:border-color .15s;}
+.doc-card:hover{border-color:var(--accent);}
+.doc-icon{font-size:1.8rem;margin-bottom:10px;}
+.doc-name{font-weight:normal;font-size:.9rem;margin-bottom:6px;}
+.doc-meta{font-size:.72rem;color:var(--text-3);line-height:1.6;}
+.doc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.tag{font-size:.68rem;padding:2px 7px;border-radius:2px;background:var(--accent-dim);color:var(--accent);}
+.tag.green{background:var(--green-dim);color:var(--green);}
+.tag.blue{background:var(--blue-dim);color:var(--blue);}
+.tag.orange{background:var(--orange-dim);color:var(--orange);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:28px;max-width:560px;width:90%;max-height:80vh;overflow-y:auto;}
+.modal h2{font-family:"Palatino Linotype",Palatino,serif;font-size:1.2rem;font-weight:normal;margin-bottom:18px;}
+.form-row{margin-bottom:14px;}
+.form-row label{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;}
+.form-row input,.form-row select,.form-row textarea{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:3px;font-size:.85rem;font-family:inherit;}
+.form-row textarea{height:80px;resize:vertical;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+.section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:14px;}
+.share-list{background:var(--surface);border:1px solid var(--border);border-radius:4px;}
+.share-row{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;font-size:.83rem;}
+.share-row:last-child{border-bottom:none;}
+.share-badge{font-size:.68rem;padding:2px 7px;border-radius:2px;}
+.badge-view{background:var(--blue-dim);color:var(--blue);}
+.badge-edit{background:var(--green-dim);color:var(--green);}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-3);}
+.empty-state p{font-size:.9rem;margin-top:8px;}
+footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-link" href="index.html">← CRM</a>
+  <div class="header-text"><h1>Document Center</h1><p>MOD-08 · Template Library · Client Share · Version Control</p></div>
+</header>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="sw('library')">Library</button>
+  <button class="tab-btn" onclick="sw('templates')">Template ISO</button>
+  <button class="tab-btn" onclick="sw('shared')">Dokumen Dibagikan</button>
+</div>
+
+<div class="tab-content active" id="tab-library">
+  <div class="toolbar">
+    <input type="text" id="searchDoc" placeholder="Cari dokumen…" oninput="renderLib()" style="flex:1;min-width:160px"/>
+    <select id="filterStd" onchange="renderLib()"><option value="">Semua Standar</option><option>ISO 9001</option><option>ISO 14001</option><option>ISO 45001</option><option>ISO 27001</option><option>ISO 37001</option><option>ISO 17021-1</option><option>Umum</option></select>
+    <select id="filterType" onchange="renderLib()"><option value="">Semua Tipe</option><option>Template</option><option>Prosedur</option><option>Checklist</option><option>Gap Analysis</option><option>Manual</option><option>Form</option></select>
+    <button class="btn btn-accent" onclick="openAddDoc()">+ Tambah Dokumen</button>
+  </div>
+  <div class="doc-grid" id="docGrid"></div>
+</div>
+
+<div class="tab-content" id="tab-templates">
+  <p class="section-title">Template Standar per ISO</p>
+  <div class="doc-grid" id="isoTemplateGrid"></div>
+</div>
+
+<div class="tab-content" id="tab-shared">
+  <p class="section-title">Dokumen yang Dibagikan ke Klien</p>
+  <div class="share-list" id="sharedList"></div>
+</div>
+
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <h2 id="modalTitle">Tambah Dokumen</h2>
+    <div class="form-row"><label>Nama Dokumen</label><input id="dName" placeholder="e.g. Prosedur Pengendalian Dokumen"/></div>
+    <div class="form-row"><label>Tipe</label>
+      <select id="dType"><option>Template</option><option>Prosedur</option><option>Checklist</option><option>Gap Analysis</option><option>Manual</option><option>Form</option></select>
+    </div>
+    <div class="form-row"><label>Standar ISO</label>
+      <select id="dStd"><option>ISO 9001</option><option>ISO 14001</option><option>ISO 45001</option><option>ISO 27001</option><option>ISO 37001</option><option>ISO 17021-1</option><option>Umum</option></select>
+    </div>
+    <div class="form-row"><label>Versi</label><input id="dVer" placeholder="v1.0"/></div>
+    <div class="form-row"><label>Deskripsi</label><textarea id="dDesc" placeholder="Deskripsi singkat dokumen…"></textarea></div>
+    <div class="form-row"><label>URL / Link (Google Drive, etc.)</label><input id="dUrl" placeholder="https://drive.google.com/…"/></div>
+    <div class="form-row"><label>Klien (opsional — untuk sharing)</label><input id="dClient" placeholder="PT Sinar Nusantara"/></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Batal</button>
+      <button class="btn btn-accent" onclick="saveDoc()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<footer>Document Center · MOD-08 · CRM Konsultan ISO · arafarnusa.com</footer>
+<script>
+const KEY='crm_documents';
+let editIdx=null;
+const ICON={Template:'📄',Prosedur:'📋',Checklist:'✅',Manual:'📖','Gap Analysis':'🔍',Form:'📝'};
+const SEED=[
+  {name:'Manual Mutu ISO 9001:2015',type:'Manual',std:'ISO 9001',ver:'v2.1',desc:'Panduan sistem manajemen mutu sesuai klausul ISO 9001:2015',url:'',client:'',ts:Date.now()-86400000*30},
+  {name:'Prosedur Pengendalian Dokumen',type:'Prosedur',std:'ISO 9001',ver:'v1.3',desc:'Prosedur pembuatan, distribusi, dan pemusnahan dokumen',url:'',client:'PT Sinar Nusantara',ts:Date.now()-86400000*20},
+  {name:'Checklist Internal Audit ISO 9001',type:'Checklist',std:'ISO 9001',ver:'v1.0',desc:'Daftar periksa audit internal 10 klausul ISO 9001',url:'',client:'',ts:Date.now()-86400000*15},
+  {name:'Gap Analysis ISO 14001',type:'Gap Analysis',std:'ISO 14001',ver:'v1.0',desc:'Template gap analysis sistem manajemen lingkungan',url:'',client:'PT Indah Hijau',ts:Date.now()-86400000*10},
+  {name:'Register Bahaya K3 ISO 45001',type:'Form',std:'ISO 45001',ver:'v2.0',desc:'Form identifikasi bahaya dan penilaian risiko K3',url:'',client:'',ts:Date.now()-86400000*8},
+  {name:'Statement of Applicability ISO 27001',type:'Template',std:'ISO 27001',ver:'v1.1',desc:'SoA 114 kontrol Annex A ISO 27001:2013',url:'',client:'CV Teknologi Maju',ts:Date.now()-86400000*5},
+  {name:'Kebijakan Anti-Suap ISO 37001',type:'Manual',std:'ISO 37001',ver:'v1.0',desc:'Kebijakan dan prosedur anti-penyuapan',url:'',client:'',ts:Date.now()-86400000*3},
+  {name:'Program Audit TSI',type:'Template',std:'ISO 17021-1',ver:'v3.2',desc:'Template program audit lembaga sertifikasi',url:'',client:'',ts:Date.now()-86400000*2},
+];
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'null')||(localStorage.setItem(KEY,JSON.stringify(SEED)),SEED);}catch(_){return SEED;}}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d));}
+
+function renderLib(){
+  const docs=load();
+  const q=(document.getElementById('searchDoc').value||'').toLowerCase();
+  const st=document.getElementById('filterStd').value;
+  const tp=document.getElementById('filterType').value;
+  const filtered=docs.filter(d=>{
+    if(q&&!d.name.toLowerCase().includes(q)&&!d.desc.toLowerCase().includes(q))return false;
+    if(st&&d.std!==st)return false;
+    if(tp&&d.type!==tp)return false;
+    return true;
+  });
+  const g=document.getElementById('docGrid');
+  if(!filtered.length){g.innerHTML='<div class="empty-state"><div style="font-size:2rem">📂</div><p>Tidak ada dokumen ditemukan.</p></div>';return;}
+  g.innerHTML=filtered.map((d,i)=>{
+    const ri=docs.indexOf(d);
+    return`<div class="doc-card" onclick="editDoc(${ri})">
+      <div class="doc-icon">${ICON[d.type]||'📄'}</div>
+      <div class="doc-name">${d.name}</div>
+      <div class="doc-meta">${d.type} · ${d.ver||'v1.0'} · ${new Date(d.ts).toLocaleDateString('id-ID')}<br>${d.client?'Klien: '+d.client:''}</div>
+      <div class="doc-tags"><span class="tag">${d.std}</span>${d.client?'<span class="tag green">Shared</span>':''}${d.url?'<span class="tag blue">Link</span>':''}</div>
+    </div>`;
+  }).join('');
+}
+
+const ISO_TEMPLATES=[
+  {std:'ISO 9001',color:'blue',docs:['Manual Mutu','Prosedur Pengendalian Dokumen','Prosedur Tindakan Korektif','Register Risiko & Peluang','Checklist Audit Internal','Laporan Ketidaksesuaian']},
+  {std:'ISO 14001',color:'green',docs:['Kebijakan Lingkungan','Register Aspek Lingkungan','Gap Analysis 14001','Prosedur Tanggap Darurat','Program Lingkungan']},
+  {std:'ISO 45001',color:'orange',docs:['Kebijakan K3','Register Bahaya & Risiko','Prosedur Investigasi Insiden','Matriks HIRARC','Checklist Audit K3']},
+  {std:'ISO 27001',color:'blue',docs:['Statement of Applicability','Register Aset Informasi','BIA (Business Impact Analysis)','Kebijakan Keamanan Informasi','Prosedur Pengelolaan Insiden']},
+  {std:'ISO 37001',color:'accent',docs:['Kebijakan Anti-Suap','Due Diligence Register','Prosedur Whistleblowing','Penilaian Risiko Suap','Program Pelatihan Kepatuhan']},
+  {std:'ISO 17021-1',color:'accent',docs:['Program Audit','Rencana Audit','Laporan Audit','Register Impartialitas','Prosedur Sertifikasi','Matriks Kompetensi Auditor']},
+];
+function renderTemplates(){
+  document.getElementById('isoTemplateGrid').innerHTML=ISO_TEMPLATES.map(t=>`
+    <div class="doc-card">
+      <div class="doc-meta" style="font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px">${t.std}</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${t.docs.map(d=>`<div style="display:flex;align-items:center;gap:8px;font-size:.83rem"><span>📄</span><span>${d}</span><button class="btn" style="margin-left:auto;padding:3px 9px;font-size:.7rem" onclick="quickAdd('${d}','${t.std}')">+</button></div>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderShared(){
+  const docs=load().filter(d=>d.client);
+  const el=document.getElementById('sharedList');
+  if(!docs.length){el.innerHTML='<div class="empty-state" style="padding:40px"><div style="font-size:2rem">📤</div><p>Belum ada dokumen yang dibagikan.</p></div>';return;}
+  el.innerHTML=docs.map((d,i)=>`
+    <div class="share-row">
+      <span style="font-size:1.2rem">${ICON[d.type]||'📄'}</span>
+      <div style="flex:1">
+        <div style="font-size:.85rem">${d.name}</div>
+        <div style="font-size:.72rem;color:var(--text-3)">${d.std} · ${d.ver||'v1.0'}</div>
+      </div>
+      <div style="font-size:.78rem;color:var(--text-2)">${d.client}</div>
+      <span class="share-badge badge-view">View</span>
+      ${d.url?`<a href="${d.url}" target="_blank" class="btn" style="font-size:.72rem;padding:3px 9px;text-decoration:none">Buka ↗</a>`:''}
+    </div>
+  `).join('');
+}
+
+function openAddDoc(){editIdx=null;document.getElementById('modalTitle').textContent='Tambah Dokumen';['dName','dVer','dDesc','dUrl','dClient'].forEach(id=>document.getElementById(id).value='');document.getElementById('addModal').classList.add('open');}
+function closeModal(){document.getElementById('addModal').classList.remove('open');}
+function editDoc(i){
+  editIdx=i;const d=load()[i];
+  document.getElementById('modalTitle').textContent='Edit Dokumen';
+  document.getElementById('dName').value=d.name||'';
+  document.getElementById('dType').value=d.type||'Template';
+  document.getElementById('dStd').value=d.std||'ISO 9001';
+  document.getElementById('dVer').value=d.ver||'';
+  document.getElementById('dDesc').value=d.desc||'';
+  document.getElementById('dUrl').value=d.url||'';
+  document.getElementById('dClient').value=d.client||'';
+  document.getElementById('addModal').classList.add('open');
+}
+function saveDoc(){
+  const docs=load();
+  const d={
+    name:document.getElementById('dName').value.trim()||'Dokumen Baru',
+    type:document.getElementById('dType').value,
+    std:document.getElementById('dStd').value,
+    ver:document.getElementById('dVer').value.trim()||'v1.0',
+    desc:document.getElementById('dDesc').value.trim(),
+    url:document.getElementById('dUrl').value.trim(),
+    client:document.getElementById('dClient').value.trim(),
+    ts:editIdx!==null?docs[editIdx].ts:Date.now(),
+  };
+  if(editIdx!==null)docs[editIdx]=d;else docs.unshift(d);
+  save(docs);closeModal();renderLib();renderShared();
+}
+function quickAdd(name,std){
+  editIdx=null;
+  document.getElementById('modalTitle').textContent='Tambah Template';
+  document.getElementById('dName').value=name;
+  document.getElementById('dType').value='Template';
+  document.getElementById('dStd').value=std;
+  document.getElementById('dVer').value='v1.0';
+  document.getElementById('dDesc').value='';
+  document.getElementById('dUrl').value='';
+  document.getElementById('dClient').value='';
+  document.getElementById('addModal').classList.add('open');
+}
+function sw(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  ['library','templates','shared'].forEach((t,i)=>document.querySelectorAll('.tab-btn')[i]?.classList[t===id?'add':'remove']('active'));
+}
+document.getElementById('addModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+renderLib();renderTemplates();renderShared();
+</script>
+</body></html>
