@@ -1,0 +1,1095 @@
+<title>Arsitektur CRM ISO</title>
+<style>
+:root {
+  --bg:#ECEEF2; --surface:#E2E5EE; --surface-hi:#F4F5F8;
+  --border:#C2C8D6; --border-s:#D4D8E6;
+  --text:#0E1420; --text-2:#485068; --text-3:#7A8098;
+  --blue:#1A4F7A; --blue-bg:rgba(26,79,122,.09); --blue-mid:#2A6FA8;
+  --green:#1E6040; --green-bg:rgba(30,96,64,.09);
+  --amber:#7A5010; --amber-bg:rgba(122,80,16,.09);
+  --red:#7A1E2A; --red-bg:rgba(122,30,42,.08);
+  --purple:#4A1A7A; --purple-bg:rgba(74,26,122,.09);
+  --teal:#1A6A6A; --teal-bg:rgba(26,106,106,.09);
+  --grid-line:rgba(26,79,122,.055);
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1620; --surface:#182232; --surface-hi:#1F2D40;
+    --border:#283A4E; --border-s:#1E2E3E;
+    --text:#CDD4E0; --text-2:#7A90A8; --text-3:#4A6070;
+    --blue:#3A80B8; --blue-bg:rgba(58,128,184,.12); --blue-mid:#5A9ACC;
+    --green:#3A9068; --green-bg:rgba(58,144,104,.12);
+    --amber:#C08030; --amber-bg:rgba(192,128,48,.12);
+    --red:#C04050; --red-bg:rgba(192,64,80,.10);
+    --purple:#8A50CC; --purple-bg:rgba(138,80,204,.12);
+    --teal:#3A9898; --teal-bg:rgba(58,152,152,.12);
+    --grid-line:rgba(58,128,184,.07);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1620; --surface:#182232; --surface-hi:#1F2D40;
+  --border:#283A4E; --border-s:#1E2E3E;
+  --text:#CDD4E0; --text-2:#7A90A8; --text-3:#4A6070;
+  --blue:#3A80B8; --blue-bg:rgba(58,128,184,.12); --blue-mid:#5A9ACC;
+  --green:#3A9068; --green-bg:rgba(58,144,104,.12);
+  --amber:#C08030; --amber-bg:rgba(192,128,48,.12);
+  --red:#C04050; --red-bg:rgba(192,64,80,.10);
+  --purple:#8A50CC; --purple-bg:rgba(138,80,204,.12);
+  --teal:#3A9898; --teal-bg:rgba(58,152,152,.12);
+  --grid-line:rgba(58,128,184,.07);
+}
+:root[data-theme="light"]{
+  --bg:#ECEEF2; --surface:#E2E5EE; --surface-hi:#F4F5F8;
+  --border:#C2C8D6; --border-s:#D4D8E6;
+  --text:#0E1420; --text-2:#485068; --text-3:#7A8098;
+  --blue:#1A4F7A; --blue-bg:rgba(26,79,122,.09); --blue-mid:#2A6FA8;
+  --green:#1E6040; --green-bg:rgba(30,96,64,.09);
+  --amber:#7A5010; --amber-bg:rgba(122,80,16,.09);
+  --red:#7A1E2A; --red-bg:rgba(122,30,42,.08);
+  --purple:#4A1A7A; --purple-bg:rgba(74,26,122,.09);
+  --teal:#1A6A6A; --teal-bg:rgba(26,106,106,.09);
+  --grid-line:rgba(26,79,122,.055);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:14px;scroll-behavior:smooth;}
+body{font-family:"Trebuchet MS",Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+h1,h2,h3,h4{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-weight:normal;text-wrap:balance;}
+code,.mono{font-family:"Courier New",Courier,monospace;}
+.page{display:flex;min-height:100vh;}
+
+/* TOC */
+.toc{width:220px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);padding:28px 0;display:flex;flex-direction:column;}
+.toc-logo{padding:0 20px 20px;border-bottom:1px solid var(--border-s);margin-bottom:16px;}
+.toc-logo .app-name{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:.95rem;color:var(--text);}
+.toc-logo .app-sub{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-top:2px;}
+.toc-label{padding:0 20px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;margin-top:10px;}
+.toc a{display:block;padding:4px 20px;font-size:.76rem;color:var(--text-2);text-decoration:none;border-left:2px solid transparent;transition:color .12s,border-color .12s;}
+.toc a:hover{color:var(--blue);border-left-color:var(--blue-mid);}
+.toc a.sub{padding-left:30px;font-size:.71rem;color:var(--text-3);}
+.toc a.sub:hover{color:var(--blue);}
+.toc-foot{margin-top:auto;padding:14px 20px 0;border-top:1px solid var(--border-s);}
+.btn-theme{font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);background:none;border:1px solid var(--border);border-radius:2px;padding:4px 9px;cursor:pointer;transition:color .12s,border-color .12s;}
+.btn-theme:hover{color:var(--text);border-color:var(--text-2);}
+
+/* Content */
+.content{flex:1;max-width:860px;padding:48px 52px 80px;min-width:0;}
+.doc-header{padding-bottom:28px;border-bottom:3px solid var(--blue);margin-bottom:48px;}
+.doc-eyebrow{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
+.doc-title{font-size:2rem;line-height:1.15;color:var(--text);letter-spacing:-.02em;}
+.doc-sub{margin-top:10px;font-size:.88rem;color:var(--text-2);max-width:58ch;line-height:1.55;}
+.doc-meta{margin-top:16px;display:flex;gap:20px;flex-wrap:wrap;font-size:.72rem;color:var(--text-3);font-variant-numeric:tabular-nums;}
+.doc-meta span{display:flex;align-items:center;gap:5px;}
+.section{margin-bottom:52px;}
+.section-title{font-size:1.25rem;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:22px;}
+.section-lead{font-size:.88rem;color:var(--text-2);max-width:64ch;line-height:1.6;margin-bottom:24px;}
+
+/* Alert banner */
+.alert{background:var(--blue-bg);border:1px solid var(--blue);border-radius:2px;padding:12px 16px;margin-bottom:24px;font-size:.82rem;color:var(--text-2);}
+.alert strong{color:var(--blue);}
+
+/* Architecture layers */
+.arch-wrap{background:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:24px 24px;background-color:var(--surface-hi);border:1px solid var(--border);border-radius:3px;padding:24px;overflow-x:auto;margin-bottom:10px;}
+.arch-layers{display:flex;flex-direction:column;gap:8px;min-width:580px;}
+.arch-layer{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:12px 16px;}
+.arch-layer.l-intel{border-left:3px solid var(--purple);}
+.arch-layer.l-inbound{border-left:3px solid var(--green);}
+.arch-layer.l-outbound{border-left:3px solid var(--amber);}
+.arch-layer.l-pipe{border-left:3px solid var(--blue);}
+.arch-layer.l-delivery{border-left:3px solid var(--teal);}
+.arch-layer.l-success{border-left:3px solid var(--red);}
+.arch-layer.l-analytics{border-left:3px solid var(--text-3);}
+.arch-layer-label{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;}
+.arch-layer-modules{display:flex;flex-wrap:wrap;gap:6px;}
+.amod{font-family:"Courier New",Courier,monospace;font-size:.73rem;padding:3px 9px;border:1px solid var(--border);border-radius:2px;background:var(--surface-hi);color:var(--text-2);white-space:nowrap;}
+.amod.done{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.amod.build{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+.amod.ext{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+.amod.new{border-color:var(--purple);color:var(--purple);background:var(--purple-bg);}
+.arch-connector{display:flex;justify-content:center;align-items:center;color:var(--text-3);font-size:.68rem;gap:6px;height:14px;}
+.arch-connector::before,.arch-connector::after{content:'';flex:1;max-width:80px;height:1px;background:var(--border);}
+.arch-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.68rem;color:var(--text-3);margin-top:10px;}
+.leg{display:flex;align-items:center;gap:5px;}
+.leg-dot{width:8px;height:8px;border-radius:1px;border:1px solid;flex-shrink:0;}
+
+/* Module cards */
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.mod-card{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:16px 18px;}
+.mod-card.done{border-left:3px solid var(--green);}
+.mod-card.build{border-left:3px solid var(--blue);}
+.mod-card.new{border-left:3px solid var(--purple);}
+.mod-card.planned{border-left:3px solid var(--amber);}
+.mod-tag{font-family:"Courier New",Courier,monospace;font-size:.62rem;letter-spacing:.06em;color:var(--text-3);text-transform:uppercase;margin-bottom:5px;}
+.mod-name{font-size:.9rem;color:var(--text);margin-bottom:5px;}
+.mod-desc{font-size:.76rem;color:var(--text-2);line-height:1.45;}
+.mod-skills{margin-top:9px;display:flex;flex-wrap:wrap;gap:4px;}
+.skill-chip{font-family:"Courier New",Courier,monospace;font-size:.62rem;padding:2px 6px;border-radius:1px;background:var(--blue-bg);color:var(--blue);border:1px solid rgba(26,79,122,.2);}
+.skill-chip.mk{background:var(--purple-bg);color:var(--purple);border-color:rgba(74,26,122,.2);}
+.skill-chip.ts{background:var(--teal-bg);color:var(--teal);border-color:rgba(26,106,106,.2);}
+.skill-chip.dc{background:var(--amber-bg);color:var(--amber);border-color:rgba(122,80,16,.2);}
+
+/* Skill Registry table */
+.reg-wrap{overflow-x:auto;margin-bottom:8px;}
+.reg-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.reg-table th{text-align:left;padding:7px 12px;font-family:"Courier New",Courier,monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);background:var(--surface);border-bottom:1px solid var(--border);font-weight:normal;}
+.reg-table td{padding:7px 12px;border-bottom:1px solid var(--border-s);color:var(--text-2);vertical-align:top;}
+.reg-table td:first-child{font-family:"Courier New",Courier,monospace;font-size:.73rem;color:var(--text);white-space:nowrap;}
+.reg-table tr:hover td{background:var(--surface);}
+.reg-table tr:last-child td{border-bottom:none;}
+.cat-mk{color:var(--purple);}
+.cat-iso{color:var(--blue);}
+.cat-ts{color:var(--teal);}
+.cat-dc{color:var(--amber);}
+.cat-an{color:var(--green);}
+.reg-table td.mod-link{color:var(--blue-mid);font-size:.73rem;}
+.ph-chip{font-family:"Courier New",Courier,monospace;font-size:.62rem;padding:2px 6px;border-radius:1px;}
+.ph1{background:var(--green-bg);color:var(--green);}
+.ph2{background:var(--blue-bg);color:var(--blue);}
+.ph3{background:var(--amber-bg);color:var(--amber);}
+.ph4{background:var(--red-bg);color:var(--red);}
+
+/* Flow diagram */
+.flow-wrap{overflow-x:auto;background:var(--surface-hi);border:1px solid var(--border);border-radius:3px;padding:24px;margin-bottom:18px;}
+.flow{display:flex;align-items:stretch;gap:0;min-width:600px;}
+.flow-step{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:13px 12px;}
+.flow-step+.flow-step{margin-left:-1px;}
+.flow-arrow{display:flex;align-items:center;justify-content:center;width:24px;flex-shrink:0;color:var(--blue);font-size:.82rem;z-index:1;}
+.flow-step.accent{border-color:var(--blue);background:var(--blue-bg);}
+.flow-step.accent2{border-color:var(--purple);background:var(--purple-bg);}
+.flow-n{font-family:"Courier New",Courier,monospace;font-size:.6rem;color:var(--text-3);margin-bottom:4px;}
+.flow-title{font-size:.76rem;color:var(--text);margin-bottom:4px;}
+.flow-detail{font-size:.68rem;color:var(--text-2);line-height:1.4;}
+
+/* Source grid */
+.source-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px;}
+.source-card{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:12px 14px;}
+.source-name{font-size:.8rem;color:var(--text);margin-bottom:3px;}
+.source-desc{font-size:.72rem;color:var(--text-2);line-height:1.4;}
+.source-freq{margin-top:5px;font-family:"Courier New",Courier,monospace;font-size:.63rem;color:var(--text-3);}
+
+/* Stack table */
+.stack-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.stack-table th{text-align:left;padding:7px 12px;font-family:"Courier New",Courier,monospace;font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);background:var(--surface);border-bottom:1px solid var(--border);font-weight:normal;}
+.stack-table td{padding:8px 12px;border-bottom:1px solid var(--border-s);color:var(--text-2);vertical-align:top;}
+.stack-table td:first-child{color:var(--text);font-size:.78rem;}
+.stack-table tr:last-child td{border-bottom:none;}
+.stack-table tr:hover td{background:var(--surface);}
+.tag-ready{color:var(--green);font-family:"Courier New",monospace;font-size:.66rem;}
+.tag-phase2{color:var(--blue);font-family:"Courier New",monospace;font-size:.66rem;}
+.tag-later{color:var(--text-3);font-family:"Courier New",monospace;font-size:.66rem;}
+
+/* Roadmap */
+.roadmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;}
+.phase{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:14px 15px;}
+.phase.current{border-top:2px solid var(--green);}
+.phase.next{border-top:2px solid var(--blue);}
+.phase.later{border-top:2px solid var(--amber);}
+.phase.future{border-top:1px solid var(--border);}
+.phase.far{border-top:1px solid var(--border);opacity:.8;}
+.phase-label{font-family:"Courier New",Courier,monospace;font-size:.63rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;}
+.phase-name{font-size:.88rem;color:var(--text);margin-bottom:7px;}
+.phase-items{display:flex;flex-direction:column;gap:3px;}
+.phase-item{font-size:.72rem;color:var(--text-2);display:flex;gap:5px;align-items:flex-start;}
+.phase-item::before{content:'·';color:var(--text-3);flex-shrink:0;}
+
+/* Recs */
+.rec-list{display:flex;flex-direction:column;gap:10px;}
+.rec{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:13px 16px;display:grid;grid-template-columns:auto 1fr;gap:0 12px;}
+.rec-priority{font-family:"Courier New",Courier,monospace;font-size:.63rem;text-transform:uppercase;letter-spacing:.07em;padding:3px 7px;border-radius:1px;height:fit-content;white-space:nowrap;}
+.pri-high{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue);}
+.pri-med{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber);}
+.pri-low{background:var(--green-bg);color:var(--green);border:1px solid var(--green);}
+.rec-title{font-size:.86rem;color:var(--text);margin-bottom:3px;}
+.rec-desc{font-size:.76rem;color:var(--text-2);line-height:1.5;}
+.rec-skill{grid-column:2;margin-top:5px;font-family:"Courier New",Courier,monospace;font-size:.65rem;color:var(--text-3);}
+
+/* h3 utility */
+.sub-heading{font-size:.88rem;color:var(--text-2);margin-bottom:12px;font-family:"Trebuchet MS",Tahoma,sans-serif;font-weight:normal;}
+
+@media(max-width:800px){
+  .toc{display:none;}
+  .content{padding:28px 18px 60px;}
+  .doc-title{font-size:1.5rem;}
+  .source-grid{grid-template-columns:1fr;}
+}
+</style>
+
+<div class="page">
+<nav class="toc">
+  <div class="toc-logo">
+    <div class="app-name">CRM ISO</div>
+    <div class="app-sub">Arsitektur Sistem</div>
+  </div>
+  <div class="toc-label">Isi Dokumen</div>
+  <a href="#overview">Gambaran Umum</a>
+  <a href="#arch">Arsitektur Layer</a>
+  <a href="#modules">14 Modul Sistem</a>
+  <a href="#registry">Skill Registry</a>
+  <a class="sub" href="#registry-marketing">Marketing Plugin (40)</a>
+  <a class="sub" href="#registry-existing">Skill Existing (31)</a>
+  <a href="#inbound">Content Marketing Engine</a>
+  <a class="sub" href="#content-flow">Alur Konten</a>
+  <a href="#outreach">Outreach Engine</a>
+  <a href="#research">Market Research Engine</a>
+  <a href="#revops">RevOps Layer</a>
+  <a href="#proposal">Proposal &amp; Pricing</a>
+  <a href="#success">Client Success</a>
+  <a href="#audit">Audit Operations Hub</a>
+  <a href="#stack">Stack Teknologi</a>
+  <a href="#roadmap">Roadmap 5 Fase</a>
+  <a href="#recs">Rekomendasi</a>
+  <div class="toc-foot">
+    <button class="btn-theme" onclick="toggleTheme()">Ganti Tema</button>
+  </div>
+</nav>
+
+<main class="content">
+
+  <header class="doc-header">
+    <div class="doc-eyebrow">Dokumen Arsitektur · v0.3 · Agustus 2026 · Skill-Powered Edition</div>
+    <h1 class="doc-title">Arsitektur Aplikasi CRM<br>Konsultan ISO</h1>
+    <p class="doc-sub">
+      Sistem full-funnel untuk praktik konsultasi ISO — mencakup inbound content engine,
+      outbound outreach, pipeline tracker, proposal generator, client success, dan audit
+      operations. Setiap modul didukung skill AI yang sudah aktif.
+    </p>
+    <div class="doc-meta">
+      <span>14 Modul</span>
+      <span>71 Skill Terintegrasi</span>
+      <span>40 Marketing Skills</span>
+      <span>5 Fase Implementasi</span>
+    </div>
+  </header>
+
+  <!-- Overview -->
+  <section class="section" id="overview">
+    <h2 class="section-title">Gambaran Umum</h2>
+    <div class="alert">
+      <strong>Versi sebelumnya (v0.2)</strong> hanya merancang sisi outbound — pipeline tracker dan market research engine. Versi ini (<strong>v0.3</strong>) didesain ulang sepenuhnya menggunakan <strong>40 marketing skills</strong> dari plugin marketing-skills (Corey Haines) + <strong>31 existing skills</strong>, sehingga setiap modul CRM diperkuat oleh skill AI yang konkret dan sudah aktif dalam sesi.
+    </div>
+    <p class="section-lead">
+      CRM ini mengelola dua pipeline sekaligus: <strong>Outbound</strong> (kamu aktif mencari prospek via market research + cold email) dan <strong>Inbound</strong> (prospek datang sendiri karena konten ISO kamu). Keduanya berakhir di satu pipeline yang sama, lalu diteruskan ke proposal → delivery → client success.
+    </p>
+  </section>
+
+  <!-- Architecture -->
+  <section class="section" id="arch">
+    <h2 class="section-title">Arsitektur 7 Layer</h2>
+    <div class="arch-wrap">
+      <div class="arch-layers">
+
+        <div class="arch-layer l-intel">
+          <div class="arch-layer-label">Layer 0 — Market Intelligence</div>
+          <div class="arch-layer-modules">
+            <span class="amod build">market-research-engine</span>
+            <span class="amod new">competitor-profiling</span>
+            <span class="amod new">customer-research</span>
+            <span class="amod new">iso-standard-monitor</span>
+          </div>
+        </div>
+
+        <div class="arch-connector">↓ sinyal prospek &amp; insight pasar</div>
+
+        <div class="arch-layer l-inbound">
+          <div class="arch-layer-label">Layer 1 — Inbound Engine</div>
+          <div class="arch-layer-modules">
+            <span class="amod new">content-marketing-engine</span>
+            <span class="amod new">seo-layer</span>
+            <span class="amod new">lead-generation-hub</span>
+            <span class="amod new">social-publishing</span>
+            <span class="amod new">free-tools-layer</span>
+          </div>
+        </div>
+
+        <div class="arch-connector">↓ inquiry &amp; leads masuk pipeline</div>
+
+        <div class="arch-layer l-outbound">
+          <div class="arch-layer-label">Layer 2 — Outbound Engine</div>
+          <div class="arch-layer-modules">
+            <span class="amod new">cold-email-sequences</span>
+            <span class="amod new">linkedin-outreach</span>
+            <span class="amod new">paid-ads-layer</span>
+            <span class="amod new">referral-engine</span>
+          </div>
+        </div>
+
+        <div class="arch-connector">↓ semua leads → pipeline</div>
+
+        <div class="arch-layer l-pipe">
+          <div class="arch-layer-label">Layer 3 — Pipeline &amp; RevOps</div>
+          <div class="arch-layer-modules">
+            <span class="amod done">pipeline-lokal</span>
+            <span class="amod done">pipeline-global</span>
+            <span class="amod new">revops-layer</span>
+            <span class="amod new">lead-scoring</span>
+            <span class="amod new">contact-manager</span>
+          </div>
+        </div>
+
+        <div class="arch-connector">↓ deal closed → delivery</div>
+
+        <div class="arch-layer l-delivery">
+          <div class="arch-layer-label">Layer 4 — Delivery</div>
+          <div class="arch-layer-modules">
+            <span class="amod build">proposal-generator</span>
+            <span class="amod new">pricing-suite</span>
+            <span class="amod new">document-suite</span>
+            <span class="amod build">consulting-toolkit</span>
+            <span class="amod new">audit-operations-hub</span>
+          </div>
+        </div>
+
+        <div class="arch-connector">↓ project selesai → retention</div>
+
+        <div class="arch-layer l-success">
+          <div class="arch-layer-label">Layer 5 — Client Success</div>
+          <div class="arch-layer-modules">
+            <span class="amod new">churn-prevention</span>
+            <span class="amod new">referral-program</span>
+            <span class="amod new">upsell-sequences</span>
+            <span class="amod new">client-onboarding</span>
+          </div>
+        </div>
+
+        <div class="arch-connector">↓ semua data → measurement</div>
+
+        <div class="arch-layer l-analytics">
+          <div class="arch-layer-label">Layer 6 — Analytics &amp; Measurement</div>
+          <div class="arch-layer-modules">
+            <span class="amod new">analytics-dashboard</span>
+            <span class="amod new">attribution-tracking</span>
+            <span class="amod new">ab-testing</span>
+            <span class="amod ext">GA4</span>
+            <span class="amod ext">Gmail-log</span>
+            <span class="amod ext">n8n-monitor</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="arch-legend">
+      <div class="leg"><div class="leg-dot" style="border-color:var(--green);background:var(--green-bg);"></div>Sudah ada</div>
+      <div class="leg"><div class="leg-dot" style="border-color:var(--blue);background:var(--blue-bg);"></div>Dibangun Fase 2</div>
+      <div class="leg"><div class="leg-dot" style="border-color:var(--purple);background:var(--purple-bg);"></div>Skill-powered (baru)</div>
+      <div class="leg"><div class="leg-dot" style="border-color:var(--amber);background:var(--amber-bg);"></div>Integrasi eksternal</div>
+    </div>
+  </section>
+
+  <!-- Modules -->
+  <section class="section" id="modules">
+    <h2 class="section-title">14 Modul Sistem</h2>
+    <div class="mod-grid">
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-01 · Selesai</div>
+        <div class="mod-name">Pipeline Prospek Global</div>
+        <div class="mod-desc">24 prospek internasional — ASEAN, Middle East, South Asia, Africa. Filter region &amp; pendekatan.</div>
+        <div class="mod-skills"><span class="skill-chip">prospek-global.html</span></div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-02 · Selesai</div>
+        <div class="mod-name">Pipeline Prospek Indonesia</div>
+        <div class="mod-desc">15 prospek domestik. Filter tahap, standar ISO, industri. Stage tracking lengkap.</div>
+        <div class="mod-skills"><span class="skill-chip">prospek-lokal.html</span></div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-03 · Selesai</div>
+        <div class="mod-name">Content Marketing Engine</div>
+        <div class="mod-desc">Bank Topik, kalender editorial, generator topik per standar ISO, trigger n8n webhook publish.</div>
+        <div class="mod-skills">
+          <span class="skill-chip mk">content-strategy</span>
+          <span class="skill-chip mk">copywriting</span>
+          <span class="skill-chip mk">social-content</span>
+          <span class="skill-chip">penulis-content</span>
+          <span class="skill-chip">social-carousel</span>
+          <span class="skill-chip">konten.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-04 · Selesai</div>
+        <div class="mod-name">Lead Generation Hub</div>
+        <div class="mod-desc">Lead capture, scoring 0–100, impartiality gate ISO 17021-1, form builder embed VPS, 5 lead magnets.</div>
+        <div class="mod-skills">
+          <span class="skill-chip mk">lead-magnets</span>
+          <span class="skill-chip mk">form-cro</span>
+          <span class="skill-chip">impartiality-iso17021</span>
+          <span class="skill-chip">leads.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-05 · Selesai</div>
+        <div class="mod-name">Outreach Engine</div>
+        <div class="mod-desc">Tracker outreach multi-channel, 8 template (cold/follow-up/LinkedIn/WA), SMTP n8n integration.</div>
+        <div class="mod-skills">
+          <span class="skill-chip mk">cold-email</span>
+          <span class="skill-chip mk">email-sequence</span>
+          <span class="skill-chip">outreach.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-06 · Selesai</div>
+        <div class="mod-name">RevOps Layer</div>
+        <div class="mod-desc">Pipeline KPI, revenue forecast weighted per stage &amp; win rate, attribution sumber &amp; standar ISO.</div>
+        <div class="mod-skills">
+          <span class="skill-chip mk">revops</span>
+          <span class="skill-chip mk">analytics-tracking</span>
+          <span class="skill-chip">revops.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-07 · Selesai</div>
+        <div class="mod-name">Proposal &amp; Pricing Suite</div>
+        <div class="mod-desc">Generator proposal bilingual, kalkulator harga PPP per negara, tracker status proposal.</div>
+        <div class="mod-skills">
+          <span class="skill-chip mk">pricing-strategy</span>
+          <span class="skill-chip mk">sales-enablement</span>
+          <span class="skill-chip">mancalc</span>
+          <span class="skill-chip">scope-generator</span>
+          <span class="skill-chip">proposal.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-08 · Selesai</div>
+        <div class="mod-name">Document Center</div>
+        <div class="mod-desc">Library template per standar ISO, version control, client sharing, quick-add dari template ISO.</div>
+        <div class="mod-skills">
+          <span class="skill-chip">iso-9001</span>
+          <span class="skill-chip">iso-27001</span>
+          <span class="skill-chip">dokumen.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-09 · Selesai</div>
+        <div class="mod-name">Delivery Tracker</div>
+        <div class="mod-desc">Proyek aktif dengan 9 milestone, timeline 30 hari ke depan, deliverable per klien.</div>
+        <div class="mod-skills">
+          <span class="skill-chip ts">smartplanner</span>
+          <span class="skill-chip">delivery.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-10 · Selesai</div>
+        <div class="mod-name">Client Success</div>
+        <div class="mod-desc">Health score klien, check-in log, status &amp; expiry sertifikasi, program referral.</div>
+        <div class="mod-skills">
+          <span class="skill-chip mk">churn-prevention</span>
+          <span class="skill-chip mk">referral-program</span>
+          <span class="skill-chip">klien.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-11 · Selesai</div>
+        <div class="mod-name">Analytics &amp; Attribution</div>
+        <div class="mod-desc">Dashboard overview, funnel konversi, source attribution, pipeline velocity, content stats.</div>
+        <div class="mod-skills">
+          <span class="skill-chip mk">analytics-tracking</span>
+          <span class="skill-chip mk">revops</span>
+          <span class="skill-chip">analytics.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-12 · Selesai</div>
+        <div class="mod-name">Audit Operations Hub TSI</div>
+        <div class="mod-desc">Jadwal audit, impartiality gate ISO 17021-1, NCR tracker, generator rencana audit.</div>
+        <div class="mod-skills">
+          <span class="skill-chip ts">tsi-audit-complete</span>
+          <span class="skill-chip ts">tsi-audit-plan-maker</span>
+          <span class="skill-chip">impartiality-iso17021</span>
+          <span class="skill-chip">audit.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-13 · Selesai</div>
+        <div class="mod-name">Knowledge Base</div>
+        <div class="mod-desc">6 standar ISO dengan detail klausul, FAQ klien, Second Brain via n8n (URL → Jina AI → Docs).</div>
+        <div class="mod-skills">
+          <span class="skill-chip">iso-9001</span>
+          <span class="skill-chip">iso-14001</span>
+          <span class="skill-chip">iso-45001</span>
+          <span class="skill-chip">iso-37001</span>
+          <span class="skill-chip">iso17021-1</span>
+          <span class="skill-chip">kb.html</span>
+        </div>
+      </div>
+
+      <div class="mod-card done">
+        <div class="mod-tag">MOD-14 · Selesai</div>
+        <div class="mod-name">Settings &amp; Integrations</div>
+        <div class="mod-desc">Konfigurasi semua webhook n8n, profil bisnis, impartiality config, data export/import JSON.</div>
+        <div class="mod-skills">
+          <span class="skill-chip">settings.html</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Skill Registry -->
+  <section class="section" id="registry">
+    <h2 class="section-title">Skill Registry — 71 Skill Terintegrasi</h2>
+    <p class="section-lead">Setiap skill yang aktif dalam sesi ini dipetakan ke modul CRM dan fase implementasinya.</p>
+
+    <h3 class="sub-heading" id="registry-marketing">Marketing Skills Plugin (40 skill)</h3>
+    <div class="reg-wrap">
+      <table class="reg-table">
+        <thead>
+          <tr><th>Skill</th><th>Deskripsi Singkat</th><th>Modul CRM</th><th>Fase</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>content-strategy</td><td class="cat-mk">Pillar konten ISO, editorial calendar, topik berdasarkan ICP</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>ai-seo</td><td class="cat-mk">Optimasi untuk LLM/AI search — agar arafarnusa.com dikutip Claude/GPT</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>seo-audit</td><td class="cat-mk">Audit teknis arafarnusa.com, on-page optimization</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>programmatic-seo</td><td class="cat-mk">Scale konten: ISO [standar] × [industri] × [negara]</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>copywriting</td><td class="cat-mk">Tulis artikel, landing page, proposal copy</td><td class="mod-link">MOD-03, MOD-07</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>copy-editing</td><td class="cat-mk">Polis semua konten sebelum publish</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>social-content</td><td class="cat-mk">LinkedIn/Instagram post untuk ISO consulting practice</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>video</td><td class="cat-mk">Script &amp; strategy video ISO (YouTube, Reels)</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>image</td><td class="cat-mk">Visual asset untuk artikel &amp; social media</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>schema-markup</td><td class="cat-mk">Structured data untuk artikel ISO di arafarnusa.com</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>site-architecture</td><td class="cat-mk">Desain URL structure &amp; navigasi arafarnusa.com</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>lead-magnets</td><td class="cat-mk">ISO checklist gratis, template gap analysis sebagai lead magnet</td><td class="mod-link">MOD-04 Lead Generation</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>free-tool-strategy</td><td class="cat-mk">Kalkulator scope ISO, estimator mandays — sebagai lead tool</td><td class="mod-link">MOD-04 Lead Generation</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>page-cro</td><td class="cat-mk">Optimasi halaman inquiry/landing di arafarnusa.com</td><td class="mod-link">MOD-04 Lead Generation</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>form-cro</td><td class="cat-mk">Optimalkan form kontak/konsultasi</td><td class="mod-link">MOD-04 Lead Generation</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>popup-cro</td><td class="cat-mk">Exit-intent popup di arafarnusa.com untuk capture email</td><td class="mod-link">MOD-04 Lead Generation</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>directory-submissions</td><td class="cat-mk">Submit ke direktori ISO consultant global &amp; Google Business</td><td class="mod-link">MOD-04 Lead Generation</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>community-marketing</td><td class="cat-mk">LinkedIn groups ISO, WhatsApp komunitas, forum industri</td><td class="mod-link">MOD-04 Lead Generation</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>marketing-psychology</td><td class="cat-mk">Prinsip persuasi dalam outreach &amp; proposal</td><td class="mod-link">MOD-04, MOD-05, MOD-07</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>cold-email</td><td class="cat-mk">Cold outreach ke prospek ISO global — subjek, body, follow-up</td><td class="mod-link">MOD-05 Outreach Engine</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>email-sequence</td><td class="cat-mk">Nurture sequence otomatis per standar ISO &amp; region</td><td class="mod-link">MOD-05, MOD-08, MOD-10</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>paid-ads</td><td class="cat-mk">Strategy LinkedIn Ads / Google Ads untuk ISO consulting</td><td class="mod-link">MOD-05 Outreach Engine</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>ad-creative</td><td class="cat-mk">Kreatif iklan — copy &amp; visual untuk paid campaigns</td><td class="mod-link">MOD-05 Outreach Engine</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>ab-test-setup</td><td class="cat-mk">A/B test subject line, landing page, dan offer outreach</td><td class="mod-link">MOD-05, MOD-11</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>revops</td><td class="cat-mk">MQL/SQL lifecycle, lead scoring, pipeline stage hygiene</td><td class="mod-link">MOD-06 RevOps</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>analytics-tracking</td><td class="cat-mk">GA4 setup, UTM parameters, event tracking, attribution</td><td class="mod-link">MOD-06, MOD-11</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>customer-research</td><td class="cat-mk">Riset buyer persona ISO per region &amp; industri</td><td class="mod-link">MOD-02, MOD-06</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>marketing-ideas</td><td class="cat-mk">Brainstorm kampanye &amp; pendekatan per segmen</td><td class="mod-link">MOD-02, MOD-06</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>pricing-strategy</td><td class="cat-mk">Tier harga konsultasi ISO, value metric, willingness-to-pay</td><td class="mod-link">MOD-07 Proposal &amp; Pricing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>sales-enablement</td><td class="cat-mk">Pitch deck, one-pager, objection handling, proposal template</td><td class="mod-link">MOD-07 Proposal &amp; Pricing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>product-marketing-context</td><td class="cat-mk">File konteks produk (.agents/product-marketing-context.md)</td><td class="mod-link">Foundation semua modul</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>competitor-profiling</td><td class="cat-mk">Profil konsultan ISO kompetitor — harga, SEO, positioning</td><td class="mod-link">MOD-09 Competitor Intel</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>competitor-alternatives</td><td class="cat-mk">Halaman "vs [kompetitor]" dan "alternatif [kompetitor]"</td><td class="mod-link">MOD-09 Competitor Intel</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>churn-prevention</td><td class="cat-mk">Cegah klien tidak perpanjang — cancel flow, save offer, dunning</td><td class="mod-link">MOD-10 Client Success</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>referral-program</td><td class="cat-mk">Program referral dari klien puas — reward, tracking, promotion</td><td class="mod-link">MOD-10 Client Success</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>onboarding-cro</td><td class="cat-mk">Optimalkan pengalaman onboarding klien baru</td><td class="mod-link">MOD-10 Client Success</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>paywall-upgrade-cro</td><td class="cat-mk">Upsell dari paket dasar ke paket komprehensif</td><td class="mod-link">MOD-10 Client Success</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>signup-flow-cro</td><td class="cat-mk">Optimalkan alur client onboarding &amp; inquiry form</td><td class="mod-link">MOD-10 Client Success</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>launch-strategy</td><td class="cat-mk">Strategi launch layanan ISO baru (IATF 16949, ISO 27001, dll.)</td><td class="mod-link">MOD-10, MOD-02</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>aso-audit</td><td class="cat-mk">App store optimization (relevan jika ada mobile app CRM)</td><td class="mod-link">Future / mobile app</td><td><span class="ph-chip ph4">5</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub-heading" id="registry-existing" style="margin-top:24px;">Existing Skills (31 skill)</h3>
+    <div class="reg-wrap">
+      <table class="reg-table">
+        <thead>
+          <tr><th>Skill</th><th>Deskripsi Singkat</th><th>Modul CRM</th><th>Fase</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>iso-9001</td><td class="cat-iso">Panduan lengkap ISO 9001:2015 QMS</td><td class="mod-link">MOD-13 Consulting Toolkit</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>iso-14001</td><td class="cat-iso">Panduan ISO 14001:2026 EMS</td><td class="mod-link">MOD-13 Consulting Toolkit</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>iso-45001</td><td class="cat-iso">Panduan ISO 45001:2018 OH&amp;S / K3</td><td class="mod-link">MOD-13 Consulting Toolkit</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>iso-37001</td><td class="cat-iso">Panduan ISO 37001:2025 SMAP Anti Penyuapan</td><td class="mod-link">MOD-13 Consulting Toolkit</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>iso17021-1</td><td class="cat-iso">ISO/IEC 17021-1 — persyaratan lembaga sertifikasi</td><td class="mod-link">MOD-12, MOD-13</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>impartiality-iso17021</td><td class="cat-iso">Ketidakberpihakan CB — gate konflik konsultan vs auditor</td><td class="mod-link">MOD-12 Audit Ops</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>iso-21502</td><td class="cat-iso">Panduan ISO 21502 project management</td><td class="mod-link">MOD-13 Consulting Toolkit</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>food-safety-scope</td><td class="cat-iso">Scope sertifikasi ISO 22000 / HACCP</td><td class="mod-link">MOD-07, MOD-13</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>mancalc</td><td class="cat-iso">Kalkulator audit mandays (IAF MD 5, MD 11, MD 23)</td><td class="mod-link">MOD-04, MOD-07</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>scope-generator</td><td class="cat-iso">Generate kalimat ruang lingkup sertifikasi dari KBLI</td><td class="mod-link">MOD-04, MOD-07</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>smartplanner</td><td class="cat-ts">Jadwalkan audit TSI otomatis dari spreadsheet</td><td class="mod-link">MOD-12 Audit Ops</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>tsi-audit-complete</td><td class="cat-ts">Generate Audit Plan + Report sekaligus</td><td class="mod-link">MOD-12 Audit Ops</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>tsi-audit-plan-maker</td><td class="cat-ts">Buat Audit Plan format TSI</td><td class="mod-link">MOD-12 Audit Ops</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>tsi-audit-form-filler</td><td class="cat-ts">Isi Auditor Notes di Excel TSI</td><td class="mod-link">MOD-12 Audit Ops</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>tsi-audit-plan-revise</td><td class="cat-ts">Revisi Audit Plan yang sudah dibuat</td><td class="mod-link">MOD-12 Audit Ops</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>tsi-audit-form-revise</td><td class="cat-ts">Revisi Audit Report yang sudah terisi</td><td class="mod-link">MOD-12 Audit Ops</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>penulis-content</td><td class="cat-an">Artikel SEO ISO dalam Bahasa Indonesia</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>social-content-html</td><td class="cat-an">Konten sosmed ISO dalam HTML standalone</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>social-carousel</td><td class="cat-an">Carousel Instagram/LinkedIn ISO consulting</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>analytics-tracking</td><td class="cat-an">GA4, UTM, event tracking (overlap dengan plugin)</td><td class="mod-link">MOD-11 Analytics</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>org-chart-generator</td><td class="cat-an">Bagan struktur organisasi klien untuk scope analysis</td><td class="mod-link">MOD-13 Consulting Toolkit</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>bpmn-generator</td><td class="cat-an">BPMN 2.0 untuk dokumentasi proses klien</td><td class="mod-link">MOD-13 Consulting Toolkit</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>rca</td><td class="cat-an">Root cause analysis untuk nonconformity klien</td><td class="mod-link">MOD-13 Consulting Toolkit</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>docx</td><td class="cat-dc">Proposal &amp; dokumen konsultasi dalam format Word</td><td class="mod-link">MOD-07 Proposal Suite</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>pptx</td><td class="cat-dc">Pitch deck dan presentasi proposal</td><td class="mod-link">MOD-07 Proposal Suite</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>pdf</td><td class="cat-dc">Export proposal &amp; laporan dalam PDF</td><td class="mod-link">MOD-07 Proposal Suite</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>xlsx</td><td class="cat-dc">Pricing sheet, audit schedule, data export</td><td class="mod-link">MOD-07, MOD-12</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>canvas-design</td><td class="cat-dc">Visual design — sertifikat, poster, materi pelatihan</td><td class="mod-link">MOD-03 Content Marketing</td><td><span class="ph-chip ph3">3</span></td></tr>
+          <tr><td>web-artifacts-builder</td><td class="cat-dc">Build CRM modules sebagai web artifacts</td><td class="mod-link">CRM Development</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>skill-creator</td><td class="cat-dc">Buat/optimasi skill baru untuk CRM</td><td class="mod-link">CRM Development</td><td><span class="ph-chip ph2">2</span></td></tr>
+          <tr><td>morning</td><td class="cat-an">Morning brief harian — ringkasan pipeline &amp; follow-up</td><td class="mod-link">MOD-14 Activity Tracker</td><td><span class="ph-chip ph1">1</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Content Marketing Engine -->
+  <section class="section" id="inbound">
+    <h2 class="section-title">Content Marketing Engine (MOD-03)</h2>
+    <p class="section-lead">
+      Arsitektur sebelumnya 100% outbound — kamu yang mengejar prospek. Engine ini membaliknya:
+      konten ISO edukatif menarik prospek datang sendiri. <strong>Inbound lead tidak perlu cold outreach</strong>
+      dan conversion rate-nya jauh lebih tinggi karena mereka sudah "warmed up" oleh konten.
+    </p>
+
+    <h3 class="sub-heading" id="content-flow">Alur Konten ISO → Pipeline</h3>
+    <div class="flow-wrap">
+      <div class="flow">
+        <div class="flow-step accent2">
+          <div class="flow-n">01</div>
+          <div class="flow-title">Strategy</div>
+          <div class="flow-detail">content-strategy: 5 pillar ISO, topic cluster per standar, editorial calendar 12 bulan.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-n">02</div>
+          <div class="flow-title">Produce</div>
+          <div class="flow-detail">penulis-content + copywriting: artikel SEO, social-carousel, video script per minggu.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step accent">
+          <div class="flow-n">03</div>
+          <div class="flow-title">Publish &amp; SEO</div>
+          <div class="flow-detail">ai-seo + schema-markup: optimasi agar dikutip LLM &amp; ranking Google. programmatic-seo untuk scale.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-n">04</div>
+          <div class="flow-title">Capture</div>
+          <div class="flow-detail">lead-magnets: ISO 9001 gap checklist gratis, scope calculator (free-tool-strategy) sebagai gating.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step accent">
+          <div class="flow-n">05</div>
+          <div class="flow-title">Nurture</div>
+          <div class="flow-detail">email-sequence: 7-email nurture per standar ISO. Skor engagement → MQL alert ke pipeline.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-n">06</div>
+          <div class="flow-title">Pipeline</div>
+          <div class="flow-detail">revops: leads masuk tahap "Inbound MQL" di pipeline tracker. Auto-score &amp; routing.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">5 Pillar Konten ISO (content-strategy)</h3>
+    <div class="source-grid">
+      <div class="source-card">
+        <div class="source-name">Pillar 1 — Panduan Standar ISO</div>
+        <div class="source-desc">"Apa itu ISO 9001?" "Perbedaan ISO 9001 vs ISO 14001" "Cara sertifikasi ISO 45001." Awareness stage — menarik traffic dari perusahaan yang baru mengenal ISO.</div>
+        <div class="source-freq">Skills: penulis-content · copywriting · ai-seo</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">Pillar 2 — Implementasi Praktis</div>
+        <div class="source-desc">"Cara membuat kebijakan mutu ISO 9001" "Template prosedur HACCP" "Audit internal step by step." Consideration stage — perusahaan yang sedang mempersiapkan sertifikasi.</div>
+        <div class="source-freq">Skills: iso-9001 · iso-14001 · iso-45001 · bpmn-generator</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">Pillar 3 — Industri Spesifik</div>
+        <div class="source-desc">"ISO 9001 untuk pabrik otomotif" "ISO 14001 untuk tambang batu bara." Programmatic SEO — satu template untuk ratusan kombinasi industri × standar × negara.</div>
+        <div class="source-freq">Skills: programmatic-seo · schema-markup · site-architecture</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">Pillar 4 — Case Study &amp; Thought Leadership</div>
+        <div class="source-desc">"Bagaimana perusahaan X sertifikasi ISO dalam 6 bulan." Membangun kepercayaan dan menunjukkan track record nyata dari prospek yang berhasil dibantu.</div>
+        <div class="source-freq">Skills: copywriting · social-content · social-carousel</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">Pillar 5 — Tools &amp; Kalkulator</div>
+        <div class="source-desc">ISO Scope Calculator, Audit Mandays Estimator, Gap Analysis Checklist — free tools sebagai lead magnet dengan conversion rate tinggi.</div>
+        <div class="source-freq">Skills: free-tool-strategy · mancalc · scope-generator · form-cro</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Outreach Engine -->
+  <section class="section" id="outreach">
+    <h2 class="section-title">Outreach Engine (MOD-05)</h2>
+    <p class="section-lead">
+      Pipeline outbound yang terstruktur — bukan sekadar kirim email manual. Setiap prospek dari
+      Market Research Engine masuk ke sequence yang tepat berdasarkan standar ISO yang dibutuhkan,
+      region, dan skor prospek.
+    </p>
+    <div class="flow-wrap">
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-n">01</div>
+          <div class="flow-title">Prospek Masuk</div>
+          <div class="flow-detail">Dari Market Research Engine (MOD-02) — skor &gt;60 masuk outreach queue.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step accent2">
+          <div class="flow-n">02</div>
+          <div class="flow-title">Cold Email #1</div>
+          <div class="flow-detail">cold-email: personalized, peer-to-peer tone. Subject pendek, CTA rendah-friction: "Worth a quick chat?"</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-n">03</div>
+          <div class="flow-title">Follow-up ×3</div>
+          <div class="flow-detail">email-sequence: tiap follow-up beda angle — case study, standar baru, artikel relevan. Gap 5-7 hari.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step accent">
+          <div class="flow-n">04</div>
+          <div class="flow-title">LinkedIn Touch</div>
+          <div class="flow-detail">Paralel dengan email — connection request + DM pendek. social-content untuk positioning.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-n">05</div>
+          <div class="flow-title">MQL Routing</div>
+          <div class="flow-detail">revops: kalau ada reply positif → stage "Dikonfirmasi" di pipeline. Auto-create follow-up task.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step accent2">
+          <div class="flow-n">06</div>
+          <div class="flow-title">Proposal</div>
+          <div class="flow-detail">pricing-strategy + sales-enablement + mancalc: proposal dengan harga berbasis nilai, bukan tebakan.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Market Research Engine -->
+  <section class="section" id="research">
+    <h2 class="section-title">Market Research Engine (MOD-02)</h2>
+    <p class="section-lead">
+      Mesin otomatis yang mencari perusahaan di seluruh dunia yang membutuhkan jasa ISO. Berjalan
+      di n8n setiap hari, hasilnya langsung masuk pipeline.
+    </p>
+    <div class="source-grid">
+      <div class="source-card">
+        <div class="source-name">LinkedIn Jobs</div>
+        <div class="source-desc">Perusahaan yang hiring "ISO consultant", "certification manager", "QA Manager" = sedang mempersiapkan sertifikasi.</div>
+        <div class="source-freq">Harian · n8n HTTP Request</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">UNGM Tender Portal</div>
+        <div class="source-desc">Tender internasional yang mensyaratkan ISO certification — cocok untuk prospek Africa dan Asia.</div>
+        <div class="source-freq">Harian · RSS / scraping</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">ISO.org — Standar Baru</div>
+        <div class="source-desc">Setiap revisi standar (ISO 9001:2025?) memicu gelombang re-certification. Klien lama = prospek hangat.</div>
+        <div class="source-freq">Mingguan · RSS feed</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">Google News Alert</div>
+        <div class="source-desc">Perusahaan yang menyebut "proses sertifikasi ISO" di media = sinyal kebutuhan aktif.</div>
+        <div class="source-freq">Harian · Alerts RSS</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">Kompass / Dun &amp; Bradstreet</div>
+        <div class="source-desc">Database perusahaan global yang belum tersertifikasi ISO — filter by industri, ukuran, negara.</div>
+        <div class="source-freq">Mingguan · API</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">Indeed / Glassdoor</div>
+        <div class="source-desc">Posisi HSE Director atau Compliance Officer baru dibuka = perusahaan sedang mempersiapkan sertifikasi.</div>
+        <div class="source-freq">Harian · scraping</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RevOps -->
+  <section class="section" id="revops">
+    <h2 class="section-title">RevOps Layer (MOD-06)</h2>
+    <p class="section-lead">
+      Skill <strong>revops</strong> memperkenalkan struktur lead lifecycle yang jelas — tanpa ini, semua leads diperlakukan sama padahal tahap kebutuhan mereka sangat berbeda. Ini adalah "rules of engagement" untuk pipeline CRM.
+    </p>
+    <div style="overflow-x:auto;">
+      <table class="stack-table">
+        <thead>
+          <tr><th>Stage</th><th>Definisi</th><th>Tindakan</th><th>Owner</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Teridentifikasi</td><td>Muncul dari market research — belum dikontaksi</td><td>Auto-score, masuk outreach queue</td><td>n8n</td></tr>
+          <tr><td>Dikontaksi</td><td>Cold email #1 terkirim</td><td>Start follow-up sequence</td><td>Outreach Engine</td></tr>
+          <tr><td>MQL</td><td>Ada respons positif atau download lead magnet</td><td>Alert → prioritas follow-up personal</td><td>Kamu</td></tr>
+          <tr><td>SQL</td><td>Call discovery terjadwal</td><td>Generate proposal draft</td><td>Kamu + MOD-07</td></tr>
+          <tr><td>Proposal Dikirim</td><td>Proposal diterima klien</td><td>Follow-up 5 hari, objection handling</td><td>sales-enablement</td></tr>
+          <tr><td>Negosiasi</td><td>Klien merespons proposal</td><td>Adjust pricing, finalisasi</td><td>pricing-strategy</td></tr>
+          <tr><td>Closed Won</td><td>Kontrak ditandatangani</td><td>Trigger client onboarding, GCal event</td><td>MOD-10, MOD-12</td></tr>
+          <tr><td>Closed Lost</td><td>Tidak jadi</td><td>Catat alasan → win/loss analysis</td><td>Analytics Dashboard</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Proposal & Pricing -->
+  <section class="section" id="proposal">
+    <h2 class="section-title">Proposal &amp; Pricing Suite (MOD-07)</h2>
+    <p class="section-lead">
+      Proposal bukan lagi dokumen manual yang ditulis dari nol setiap kali. Skill <strong>pricing-strategy</strong>,
+      <strong>sales-enablement</strong>, <strong>mancalc</strong>, dan <strong>scope-generator</strong>
+      bekerja bersama untuk generate proposal yang akurat dan meyakinkan dalam hitungan menit.
+    </p>
+    <div style="overflow-x:auto;">
+      <table class="stack-table">
+        <thead><tr><th>Komponen Proposal</th><th>Skill Penggerak</th><th>Output</th></tr></thead>
+        <tbody>
+          <tr><td>Ruang Lingkup Sertifikasi</td><td>scope-generator + food-safety-scope</td><td>Kalimat scope dalam Bahasa Indonesia &amp; Inggris</td></tr>
+          <tr><td>Hitung Durasi Audit</td><td>mancalc (IAF MD 5/11/23)</td><td>Tabel mandays initial/surveillance/recertification</td></tr>
+          <tr><td>Tier Harga Layanan</td><td>pricing-strategy (value metric, Van Westendorp)</td><td>3 paket: Basic / Professional / Enterprise</td></tr>
+          <tr><td>Dokumen Proposal</td><td>sales-enablement + docx + pptx</td><td>File .docx proposal + deck .pptx untuk presentasi</td></tr>
+          <tr><td>Objection Handling</td><td>sales-enablement (objection library)</td><td>Jawaban untuk 10 keberatan umum</td></tr>
+          <tr><td>Export PDF</td><td>pdf skill</td><td>Proposal siap kirim ke klien</td></tr>
+          <tr><td>Pricing Sheet</td><td>xlsx skill</td><td>Breakdown harga detail untuk klien korporat</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Client Success -->
+  <section class="section" id="success">
+    <h2 class="section-title">Client Success (MOD-10)</h2>
+    <p class="section-lead">
+      Sertifikasi ISO bukan proyek sekali jalan — ada surveillance audit, re-certification, standar baru,
+      dan peluang upsell ke standar lain. Skill <strong>churn-prevention</strong> dan <strong>referral-program</strong>
+      memastikan klien yang sudah ada menghasilkan pendapatan berulang DAN mendatangkan klien baru.
+    </p>
+    <div class="source-grid">
+      <div class="source-card">
+        <div class="source-name">Churn Prevention</div>
+        <div class="source-desc">Klien yang selesai sertifikasi ISO tidak langsung perlu layanan — tapi surveillance audit tahunan &amp; re-certification 3 tahunan adalah peluang. Trigger reminder 90 hari sebelum jatuh tempo.</div>
+        <div class="source-freq">Skills: churn-prevention · email-sequence</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">Referral Program</div>
+        <div class="source-desc">Klien yang berhasil dapat ISO adalah brand ambassador terbaik. Program referral — reward per referral yang closing, tracked via CRM — bisa menjadi channel akuisisi terbesar.</div>
+        <div class="source-freq">Skills: referral-program · analytics-tracking</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">Upsell ke Standar Lain</div>
+        <div class="source-desc">Perusahaan yang sudah ISO 9001 sering butuh ISO 14001 atau ISO 45001 berikutnya. Trigger sequence upsell otomatis 3 bulan setelah sertifikasi pertama berhasil.</div>
+        <div class="source-freq">Skills: paywall-upgrade-cro · email-sequence</div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">Client Onboarding</div>
+        <div class="source-desc">Pengalaman onboarding yang mulus (welcome kit, GCal project schedule, Notion workspace klien) meningkatkan kepuasan &amp; likelihood mereka merekomendasikan ke orang lain.</div>
+        <div class="source-freq">Skills: onboarding-cro · docx · bpmn-generator</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Audit Ops -->
+  <section class="section" id="audit">
+    <h2 class="section-title">Audit Operations Hub (MOD-12)</h2>
+    <p class="section-lead">
+      Untuk peran auditor TSI — terpisah dari pipeline konsultasi karena alasan ketidakberpihakan
+      ISO/IEC 17021-1. Skill <strong>impartiality-iso17021</strong> berfungsi sebagai <em>gate</em>:
+      jika sebuah perusahaan ada di pipeline konsultasi, sistem harus menandai konflik sebelum
+      assignment audit diproses.
+    </p>
+    <div style="overflow-x:auto;">
+      <table class="stack-table">
+        <thead><tr><th>Alur</th><th>Skill</th><th>Fungsi</th></tr></thead>
+        <tbody>
+          <tr><td>Cek Impartiality</td><td>impartiality-iso17021</td><td>Flag konflik: perusahaan X ada di pipeline konsultasi?</td></tr>
+          <tr><td>Hitung Mandays</td><td>mancalc</td><td>Durasi audit berdasarkan IAF MD</td></tr>
+          <tr><td>Buat Audit Plan</td><td>tsi-audit-plan-maker</td><td>Jadwal per departemen, tim auditor, sesi 2 jam</td></tr>
+          <tr><td>Schedule Auditor</td><td>smartplanner</td><td>Assign auditor qualified + cek clash jadwal</td></tr>
+          <tr><td>Isi Audit Report</td><td>tsi-audit-form-filler</td><td>Auditor notes, NCR, evidence per klausul</td></tr>
+          <tr><td>Revisi</td><td>tsi-audit-plan-revise · tsi-audit-form-revise</td><td>Update jika ada perubahan jadwal/auditor</td></tr>
+          <tr><td>Output Final</td><td>tsi-audit-complete</td><td>Plan + Report sekaligus dalam satu pipeline</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Stack -->
+  <section class="section" id="stack">
+    <h2 class="section-title">Stack Teknologi</h2>
+    <div style="overflow-x:auto;">
+      <table class="stack-table">
+        <thead><tr><th>Komponen</th><th>Teknologi</th><th>Alasan</th><th>Fase</th></tr></thead>
+        <tbody>
+          <tr><td>Frontend CRM</td><td>HTML + Vanilla JS</td><td>Zero dependency, deploy di mana saja</td><td><span class="tag-ready">✓ Fase 1</span></td></tr>
+          <tr><td>Penyimpanan</td><td>localStorage → Supabase</td><td>Mulai sederhana, naik ke cloud ketika siap</td><td><span class="tag-ready">✓ Fase 1</span></td></tr>
+          <tr><td>Otomasi</td><td>n8n</td><td>Market research, email trigger, digest harian</td><td><span class="tag-phase2">→ Fase 2</span></td></tr>
+          <tr><td>Email outreach</td><td>Gmail API (terkoneksi)</td><td>Cold email, nurture sequence, proposal delivery</td><td><span class="tag-phase2">→ Fase 2</span></td></tr>
+          <tr><td>Kalender</td><td>Google Calendar (terkoneksi)</td><td>Follow-up reminder, project timeline klien</td><td><span class="tag-phase2">→ Fase 2</span></td></tr>
+          <tr><td>Dokumen</td><td>Google Drive (terkoneksi)</td><td>Simpan proposal, kontrak, audit report</td><td><span class="tag-phase2">→ Fase 2</span></td></tr>
+          <tr><td>Analytics</td><td>GA4 + UTM (analytics-tracking)</td><td>Track source setiap lead, conversion per channel</td><td><span class="tag-phase2">→ Fase 2</span></td></tr>
+          <tr><td>Content CMS</td><td>GitHub Pages / arafarnusa.com</td><td>Publish artikel SEO, landing page, lead magnet</td><td><span class="tag-phase2">→ Fase 2</span></td></tr>
+          <tr><td>Product Context</td><td>.agents/product-marketing-context.md</td><td>File konteks produk — dibaca otomatis semua skill</td><td><span class="tag-phase2">→ Fase 2</span></td></tr>
+          <tr><td>Database cloud</td><td>Supabase (PostgreSQL)</td><td>Multi-device sync, real-time, free tier cukup</td><td><span class="tag-later">Fase 3</span></td></tr>
+          <tr><td>Email marketing</td><td>Mailchimp / Customer.io</td><td>Nurture sequence skala besar (>100 leads)</td><td><span class="tag-later">Fase 3</span></td></tr>
+          <tr><td>Referral tracking</td><td>Rewardful / Dub.co</td><td>Track &amp; bayar referral dari klien puas</td><td><span class="tag-later">Fase 3</span></td></tr>
+          <tr><td>Enrichment</td><td>Apollo / Clearbit</td><td>Enrich data prospek otomatis</td><td><span class="tag-later">Fase 4</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Roadmap -->
+  <section class="section" id="roadmap">
+    <h2 class="section-title">Roadmap 5 Fase</h2>
+    <div class="roadmap">
+      <div class="phase current">
+        <div class="phase-label">Fase 1 · Sekarang</div>
+        <div class="phase-name">Foundation</div>
+        <div class="phase-items">
+          <div class="phase-item">Pipeline lokal ✓</div>
+          <div class="phase-item">Pipeline global ✓</div>
+          <div class="phase-item">Landing CRM ✓</div>
+          <div class="phase-item">Arsitektur ✓</div>
+        </div>
+      </div>
+      <div class="phase next">
+        <div class="phase-label">Fase 2 · 1–2 bulan</div>
+        <div class="phase-name">Marketing + Outreach</div>
+        <div class="phase-items">
+          <div class="phase-item">Product context file</div>
+          <div class="phase-item">Content strategy &amp; SEO</div>
+          <div class="phase-item">Lead magnets ISO</div>
+          <div class="phase-item">Cold email sequences</div>
+          <div class="phase-item">n8n market research</div>
+          <div class="phase-item">Proposal generator</div>
+          <div class="phase-item">RevOps lifecycle</div>
+        </div>
+      </div>
+      <div class="phase later">
+        <div class="phase-label">Fase 3 · 3–4 bulan</div>
+        <div class="phase-name">Cloud + Retention</div>
+        <div class="phase-items">
+          <div class="phase-item">Supabase backend</div>
+          <div class="phase-item">Client Success module</div>
+          <div class="phase-item">Referral program</div>
+          <div class="phase-item">Analytics dashboard</div>
+          <div class="phase-item">Competitor intelligence</div>
+          <div class="phase-item">Audit Operations Hub</div>
+        </div>
+      </div>
+      <div class="phase future">
+        <div class="phase-label">Fase 4 · 6+ bulan</div>
+        <div class="phase-name">Intelligence</div>
+        <div class="phase-items">
+          <div class="phase-item">Programmatic SEO</div>
+          <div class="phase-item">Paid ads layer</div>
+          <div class="phase-item">Revenue forecast</div>
+          <div class="phase-item">Multi-user (tim)</div>
+          <div class="phase-item">Apollo enrichment</div>
+        </div>
+      </div>
+      <div class="phase far">
+        <div class="phase-label">Fase 5 · 12+ bulan</div>
+        <div class="phase-name">Platform</div>
+        <div class="phase-items">
+          <div class="phase-item">Mobile app CRM</div>
+          <div class="phase-item">White-label untuk CB lain</div>
+          <div class="phase-item">ASO (app store)</div>
+          <div class="phase-item">Partner program</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recommendations -->
+  <section class="section" id="recs">
+    <h2 class="section-title">Rekomendasi Prioritas</h2>
+    <div class="rec-list">
+
+      <div class="rec">
+        <div class="rec-priority pri-high">Tinggi</div>
+        <div>
+          <div class="rec-title">Buat Product Marketing Context File</div>
+          <div class="rec-desc">File <code>.agents/product-marketing-context.md</code> dibaca otomatis oleh semua 40 marketing skills sebelum mereka bekerja. Isinya: siapa kamu, siapa klien ideal, standar ISO apa yang kamu kuasai, market ASEAN/ME/Africa, brand arafarnusa.com. Tanpa file ini, setiap skill harus ditanya ulang dari awal.</div>
+          <div class="rec-skill">→ skill: product-marketing-context · Langkah pertama sebelum apapun</div>
+        </div>
+      </div>
+
+      <div class="rec">
+        <div class="rec-priority pri-high">Tinggi</div>
+        <div>
+          <div class="rec-title">Free ISO Tool sebagai Lead Magnet Utama</div>
+          <div class="rec-desc">Bangun kalkulator scope ISO dan estimator mandays sebagai web tool gratis di arafarnusa.com. Orang yang menggunakan tool ini = perusahaan yang sedang mempertimbangkan sertifikasi. Conversion rate lead magnet interaktif 3–5x lebih tinggi dari ebook biasa.</div>
+          <div class="rec-skill">→ skills: free-tool-strategy · mancalc · scope-generator · form-cro · page-cro</div>
+        </div>
+      </div>
+
+      <div class="rec">
+        <div class="rec-priority pri-high">Tinggi</div>
+        <div>
+          <div class="rec-title">Cold Email Engine per Standar &amp; Region</div>
+          <div class="rec-desc">Buat 5 template cold email (satu per standar ISO utama: 9001, 14001, 45001, 37001, 22000), masing-masing dengan 3 follow-up berbeda angle. Jalankan via n8n ke prospek dari Market Research Engine. Skill cold-email memastikan email terdengar seperti manusia, bukan template korporat.</div>
+          <div class="rec-skill">→ skills: cold-email · email-sequence · marketing-psychology · revops</div>
+        </div>
+      </div>
+
+      <div class="rec">
+        <div class="rec-priority pri-high">Tinggi</div>
+        <div>
+          <div class="rec-title">Pricing Strategy — 3 Paket Konsultasi</div>
+          <div class="rec-desc">Definisikan 3 tier layanan (Basic: pendampingan dokumen, Professional: full implementation support, Enterprise: dedicated consultant + surveillance) dengan harga berbasis value metric (biaya sertifikasi yang diselamatkan vs. harga konsultasi). Hargai sesuai mandays aktual dari mancalc.</div>
+          <div class="rec-skill">→ skills: pricing-strategy · mancalc · sales-enablement · marketing-psychology</div>
+        </div>
+      </div>
+
+      <div class="rec">
+        <div class="rec-priority pri-med">Sedang</div>
+        <div>
+          <div class="rec-title">Referral Program dari Klien yang Sudah Sertifikasi</div>
+          <div class="rec-desc">Klien yang berhasil dapat ISO adalah testimonial hidup. Bangun program referral sederhana: reward (potongan biaya surveillance audit) per referral yang closing. Track via CRM, announce ke semua klien aktif lewat email sequence.</div>
+          <div class="rec-skill">→ skills: referral-program · email-sequence · analytics-tracking</div>
+        </div>
+      </div>
+
+      <div class="rec">
+        <div class="rec-priority pri-med">Sedang</div>
+        <div>
+          <div class="rec-title">Konten Competitor Alternatives</div>
+          <div class="rec-desc">Halaman "Alternatif untuk [konsultan besar X]" dan "Arafarnusa vs [kompetitor]" adalah salah satu sumber traffic paling bernilai — mereka yang membaca sudah dalam mode evaluasi. Riset kompetitor dulu dengan competitor-profiling, lalu buat halaman perbandingan.</div>
+          <div class="rec-skill">→ skills: competitor-profiling · competitor-alternatives · seo-audit · page-cro</div>
+        </div>
+      </div>
+
+      <div class="rec">
+        <div class="rec-priority pri-med">Sedang</div>
+        <div>
+          <div class="rec-title">Churn Prevention — Renewal Sequence Tahunan</div>
+          <div class="rec-desc">Surveillance audit ISO 9001 wajib setahun sekali, re-certification 3 tahun. CRM harus trigger email sequence 90-60-30 hari sebelum jatuh tempo dengan value recap dan penawaran renewal. Tanpa ini, klien lupa dan cari konsultan baru.</div>
+          <div class="rec-skill">→ skills: churn-prevention · email-sequence · paywall-upgrade-cro</div>
+        </div>
+      </div>
+
+      <div class="rec">
+        <div class="rec-priority pri-low">Bonus</div>
+        <div>
+          <div class="rec-title">Impartiality Gate antara Konsultasi &amp; Audit</div>
+          <div class="rec-desc">Sistem harus otomatis mendeteksi ketika sebuah perusahaan ada di pipeline konsultasi arafarnusa.com DAN ada di assignment audit TSI. Flag konflik dan tahan proses — sesuai ISO/IEC 17021-1 klausul 4.2 tentang ketidakberpihakan.</div>
+          <div class="rec-skill">→ skills: impartiality-iso17021 · iso17021-1 · revops</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+</div>
+
+<script>
+function toggleTheme(){
+  const r=document.documentElement;
+  const cur=r.getAttribute('data-theme');
+  const isDark=cur==='dark'||(cur===null&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  r.setAttribute('data-theme',isDark?'light':'dark');
+  try{localStorage.setItem('iso-theme',isDark?'light':'dark');}catch(e){}
+}
+(function(){
+  try{const t=localStorage.getItem('iso-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}
+})();
+</script>
