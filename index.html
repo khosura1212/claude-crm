@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CRM — Konsultan ISO</title>
+<style>
+:root{
+  --bg:#F0EDE6;--surface:#E8E4DA;--border:#C8BFB0;
+  --text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;
+  --accent:#B84F1E;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0F1820;--surface:#182230;--border:#2A3A4A;
+  --text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;
+  --accent:#D06528;
+}}
+:root[data-theme=light]{--bg:#F0EDE6;--surface:#E8E4DA;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;}
+:root[data-theme=dark]{--bg:#0F1820;--surface:#182230;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{padding:32px 40px 24px;border-bottom:4px solid var(--accent);}
+header h1{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.6rem;font-weight:normal;letter-spacing:-.01em;}
+header p{font-size:.8rem;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase;margin-top:5px;}
+.phase-section{padding:28px 40px 0;}
+.phase-label{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;padding:0 40px 28px;}
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:4px;
+  padding:24px;text-decoration:none;color:var(--text);
+  transition:border-color .15s,transform .12s;display:block;
+}
+.card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.card-icon{font-size:1.4rem;margin-bottom:12px;display:block;}
+.card-title{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1rem;margin-bottom:6px;}
+.card-desc{font-size:.79rem;color:var(--text-2);line-height:1.5;}
+.card-meta{margin-top:12px;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);}
+footer{margin-top:auto;padding:20px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+</style>
+</head>
+<body>
+<header>
+  <h1>Aplikasi CRM — Konsultan ISO</h1>
+  <p>Manajemen Prospek &amp; Pipeline Konsultasi · 20 Modul · 40 Marketing Skills</p>
+</header>
+
+<div class="phase-section">
+  <div class="phase-label">Fase 1 — Market Intelligence & Pipeline</div>
+</div>
+<div class="grid">
+  <a class="card" href="prospek-global.html">
+    <span class="card-icon">🌏</span>
+    <div class="card-title">Pipeline Prospek Global</div>
+    <div class="card-desc">Tracking prospek internasional — ASEAN, Middle East, South Asia, dan Africa. 24 perusahaan dari 15 negara, filter by region &amp; pendekatan.</div>
+    <div class="card-meta">MOD-01 · 24 Prospek · 4 Kawasan</div>
+  </a>
+  <a class="card" href="prospek-lokal.html">
+    <span class="card-icon">🇮🇩</span>
+    <div class="card-title">Pipeline Prospek Indonesia</div>
+    <div class="card-desc">Tracking prospek domestik — perusahaan Indonesia dari berbagai industri. Filter by tahap, standar ISO, dan industri.</div>
+    <div class="card-meta">MOD-02 · 15 Prospek · Pasar Lokal</div>
+  </a>
+</div>
+
+<div class="phase-section">
+  <div class="phase-label">Fase 2 — Lead Generation, Content & RevOps</div>
+</div>
+<div class="grid">
+  <a class="card" href="konten.html">
+    <span class="card-icon">✍️</span>
+    <div class="card-title">Content Marketing Engine</div>
+    <div class="card-desc">Bank topik, kalender editorial, generator ide konten ISO, dan trigger n8n workflows langsung dari CRM.</div>
+    <div class="card-meta">MOD-03 · Bank Topik · n8n Integration</div>
+  </a>
+  <a class="card" href="leads.html">
+    <span class="card-icon">📥</span>
+    <div class="card-title">Lead Generation Hub</div>
+    <div class="card-desc">Lead capture dari form website, scoring otomatis, impartiality gate ISO 17021-1, form builder, dan lead magnet manager.</div>
+    <div class="card-meta">MOD-04 · Lead Scoring · Impartiality Gate</div>
+  </a>
+  <a class="card" href="outreach.html">
+    <span class="card-icon">📤</span>
+    <div class="card-title">Outreach Engine</div>
+    <div class="card-desc">Tracker outreach multi-channel (email/LinkedIn/WhatsApp), template library 8 script, dan integrasi SMTP via n8n.</div>
+    <div class="card-meta">MOD-05 · Email Sequences · Template Library</div>
+  </a>
+  <a class="card" href="revops.html">
+    <span class="card-icon">📊</span>
+    <div class="card-title">RevOps Layer</div>
+    <div class="card-desc">Pipeline overview KPI, revenue forecast weighted, dan attribution sumber lead &amp; standar ISO.</div>
+    <div class="card-meta">MOD-06 · Pipeline · Forecast · Attribution</div>
+  </a>
+</div>
+
+<div class="phase-section">
+  <div class="phase-label">Fase 3 — Proposal, Delivery & Client Success</div>
+</div>
+<div class="grid">
+  <a class="card" href="proposal.html">
+    <span class="card-icon">📝</span>
+    <div class="card-title">Proposal & Pricing Suite</div>
+    <div class="card-desc">Generator proposal bilingual, kalkulator harga berbasis PPP per negara, dan tracker status proposal (Dikirim/Signed/Rejected).</div>
+    <div class="card-meta">MOD-07 · PPP Pricing · Proposal Tracker</div>
+  </a>
+  <a class="card" href="dokumen.html">
+    <span class="card-icon">📂</span>
+    <div class="card-title">Document Center</div>
+    <div class="card-desc">Library dokumen dan template per standar ISO, version control, dan sharing dokumen ke klien.</div>
+    <div class="card-meta">MOD-08 · Template Library · Client Share</div>
+  </a>
+  <a class="card" href="delivery.html">
+    <span class="card-icon">🚀</span>
+    <div class="card-title">Delivery Tracker</div>
+    <div class="card-desc">Tracking proyek aktif dengan milestone dan deliverable, timeline, dan progress per klien.</div>
+    <div class="card-meta">MOD-09 · Milestone · Deliverable · Timeline</div>
+  </a>
+  <a class="card" href="klien.html">
+    <span class="card-icon">🤝</span>
+    <div class="card-title">Client Success</div>
+    <div class="card-desc">Health score klien, log check-in, status sertifikasi dan expiry, serta program referral.</div>
+    <div class="card-meta">MOD-10 · Health Score · Check-in · Referral</div>
+  </a>
+  <a class="card" href="analytics.html">
+    <span class="card-icon">📈</span>
+    <div class="card-title">Analytics & Attribution</div>
+    <div class="card-desc">Dashboard overview, pipeline velocity, lead source attribution, dan performa konten marketing.</div>
+    <div class="card-meta">MOD-11 · Pipeline Velocity · Attribution</div>
+  </a>
+</div>
+
+<div class="phase-section">
+  <div class="phase-label">Fase 4 — Audit TSI, Knowledge Base & Settings</div>
+</div>
+<div class="grid">
+  <a class="card" href="audit.html">
+    <span class="card-icon">🔍</span>
+    <div class="card-title">Audit Operations Hub</div>
+    <div class="card-desc">Jadwal audit TSI, impartiality gate ISO 17021-1, tracker temuan (NCR), dan generator rencana audit.</div>
+    <div class="card-meta">MOD-12 · TSI · Impartiality · NCR Tracker</div>
+  </a>
+  <a class="card" href="kb.html">
+    <span class="card-icon">📚</span>
+    <div class="card-title">Knowledge Base</div>
+    <div class="card-desc">Ringkasan standar ISO (6 standar), FAQ klien, dan Second Brain via n8n untuk arsip artikel.</div>
+    <div class="card-meta">MOD-13 · ISO Standards · FAQ · Second Brain</div>
+  </a>
+  <a class="card" href="settings.html">
+    <span class="card-icon">⚙️</span>
+    <div class="card-title">Settings & Integrations</div>
+    <div class="card-desc">Konfigurasi webhook n8n semua modul, profil bisnis, impartiality config, dan export/import data.</div>
+    <div class="card-meta">MOD-14 · n8n Webhooks · Data Management</div>
+  </a>
+  <a class="card" href="arsitektur.html">
+    <span class="card-icon">🏗️</span>
+    <div class="card-title">Arsitektur Sistem CRM</div>
+    <div class="card-desc">Dokumen teknis — 16 modul, market research engine otomatis, stack teknologi, roadmap 5 fase, dan rekomendasi fitur.</div>
+    <div class="card-meta">Ref · 20 Modul · 5 Fase · n8n + Google</div>
+  </a>
+</div>
+
+<div class="phase-section">
+  <div class="phase-label">Fase 5 — Intelligence & Marketing Skills</div>
+</div>
+<div class="grid">
+  <a class="card" href="competitors.html">
+    <span class="card-icon">🔎</span>
+    <div class="card-title">Competitor Intelligence Hub</div>
+    <div class="card-desc">Profil kompetitor ISO global/regional/lokal, positioning matrix, gap analysis, dan halaman alternatif/vs generator.</div>
+    <div class="card-meta">MOD-15 · Profiling · Positioning · Altpages</div>
+  </a>
+  <a class="card" href="skills.html">
+    <span class="card-icon">⚡</span>
+    <div class="card-title">Marketing Skills Hub</div>
+    <div class="card-desc">40 marketing skills dari plugin — prompt generator berbasis data CRM, workflow sprint, dan log penggunaan skill.</div>
+    <div class="card-meta">MOD-16 · 40 Skills · Prompt Generator · Sprint</div>
+  </a>
+</div>
+
+<div class="phase-section">
+  <div class="phase-label">Fase 4 — Intelligence & Growth</div>
+</div>
+<div class="grid">
+  <a class="card" href="forecast.html">
+    <span class="card-icon">📈</span>
+    <div class="card-title">Revenue Intelligence</div>
+    <div class="card-desc">Forecast revenue 12 bulan dengan 3 skenario (base/bull/bear), MRR/ARR per klien, dan goal tracker berbasis target bisnis.</div>
+    <div class="card-meta">MOD-17 · Forecast · MRR/ARR · Goal Tracker</div>
+  </a>
+  <a class="card" href="seo.html">
+    <span class="card-icon">🗺️</span>
+    <div class="card-title">Programmatic SEO Planner</div>
+    <div class="card-desc">Keyword matrix ISO × industri × negara, page builder dengan outline generator, dan tracker status per halaman SEO.</div>
+    <div class="card-meta">MOD-18 · Keyword Matrix · Page Builder · Tracker</div>
+  </a>
+  <a class="card" href="tim.html">
+    <span class="card-icon">👥</span>
+    <div class="card-title">Team & Capacity Manager</div>
+    <div class="card-desc">Manajemen anggota tim, assignment proyek per konsultan, workload chart kapasitas jam per minggu, dan availability tracker.</div>
+    <div class="card-meta">MOD-19 · Anggota · Assignment · Workload</div>
+  </a>
+  <a class="card" href="enrichment.html">
+    <span class="card-icon">🔬</span>
+    <div class="card-title">Lead Enrichment Hub</div>
+    <div class="card-desc">Enrich queue dari pipeline lead, isian company intel (ukuran, revenue, kontak, LinkedIn), dan batch enrichment via n8n webhook.</div>
+    <div class="card-meta">MOD-20 · Company Intel · n8n Enrich · Batch</div>
+  </a>
+</div>
+
+<footer>Aplikasi CRM · 20 Modul · Konsultan ISO · arafarnusa.com</footer>
+</body>
+</html>
