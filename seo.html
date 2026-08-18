@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Programmatic SEO — CRM ISO</title>
+<style>
+:root{
+  --bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CC;--border:#C8BFB0;
+  --text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;
+  --accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);
+  --green:#2D6A3F;--green-dim:rgba(45,106,63,.12);
+  --blue:#1A4F7A;--blue-dim:rgba(26,79,122,.12);
+  --orange:#B86A1E;--orange-dim:rgba(184,106,30,.12);
+  --red:#8A1E2A;--red-dim:rgba(138,30,42,.1);
+  --purple:#5A1A7A;--purple-dim:rgba(90,26,122,.1);
+  --teal:#1A6A5A;--teal-dim:rgba(26,106,90,.1);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0F1820;--surface:#182230;--surface-2:#1F2D40;--border:#2A3A4A;
+  --text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;
+  --accent:#D06528;--accent-dim:rgba(208,101,40,.15);
+  --green:#3A9068;--green-dim:rgba(58,144,104,.15);
+  --blue:#3A80B8;--blue-dim:rgba(58,128,184,.15);
+  --orange:#C08030;--orange-dim:rgba(192,128,48,.15);
+  --red:#C04050;--red-dim:rgba(192,64,80,.12);
+  --purple:#8A50CC;--purple-dim:rgba(138,80,204,.12);
+  --teal:#3AA090;--teal-dim:rgba(58,160,144,.12);
+}}
+:root[data-theme=light]{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CC;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D6A3F;--green-dim:rgba(45,106,63,.12);--blue:#1A4F7A;--blue-dim:rgba(26,79,122,.12);--orange:#B86A1E;--orange-dim:rgba(184,106,30,.12);--red:#8A1E2A;--red-dim:rgba(138,30,42,.1);--purple:#5A1A7A;--purple-dim:rgba(90,26,122,.1);--teal:#1A6A5A;--teal-dim:rgba(26,106,90,.1);}
+:root[data-theme=dark]{--bg:#0F1820;--surface:#182230;--surface-2:#1F2D40;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3A9068;--green-dim:rgba(58,144,104,.15);--blue:#3A80B8;--blue-dim:rgba(58,128,184,.15);--orange:#C08030;--orange-dim:rgba(192,128,48,.15);--red:#C04050;--red-dim:rgba(192,64,80,.12);--purple:#8A50CC;--purple-dim:rgba(138,80,204,.12);--teal:#3AA090;--teal-dim:rgba(58,160,144,.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+.header{padding:24px 32px 16px;border-bottom:3px solid var(--accent);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.header-back{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);padding:5px 10px;border:1px solid var(--border);border-radius:2px;transition:border-color .15s,color .15s;}
+.header-back:hover{border-color:var(--accent);color:var(--accent);}
+.header-main{flex:1;}
+.header-title{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.3rem;font-weight:normal;}
+.header-sub{font-size:.72rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 32px;overflow-x:auto;}
+.tab{padding:12px 18px;font-size:.78rem;letter-spacing:.04em;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s,border-color .15s;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:hover:not(.active){color:var(--text-2);}
+.content{flex:1;padding:24px 32px;}
+.panel{display:none;}
+.panel.active{display:block;}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:14px 16px;}
+.kpi-label{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;}
+.kpi-value{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.5rem;color:var(--text);}
+.kpi-sub{font-size:.7rem;color:var(--text-2);margin-top:3px;}
+.kpi.accent{border-left:3px solid var(--accent);}
+.kpi.green{border-left:3px solid var(--green);}
+.kpi.blue{border-left:3px solid var(--blue);}
+.kpi.orange{border-left:3px solid var(--orange);}
+.kpi.teal{border-left:3px solid var(--teal);}
+.section-title{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.btn{font-family:inherit;font-size:.75rem;padding:7px 14px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text-2);cursor:pointer;transition:all .15s;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn.primary:hover{opacity:.9;}
+.btn.danger{border-color:var(--red);color:var(--red);}
+.btn.danger:hover{background:var(--red-dim);}
+.btn.sm{font-size:.68rem;padding:4px 9px;}
+/* Matrix */
+.matrix-wrap{overflow-x:auto;margin-bottom:20px;}
+.matrix-controls{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+.matrix-controls label{font-size:.74rem;color:var(--text-2);}
+.matrix-controls select{font-family:inherit;font-size:.74rem;padding:5px 10px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text);}
+.matrix{border-collapse:collapse;font-size:.7rem;min-width:600px;}
+.matrix th{background:var(--surface-2);border:1px solid var(--border);padding:7px 10px;font-weight:normal;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);white-space:nowrap;}
+.matrix td{border:1px solid var(--border);padding:0;}
+.matrix-cell{padding:8px 10px;cursor:pointer;transition:background .12s;display:flex;flex-direction:column;gap:2px;min-width:110px;}
+.matrix-cell:hover{background:var(--accent-dim);}
+.mc-count{font-size:.7rem;color:var(--text-2);}
+.mc-badge{display:inline-block;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:10px;}
+.mc-badge.idea{background:var(--surface-2);color:var(--text-3);}
+.mc-badge.draft{background:var(--blue-dim);color:var(--blue);}
+.mc-badge.published{background:var(--orange-dim);color:var(--orange);}
+.mc-badge.live{background:var(--green-dim);color:var(--green);}
+.mc-badge.none{background:transparent;color:var(--text-3);}
+/* Page list */
+.page-list{display:grid;gap:10px;}
+.page-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;}
+.page-card-body{flex:1;min-width:0;}
+.page-title{font-size:.85rem;font-weight:normal;font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;margin-bottom:4px;}
+.page-slug{font-size:.68rem;color:var(--text-3);font-family:monospace;}
+.page-meta{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap;}
+.badge{display:inline-block;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:10px;}
+.badge.idea{background:var(--surface-2);color:var(--text-3);border:1px solid var(--border);}
+.badge.draft{background:var(--blue-dim);color:var(--blue);}
+.badge.published{background:var(--orange-dim);color:var(--orange);}
+.badge.live{background:var(--green-dim);color:var(--green);}
+.page-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+/* Builder */
+.builder-form{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:20px;margin-bottom:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+.form-group label{font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);}
+.form-group input,.form-group select,.form-group textarea{font-family:inherit;font-size:.82rem;padding:7px 10px;border:1px solid var(--border);border-radius:2px;background:var(--bg);color:var(--text);outline:none;transition:border-color .15s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);}
+.form-group textarea{resize:vertical;min-height:70px;}
+.preview-box{background:var(--surface-2);border:1px solid var(--border);border-radius:3px;padding:16px;margin-bottom:16px;font-size:.78rem;}
+.preview-box h3{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1rem;font-weight:normal;margin-bottom:8px;}
+.preview-box .kw-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.kw-chip{font-size:.65rem;padding:2px 8px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-2);}
+.preview-outline{margin-top:12px;font-size:.75rem;color:var(--text-2);line-height:1.7;}
+.preview-outline p{margin-bottom:2px;}
+/* Progress bar */
+.progress-wrap{background:var(--surface-2);border-radius:2px;height:6px;overflow:hidden;margin-top:4px;}
+.progress-bar{height:100%;border-radius:2px;transition:width .3s;}
+/* Filter toolbar */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.filter-chip{font-size:.7rem;padding:5px 12px;border:1px solid var(--border);border-radius:12px;cursor:pointer;background:var(--surface);color:var(--text-2);transition:all .15s;}
+.filter-chip.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.search-box{font-family:inherit;font-size:.78rem;padding:6px 12px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text);outline:none;flex:1;max-width:260px;}
+.search-box:focus{border-color:var(--accent);}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.modal-header h2{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1rem;font-weight:normal;}
+.modal-close{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text-3);padding:0 4px;}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-3);font-size:.82rem;}
+.empty-state .icon{font-size:2.5rem;margin-bottom:12px;display:block;}
+footer{padding:16px 32px;border-top:1px solid var(--border);font-size:.7rem;color:var(--text-3);}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);font-size:.76rem;padding:10px 18px;border-radius:3px;z-index:2000;opacity:0;transition:opacity .2s;pointer-events:none;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="header">
+  <a class="header-back" href="index.html">← CRM</a>
+  <div class="header-main">
+    <div class="header-title">Programmatic SEO Planner</div>
+    <div class="header-sub">MOD-18 · Keyword Matrix · Page Builder · Halaman Tracker</div>
+  </div>
+  <button class="btn primary" onclick="openAddPage()">+ Tambah Halaman</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('matrix',this)">Keyword Matrix</div>
+  <div class="tab" onclick="switchTab('builder',this)">Page Builder</div>
+  <div class="tab" onclick="switchTab('tracker',this)">Halaman Tracker</div>
+</div>
+
+<div class="content">
+
+  <!-- TAB: Matrix -->
+  <div class="panel active" id="panel-matrix">
+    <div class="kpi-row" id="kpi-matrix"></div>
+    <p class="section-title">Matrix Peluang Keyword — Standar ISO × Negara/Kawasan</p>
+    <div class="matrix-controls">
+      <label>Dimensi 2:</label>
+      <select id="dim2" onchange="renderMatrix()">
+        <option value="country">Negara</option>
+        <option value="industry">Industri</option>
+      </select>
+      <label>Filter standar:</label>
+      <select id="filterStd" onchange="renderMatrix()">
+        <option value="">Semua</option>
+      </select>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix" id="main-matrix"></table>
+    </div>
+    <p style="font-size:.7rem;color:var(--text-3);">Klik sel untuk melihat keyword dan menambah halaman ke tracker. Warna menunjukkan status halaman yang sudah dibuat.</p>
+  </div>
+
+  <!-- TAB: Builder -->
+  <div class="panel" id="panel-builder">
+    <p class="section-title">Generator Halaman SEO</p>
+    <div class="builder-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Standar ISO</label>
+          <select id="b-standard" onchange="updatePreview()">
+            <option value="">Pilih standar...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Industri</label>
+          <select id="b-industry" onchange="updatePreview()">
+            <option value="">Semua industri</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Negara / Kawasan</label>
+          <select id="b-country" onchange="updatePreview()">
+            <option value="">Semua negara</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tipe Halaman</label>
+          <select id="b-type" onchange="updatePreview()">
+            <option value="local">Lokal (Standar + Negara)</option>
+            <option value="industry">Industri (Standar + Industri)</option>
+            <option value="local_industry">Lengkap (Standar + Industri + Negara)</option>
+            <option value="pillar">Pillar (Panduan Lengkap Standar)</option>
+            <option value="comparison">Comparison (Alternatif Terbaik)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Target Word Count</label>
+          <select id="b-words">
+            <option value="800">800 kata (listicle)</option>
+            <option value="1200" selected>1.200 kata (standar)</option>
+            <option value="2000">2.000 kata (pillar)</option>
+            <option value="3000">3.000+ kata (authority)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prioritas</label>
+          <select id="b-priority">
+            <option value="high">Tinggi</option>
+            <option value="medium" selected>Sedang</option>
+            <option value="low">Rendah</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Catatan</label>
+          <textarea id="b-notes" placeholder="Catatan tambahan, angle konten, CTA yang diinginkan..."></textarea>
+        </div>
+      </div>
+      <div class="preview-box" id="builder-preview">
+        <em style="color:var(--text-3)">Pilih standar dan parameter untuk melihat preview halaman.</em>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn primary" onclick="savePage()">Simpan ke Tracker</button>
+        <button class="btn" onclick="copyOutline()">Salin Outline</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Tracker -->
+  <div class="panel" id="panel-tracker">
+    <div class="kpi-row" id="kpi-tracker"></div>
+    <div class="toolbar">
+      <input class="search-box" id="search-pages" placeholder="Cari halaman..." oninput="renderTracker()"/>
+      <div id="status-filters" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+      <div style="margin-left:auto;display:flex;gap:8px;">
+        <button class="btn sm" onclick="exportPages()">Export CSV</button>
+        <button class="btn sm primary" onclick="openAddPage()">+ Tambah</button>
+      </div>
+    </div>
+    <div id="page-list" class="page-list"></div>
+  </div>
+</div>
+
+<!-- Modal Tambah/Edit Halaman -->
+<div class="modal-overlay" id="modal-page">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-page-title">Tambah Halaman</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Judul Halaman</label>
+        <input id="mp-title" placeholder="Konsultan ISO 9001 Malaysia"/>
+      </div>
+      <div class="form-group">
+        <label>Slug URL</label>
+        <input id="mp-slug" placeholder="konsultan-iso-9001-malaysia"/>
+      </div>
+      <div class="form-group">
+        <label>Standar ISO</label>
+        <select id="mp-standard"></select>
+      </div>
+      <div class="form-group">
+        <label>Industri</label>
+        <select id="mp-industry"></select>
+      </div>
+      <div class="form-group">
+        <label>Negara</label>
+        <select id="mp-country"></select>
+      </div>
+      <div class="form-group">
+        <label>Tipe</label>
+        <select id="mp-type">
+          <option value="local">Lokal</option>
+          <option value="industry">Industri</option>
+          <option value="local_industry">Lengkap</option>
+          <option value="pillar">Pillar</option>
+          <option value="comparison">Comparison</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="mp-status">
+          <option value="IDEA">IDEA</option>
+          <option value="DRAFT">DRAFT</option>
+          <option value="PUBLISHED">PUBLISHED</option>
+          <option value="LIVE">LIVE</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Target Word Count</label>
+        <input id="mp-words" type="number" value="1200" min="300"/>
+      </div>
+      <div class="form-group">
+        <label>Word Count Aktual</label>
+        <input id="mp-actual" type="number" value="0" min="0"/>
+      </div>
+      <div class="form-group">
+        <label>Prioritas</label>
+        <select id="mp-priority">
+          <option value="high">Tinggi</option>
+          <option value="medium" selected>Sedang</option>
+          <option value="low">Rendah</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>URL Live (jika sudah LIVE)</label>
+        <input id="mp-url" placeholder="https://arafarnusa.com/konsultan-iso-9001-malaysia"/>
+      </div>
+      <div class="form-group full">
+        <label>Catatan</label>
+        <textarea id="mp-notes" placeholder="Angle konten, CTA, referensi keyword..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Batal</button>
+      <button class="btn primary" onclick="savePage(true)">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Matrix Cell -->
+<div class="modal-overlay" id="modal-cell">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-cell-title">Keyword Peluang</h2>
+      <button class="modal-close" onclick="closeModal('cell')">×</button>
+    </div>
+    <div id="modal-cell-content"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('cell')">Tutup</button>
+      <button class="btn primary" id="modal-cell-add" onclick="">+ Tambah ke Tracker</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<footer>MOD-18 · Programmatic SEO Planner · Konsultan ISO · arafarnusa.com</footer>
+
+<script>
+const STANDARDS = ['ISO 9001','ISO 14001','ISO 45001','ISO 27001','ISO 37001','ISO 22000','ISO 17021-1'];
+const INDUSTRIES = ['Manufaktur','Makanan & Minuman','Konstruksi','IT & Teknologi','Kesehatan','Pendidikan','Pertambangan','Logistik','Keuangan','Retail'];
+const COUNTRIES = ['Indonesia','Malaysia','Thailand','Singapore','Vietnam','UAE','Saudi Arabia','Bangladesh','Pakistan','Nigeria','Ghana'];
+const PRIORITY_COLOR = {high:'var(--red)',medium:'var(--orange)',low:'var(--text-3)'};
+const STATUS_COLOR = {IDEA:'text-3',DRAFT:'blue',PUBLISHED:'orange',LIVE:'green'};
+
+let pages = [];
+let editId = null;
+let filterStatus = 'all';
+
+function load(){
+  pages = JSON.parse(localStorage.getItem('crm_seo_pages')||'[]');
+  if(!pages.length) seedPages();
+}
+
+function save(){ localStorage.setItem('crm_seo_pages', JSON.stringify(pages)); }
+
+function seedPages(){
+  const seed = [
+    {standard:'ISO 9001',industry:'Manufaktur',country:'Indonesia',pageType:'local_industry',status:'LIVE',targetWords:1200,actualWords:1350,priority:'high',url:'https://arafarnusa.com/konsultan-iso-9001-manufaktur-indonesia'},
+    {standard:'ISO 9001',industry:'',country:'Malaysia',pageType:'local',status:'PUBLISHED',targetWords:1200,actualWords:0,priority:'high',url:''},
+    {standard:'ISO 27001',industry:'IT & Teknologi',country:'Indonesia',pageType:'local_industry',status:'DRAFT',targetWords:2000,actualWords:800,priority:'high',url:''},
+    {standard:'ISO 14001',industry:'',country:'Vietnam',pageType:'local',status:'IDEA',targetWords:1200,actualWords:0,priority:'medium',url:''},
+    {standard:'ISO 45001',industry:'Konstruksi',country:'',pageType:'industry',status:'IDEA',targetWords:1200,actualWords:0,priority:'medium',url:''},
+  ];
+  pages = seed.map((s,i) => ({
+    id: 'seed-'+(i+1),
+    title: buildTitle(s.standard,s.industry,s.country,s.pageType),
+    slug: slugify(buildTitle(s.standard,s.industry,s.country,s.pageType)),
+    notes: '',
+    createdAt: new Date(Date.now()-i*86400000*7).toISOString(),
+    updatedAt: new Date().toISOString(),
+    ...s
+  }));
+  save();
+}
+
+function buildTitle(std, ind, cnt, type){
+  if(type==='pillar') return `Panduan Lengkap ${std} — Persyaratan & Implementasi`;
+  if(type==='comparison') return `Alternatif ${std} Terbaik — Perbandingan Konsultan`;
+  if(type==='local' && cnt) return `Konsultan ${std} ${cnt}`;
+  if(type==='industry' && ind) return `Konsultan ${std} untuk ${ind}`;
+  if(type==='local_industry' && ind && cnt) return `Konsultan ${std} ${ind} ${cnt}`;
+  if(std && cnt) return `Konsultan ${std} ${cnt}`;
+  if(std && ind) return `Konsultan ${std} ${ind}`;
+  return `Halaman ${std}`;
+}
+
+function slugify(s){
+  return s.toLowerCase()
+    .replace(/[^a-z0-9\s-]/g,'')
+    .replace(/&/g,'dan')
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-').trim();
+}
+
+function getPageForCell(std, dim2Val, isDimCountry){
+  return pages.filter(p => p.standard===std && (isDimCountry ? p.country===dim2Val : p.industry===dim2Val));
+}
+
+function pagesForCell(std, dim2Val, isDimCountry){
+  return getPageForCell(std, dim2Val, isDimCountry);
+}
+
+function bestStatus(list){
+  const order = ['LIVE','PUBLISHED','DRAFT','IDEA'];
+  for(const s of order){ if(list.some(p=>p.status===s)) return s.toLowerCase(); }
+  return 'none';
+}
+
+function switchTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='matrix') renderMatrix();
+  if(id==='tracker'){ renderKpiTracker(); renderTracker(); }
+}
+
+function renderMatrix(){
+  const dim2 = document.getElementById('dim2').value;
+  const fStd = document.getElementById('filterStd').value;
+  const isDimCountry = dim2==='country';
+  const cols = isDimCountry ? COUNTRIES : INDUSTRIES;
+  const stds = fStd ? [fStd] : STANDARDS;
+
+  const tb = document.getElementById('main-matrix');
+  let html = '<thead><tr><th>Standar ISO</th>';
+  cols.forEach(c=>{ html+=`<th>${c}</th>`; });
+  html += '</tr></thead><tbody>';
+  stds.forEach(std => {
+    html += `<tr><td style="background:var(--surface-2);padding:8px 10px;font-size:.72rem;letter-spacing:.04em;font-weight:normal;border:1px solid var(--border);white-space:nowrap;">${std}</td>`;
+    cols.forEach(col => {
+      const list = pagesForCell(std, col, isDimCountry);
+      const status = bestStatus(list);
+      const count = list.length;
+      const cls = status==='none' ? '' : status;
+      html += `<td><div class="matrix-cell" onclick="openCellModal('${std}','${col}',${isDimCountry})">`;
+      if(count>0){
+        html += `<span class="mc-count">${count} halaman</span>`;
+        html += `<span class="mc-badge ${status}">${status.toUpperCase()}</span>`;
+      } else {
+        html += `<span class="mc-count" style="color:var(--text-3)">–</span>`;
+        html += `<span class="mc-badge none">belum ada</span>`;
+      }
+      html += '</div></td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  tb.innerHTML = html;
+  renderKpiMatrix();
+}
+
+function renderKpiMatrix(){
+  const total = STANDARDS.length * COUNTRIES.length;
+  const live = pages.filter(p=>p.status==='LIVE').length;
+  const published = pages.filter(p=>p.status==='PUBLISHED').length;
+  const draft = pages.filter(p=>p.status==='DRAFT').length;
+  const idea = pages.filter(p=>p.status==='IDEA').length;
+  document.getElementById('kpi-matrix').innerHTML = `
+    <div class="kpi green"><div class="kpi-label">Live</div><div class="kpi-value">${live}</div><div class="kpi-sub">terindeks Google</div></div>
+    <div class="kpi orange"><div class="kpi-label">Published</div><div class="kpi-value">${published}</div><div class="kpi-sub">sudah dipublikasi</div></div>
+    <div class="kpi blue"><div class="kpi-label">Draft</div><div class="kpi-value">${draft}</div><div class="kpi-sub">sedang dikerjakan</div></div>
+    <div class="kpi accent"><div class="kpi-label">Idea</div><div class="kpi-value">${idea}</div><div class="kpi-sub">dalam antrean</div></div>
+    <div class="kpi teal"><div class="kpi-label">Potensi Total</div><div class="kpi-value">${total}</div><div class="kpi-sub">kombinasi halaman</div></div>
+  `;
+}
+
+function openCellModal(std, dim2Val, isDimCountry){
+  const list = pagesForCell(std, dim2Val, isDimCountry);
+  const dimLabel = isDimCountry ? dim2Val : dim2Val+' (Industri)';
+  document.getElementById('modal-cell-title').textContent = `${std} × ${dimLabel}`;
+
+  const keywords = isDimCountry
+    ? [`Konsultan ${std} ${dim2Val}`, `Jasa ${std} ${dim2Val}`, `Sertifikasi ${std} ${dim2Val}`, `${std} Consultant ${dim2Val}`]
+    : [`Konsultan ${std} ${dim2Val}`, `Implementasi ${std} ${dim2Val}`, `${std} untuk perusahaan ${dim2Val}`, `Sertifikasi ${std} industri ${dim2Val}`];
+
+  let html = `<p class="section-title" style="margin-bottom:12px;">Keyword Peluang</p>`;
+  html += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">`;
+  keywords.forEach(k => { html += `<span class="kw-chip">${k}</span>`; });
+  html += '</div>';
+
+  if(list.length){
+    html += `<p class="section-title" style="margin-bottom:10px;">Halaman di Tracker (${list.length})</p>`;
+    list.forEach(p => {
+      html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.78rem;">`;
+      html += `<span>${p.title}</span><span class="badge ${p.status.toLowerCase()}">${p.status}</span>`;
+      html += '</div>';
+    });
+  } else {
+    html += `<p style="font-size:.78rem;color:var(--text-3);">Belum ada halaman untuk kombinasi ini. Tambahkan ke tracker.</p>`;
+  }
+  document.getElementById('modal-cell-content').innerHTML = html;
+
+  const addBtn = document.getElementById('modal-cell-add');
+  const type = isDimCountry ? 'local' : 'industry';
+  addBtn.onclick = () => {
+    closeModal('cell');
+    prefillBuilder(std, isDimCountry ? '' : dim2Val, isDimCountry ? dim2Val : '', type);
+  };
+
+  document.getElementById('modal-cell').classList.add('open');
+}
+
+function prefillBuilder(std, ind, cnt, type){
+  switchTab('builder', document.querySelectorAll('.tab')[1]);
+  setTimeout(()=>{
+    document.getElementById('b-standard').value = std;
+    document.getElementById('b-industry').value = ind;
+    document.getElementById('b-country').value = cnt;
+    document.getElementById('b-type').value = type;
+    updatePreview();
+  }, 50);
+}
+
+function updatePreview(){
+  const std = document.getElementById('b-standard').value;
+  const ind = document.getElementById('b-industry').value;
+  const cnt = document.getElementById('b-country').value;
+  const type = document.getElementById('b-type').value;
+  if(!std){ document.getElementById('builder-preview').innerHTML = '<em style="color:var(--text-3)">Pilih standar dan parameter untuk melihat preview halaman.</em>'; return; }
+
+  const title = buildTitle(std, ind, cnt, type);
+  const slug = slugify(title);
+  const keywords = generateKeywords(std, ind, cnt, type);
+  const outline = generateOutline(std, ind, cnt, type);
+
+  document.getElementById('builder-preview').innerHTML = `
+    <h3>${title}</h3>
+    <p style="font-size:.68rem;color:var(--text-3);font-family:monospace;margin-bottom:8px;">/artikel/${slug}</p>
+    <div class="kw-list">${keywords.map(k=>`<span class="kw-chip">${k}</span>`).join('')}</div>
+    <div class="preview-outline">${outline}</div>
+  `;
+}
+
+function generateKeywords(std, ind, cnt, type){
+  const kws = [];
+  if(std && cnt) kws.push(`Konsultan ${std} ${cnt}`, `Jasa ${std} ${cnt}`);
+  if(std && ind) kws.push(`${std} ${ind}`, `Konsultan ${std} untuk ${ind}`);
+  if(std) kws.push(`Implementasi ${std}`, `Sertifikasi ${std}`);
+  if(cnt) kws.push(`ISO consultant ${cnt}`, `${std.replace(' ','')} ${cnt}`);
+  return kws.slice(0,6);
+}
+
+function generateOutline(std, ind, cnt, type){
+  const parts = [
+    `<p>1. Apa itu ${std} dan mengapa penting</p>`,
+    `<p>2. Persyaratan utama ${std}${ind?' untuk '+ind:''}</p>`,
+    `<p>3. Proses implementasi dan sertifikasi</p>`,
+    `<p>4. Timeline dan biaya${cnt?' di '+cnt:''}</p>`,
+    `<p>5. Mengapa memilih Arafarnusa.com sebagai konsultan</p>`,
+    `<p>6. FAQ dan langkah selanjutnya</p>`,
+  ];
+  return parts.join('');
+}
+
+function savePage(fromModal=false){
+  if(fromModal){
+    const title = document.getElementById('mp-title').value.trim();
+    if(!title){ showToast('Judul wajib diisi'); return; }
+    const page = {
+      id: editId || Date.now().toString(),
+      title,
+      slug: document.getElementById('mp-slug').value.trim() || slugify(title),
+      standard: document.getElementById('mp-standard').value,
+      industry: document.getElementById('mp-industry').value,
+      country: document.getElementById('mp-country').value,
+      pageType: document.getElementById('mp-type').value,
+      status: document.getElementById('mp-status').value,
+      targetWords: parseInt(document.getElementById('mp-words').value)||1200,
+      actualWords: parseInt(document.getElementById('mp-actual').value)||0,
+      priority: document.getElementById('mp-priority').value,
+      url: document.getElementById('mp-url').value.trim(),
+      notes: document.getElementById('mp-notes').value.trim(),
+      createdAt: editId ? pages.find(p=>p.id===editId)?.createdAt||new Date().toISOString() : new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    if(editId){
+      const idx = pages.findIndex(p=>p.id===editId);
+      if(idx>=0) pages[idx]=page; else pages.push(page);
+    } else { pages.push(page); }
+    save();
+    closeModal();
+    renderTracker();
+    renderKpiTracker();
+    showToast(editId?'Halaman diperbarui':'Halaman ditambahkan');
+    editId = null;
+  } else {
+    const std = document.getElementById('b-standard').value;
+    if(!std){ showToast('Pilih standar ISO terlebih dahulu'); return; }
+    const ind = document.getElementById('b-industry').value;
+    const cnt = document.getElementById('b-country').value;
+    const type = document.getElementById('b-type').value;
+    const title = buildTitle(std, ind, cnt, type);
+    const page = {
+      id: Date.now().toString(),
+      title,
+      slug: slugify(title),
+      standard: std,
+      industry: ind,
+      country: cnt,
+      pageType: type,
+      status: 'IDEA',
+      targetWords: parseInt(document.getElementById('b-words').value)||1200,
+      actualWords: 0,
+      priority: document.getElementById('b-priority').value,
+      url: '',
+      notes: document.getElementById('b-notes').value.trim(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    pages.push(page);
+    save();
+    showToast('Halaman disimpan ke Tracker');
+    switchTab('tracker', document.querySelectorAll('.tab')[2]);
+    renderTracker();
+    renderKpiTracker();
+  }
+}
+
+function openAddPage(){
+  editId = null;
+  document.getElementById('modal-page-title').textContent = 'Tambah Halaman';
+  document.getElementById('mp-title').value = '';
+  document.getElementById('mp-slug').value = '';
+  document.getElementById('mp-standard').value = '';
+  document.getElementById('mp-industry').value = '';
+  document.getElementById('mp-country').value = '';
+  document.getElementById('mp-type').value = 'local';
+  document.getElementById('mp-status').value = 'IDEA';
+  document.getElementById('mp-words').value = '1200';
+  document.getElementById('mp-actual').value = '0';
+  document.getElementById('mp-priority').value = 'medium';
+  document.getElementById('mp-url').value = '';
+  document.getElementById('mp-notes').value = '';
+  document.getElementById('modal-page').classList.add('open');
+}
+
+function editPage(id){
+  const p = pages.find(x=>x.id===id);
+  if(!p) return;
+  editId = id;
+  document.getElementById('modal-page-title').textContent = 'Edit Halaman';
+  document.getElementById('mp-title').value = p.title;
+  document.getElementById('mp-slug').value = p.slug;
+  document.getElementById('mp-standard').value = p.standard||'';
+  document.getElementById('mp-industry').value = p.industry||'';
+  document.getElementById('mp-country').value = p.country||'';
+  document.getElementById('mp-type').value = p.pageType||'local';
+  document.getElementById('mp-status').value = p.status||'IDEA';
+  document.getElementById('mp-words').value = p.targetWords||1200;
+  document.getElementById('mp-actual').value = p.actualWords||0;
+  document.getElementById('mp-priority').value = p.priority||'medium';
+  document.getElementById('mp-url').value = p.url||'';
+  document.getElementById('mp-notes').value = p.notes||'';
+  document.getElementById('modal-page').classList.add('open');
+}
+
+function deletePage(id){
+  if(!confirm('Hapus halaman ini?')) return;
+  pages = pages.filter(p=>p.id!==id);
+  save();
+  renderTracker();
+  renderKpiTracker();
+  showToast('Halaman dihapus');
+}
+
+function changeStatus(id, status){
+  const p = pages.find(x=>x.id===id);
+  if(!p) return;
+  p.status = status;
+  p.updatedAt = new Date().toISOString();
+  save();
+  renderTracker();
+  renderKpiTracker();
+  showToast('Status diperbarui: '+status);
+}
+
+function renderKpiTracker(){
+  const live = pages.filter(p=>p.status==='LIVE').length;
+  const published = pages.filter(p=>p.status==='PUBLISHED').length;
+  const draft = pages.filter(p=>p.status==='DRAFT').length;
+  const idea = pages.filter(p=>p.status==='IDEA').length;
+  const totalWords = pages.reduce((s,p)=>s+(p.actualWords||0),0);
+  document.getElementById('kpi-tracker').innerHTML = `
+    <div class="kpi green"><div class="kpi-label">Live</div><div class="kpi-value">${live}</div><div class="kpi-sub">halaman aktif</div></div>
+    <div class="kpi orange"><div class="kpi-label">Published</div><div class="kpi-value">${published}</div><div class="kpi-sub">sudah publish</div></div>
+    <div class="kpi blue"><div class="kpi-label">Draft</div><div class="kpi-value">${draft}</div><div class="kpi-sub">dalam progress</div></div>
+    <div class="kpi accent"><div class="kpi-label">Idea</div><div class="kpi-value">${idea}</div><div class="kpi-sub">antrean konten</div></div>
+    <div class="kpi teal"><div class="kpi-label">Total Kata</div><div class="kpi-value">${(totalWords/1000).toFixed(1)}K</div><div class="kpi-sub">kata dipublikasi</div></div>
+  `;
+}
+
+function renderTracker(){
+  const q = (document.getElementById('search-pages')?.value||'').toLowerCase();
+  let filtered = pages;
+  if(filterStatus!=='all') filtered = filtered.filter(p=>p.status===filterStatus);
+  if(q) filtered = filtered.filter(p=>(p.title+p.slug+p.standard+p.country+p.industry).toLowerCase().includes(q));
+
+  const el = document.getElementById('page-list');
+  if(!filtered.length){
+    el.innerHTML = '<div class="empty-state"><span class="icon">📄</span><p>Belum ada halaman yang cocok.</p></div>';
+    return;
+  }
+  el.innerHTML = filtered.map(p => {
+    const pct = p.targetWords ? Math.min(100,Math.round((p.actualWords||0)/p.targetWords*100)) : 0;
+    const barColor = pct>=100?'var(--green)':pct>=50?'var(--orange)':'var(--blue)';
+    const prioColor = PRIORITY_COLOR[p.priority]||'var(--text-3)';
+    return `<div class="page-card">
+      <div class="page-card-body">
+        <div class="page-title">${p.title}</div>
+        <div class="page-slug">/artikel/${p.slug}</div>
+        <div style="margin-top:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--text-3);margin-bottom:3px;">
+            <span>Kata: ${p.actualWords||0} / ${p.targetWords||1200}</span><span>${pct}%</span>
+          </div>
+          <div class="progress-wrap"><div class="progress-bar" style="width:${pct}%;background:${barColor}"></div></div>
+        </div>
+        <div class="page-meta">
+          <span class="badge ${p.status.toLowerCase()}">${p.status}</span>
+          <span style="font-size:.65rem;color:${prioColor}">● ${p.priority||'medium'}</span>
+          ${p.standard?`<span style="font-size:.65rem;color:var(--text-3)">${p.standard}</span>`:''}
+          ${p.country?`<span style="font-size:.65rem;color:var(--text-3)">${p.country}</span>`:''}
+          ${p.industry?`<span style="font-size:.65rem;color:var(--text-3)">${p.industry}</span>`:''}
+        </div>
+      </div>
+      <div class="page-actions">
+        <select class="btn sm" onchange="changeStatus('${p.id}',this.value)" style="font-size:.64rem;padding:3px 6px;">
+          <option ${p.status==='IDEA'?'selected':''} value="IDEA">IDEA</option>
+          <option ${p.status==='DRAFT'?'selected':''} value="DRAFT">DRAFT</option>
+          <option ${p.status==='PUBLISHED'?'selected':''} value="PUBLISHED">PUBLISHED</option>
+          <option ${p.status==='LIVE'?'selected':''} value="LIVE">LIVE</option>
+        </select>
+        <button class="btn sm" onclick="editPage('${p.id}')">Edit</button>
+        <button class="btn sm danger" onclick="deletePage('${p.id}')">Hapus</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderStatusFilters(){
+  const statuses = ['all','IDEA','DRAFT','PUBLISHED','LIVE'];
+  const labels = {all:'Semua',IDEA:'Idea',DRAFT:'Draft',PUBLISHED:'Published',LIVE:'Live'};
+  const el = document.getElementById('status-filters');
+  if(!el) return;
+  el.innerHTML = statuses.map(s=>`<span class="filter-chip ${filterStatus===s?'active':''}" onclick="setFilter('${s}')">${labels[s]}</span>`).join('');
+}
+
+function setFilter(s){ filterStatus=s; renderStatusFilters(); renderTracker(); }
+
+function copyOutline(){
+  const std = document.getElementById('b-standard').value;
+  if(!std){ showToast('Pilih standar ISO terlebih dahulu'); return; }
+  const ind = document.getElementById('b-industry').value;
+  const cnt = document.getElementById('b-country').value;
+  const type = document.getElementById('b-type').value;
+  const title = buildTitle(std, ind, cnt, type);
+  const outline = `# ${title}\n\n1. Apa itu ${std} dan mengapa penting\n2. Persyaratan utama ${std}${ind?' untuk '+ind:''}\n3. Proses implementasi dan sertifikasi\n4. Timeline dan biaya${cnt?' di '+cnt:''}\n5. Mengapa memilih Arafarnusa.com sebagai konsultan\n6. FAQ dan langkah selanjutnya\n\nKeyword target: Konsultan ${std}${cnt?' '+cnt:''}${ind?' '+ind:''}`;
+  navigator.clipboard.writeText(outline).then(()=>showToast('Outline disalin ke clipboard'));
+}
+
+function exportPages(){
+  const header = 'Judul,Slug,Standar,Industri,Negara,Status,Target Kata,Aktual Kata,Prioritas,URL';
+  const rows = pages.map(p=>`"${p.title}","${p.slug}","${p.standard||''}","${p.industry||''}","${p.country||''}","${p.status}",${p.targetWords||1200},${p.actualWords||0},"${p.priority||'medium'}","${p.url||''}"`);
+  const csv = [header,...rows].join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='seo-pages.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function closeModal(which='page'){
+  document.getElementById('modal-'+which).classList.remove('open');
+}
+
+function showToast(msg, isErr=false){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isErr ? 'var(--red)' : 'var(--text)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function populateSelects(){
+  const stdSels = ['filterStd','b-standard','mp-standard'];
+  stdSels.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    const base = el.innerHTML;
+    if(!base.includes('ISO 9001')) STANDARDS.forEach(s=>{ el.innerHTML += `<option value="${s}">${s}</option>`; });
+  });
+  const indSels = ['b-industry','mp-industry'];
+  indSels.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    INDUSTRIES.forEach(i=>{ el.innerHTML += `<option value="${i}">${i}</option>`; });
+  });
+  const cntSels = ['b-country','mp-country'];
+  cntSels.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    COUNTRIES.forEach(c=>{ el.innerHTML += `<option value="${c}">${c}</option>`; });
+  });
+}
+
+function init(){
+  load();
+  populateSelects();
+  renderMatrix();
+  renderStatusFilters();
+  renderKpiTracker();
+  renderTracker();
+  document.getElementById('mp-title').addEventListener('input', function(){
+    document.getElementById('mp-slug').value = slugify(this.value);
+  });
+  document.getElementById('modal-page').addEventListener('click', function(e){
+    if(e.target===this) closeModal();
+  });
+  document.getElementById('modal-cell').addEventListener('click', function(e){
+    if(e.target===this) closeModal('cell');
+  });
+}
+init();
+</script>
+</body>
+</html>
