@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Competitor Intelligence — CRM ISO</title>
+<style>
+:root{
+  --bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CC;--border:#C8BFB0;
+  --text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;
+  --accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);
+  --green:#2D6A3F;--green-dim:rgba(45,106,63,.12);
+  --blue:#1A4F7A;--blue-dim:rgba(26,79,122,.12);
+  --orange:#B86A1E;--orange-dim:rgba(184,106,30,.12);
+  --red:#8A1E2A;--red-dim:rgba(138,30,42,.1);
+  --purple:#5A1A7A;--purple-dim:rgba(90,26,122,.1);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0F1820;--surface:#182230;--surface-2:#1F2D40;--border:#2A3A4A;
+  --text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;
+  --accent:#D06528;--accent-dim:rgba(208,101,40,.15);
+  --green:#3A9068;--green-dim:rgba(58,144,104,.15);
+  --blue:#3A80B8;--blue-dim:rgba(58,128,184,.15);
+  --orange:#C08030;--orange-dim:rgba(192,128,48,.15);
+  --red:#C04050;--red-dim:rgba(192,64,80,.12);
+  --purple:#8A50CC;--purple-dim:rgba(138,80,204,.12);
+}}
+:root[data-theme=light]{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CC;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D6A3F;--green-dim:rgba(45,106,63,.12);--blue:#1A4F7A;--blue-dim:rgba(26,79,122,.12);--orange:#B86A1E;--orange-dim:rgba(184,106,30,.12);--red:#8A1E2A;--red-dim:rgba(138,30,42,.1);--purple:#5A1A7A;--purple-dim:rgba(90,26,122,.1);}
+:root[data-theme=dark]{--bg:#0F1820;--surface:#182230;--surface-2:#1F2D40;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3A9068;--green-dim:rgba(58,144,104,.15);--blue:#3A80B8;--blue-dim:rgba(58,128,184,.15);--orange:#C08030;--orange-dim:rgba(192,128,48,.15);--red:#C04050;--red-dim:rgba(192,64,80,.12);--purple:#8A50CC;--purple-dim:rgba(138,80,204,.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+
+/* Header */
+.header{padding:24px 32px 16px;border-bottom:3px solid var(--accent);display:flex;align-items:center;gap:16px;}
+.header-back{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);padding:5px 10px;border:1px solid var(--border);border-radius:2px;transition:border-color .15s,color .15s;}
+.header-back:hover{border-color:var(--accent);color:var(--accent);}
+.header-main{flex:1;}
+.header-title{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.3rem;font-weight:normal;}
+.header-sub{font-size:.72rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;}
+.header-actions{display:flex;gap:8px;align-items:center;}
+.btn{font-size:.75rem;padding:7px 14px;border-radius:2px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;transition:border-color .15s,color .15s;font-family:inherit;letter-spacing:.03em;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn-primary:hover{background:var(--orange);border-color:var(--orange);color:#fff;}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 32px;margin-top:4px;}
+.tab{padding:12px 18px;font-size:.78rem;letter-spacing:.04em;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:hover:not(.active){color:var(--text-2);}
+
+/* Content */
+.content{flex:1;padding:24px 32px;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+.stat-chip{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:8px 14px;font-size:.72rem;color:var(--text-2);}
+.stat-chip strong{color:var(--text);font-size:.88rem;display:block;margin-bottom:1px;}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center;}
+.filter-bar input,.filter-bar select{font-size:.78rem;padding:6px 10px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text);font-family:inherit;outline:none;}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--accent);}
+.filter-bar input{flex:1;min-width:180px;}
+
+/* Competitor cards */
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+.comp-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:18px 20px;position:relative;}
+.comp-card.tier-global{border-left:3px solid var(--red);}
+.comp-card.tier-regional{border-left:3px solid var(--orange);}
+.comp-card.tier-lokal{border-left:3px solid var(--green);}
+.comp-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
+.comp-icon{font-size:1.5rem;line-height:1;flex-shrink:0;}
+.comp-info{flex:1;min-width:0;}
+.comp-name{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:.95rem;color:var(--text);}
+.comp-website{font-size:.7rem;color:var(--text-3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.comp-tier-badge{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:1px;flex-shrink:0;}
+.tier-badge-global{background:var(--red-dim);color:var(--red);border:1px solid var(--red);}
+.tier-badge-regional{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange);}
+.tier-badge-lokal{background:var(--green-dim);color:var(--green);border:1px solid var(--green);}
+
+.comp-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.comp-tag{font-size:.66rem;padding:2px 7px;border-radius:1px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-3);}
+.comp-tag.iso{background:var(--blue-dim);color:var(--blue);border-color:rgba(26,79,122,.2);}
+.comp-tag.region{background:var(--purple-dim);color:var(--purple);border-color:rgba(90,26,122,.2);}
+
+.comp-section{margin-bottom:8px;}
+.comp-label{font-size:.65rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);margin-bottom:3px;}
+.comp-value{font-size:.78rem;color:var(--text-2);line-height:1.45;}
+.comp-pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.pros,.cons{font-size:.73rem;line-height:1.5;padding:6px 8px;border-radius:2px;}
+.pros{background:var(--green-dim);color:var(--green);}
+.cons{background:var(--red-dim);color:var(--red);}
+.pros::before{content:"+ ";font-weight:bold;}
+.cons::before{content:"− ";font-weight:bold;}
+
+.comp-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);}
+.comp-price{font-size:.75rem;color:var(--text-2);}
+.comp-price strong{color:var(--accent);}
+.comp-date{font-size:.65rem;color:var(--text-3);}
+.comp-actions{display:flex;gap:6px;}
+.btn-sm{font-size:.68rem;padding:4px 9px;border:1px solid var(--border);border-radius:2px;background:none;color:var(--text-3);cursor:pointer;font-family:inherit;transition:color .15s,border-color .15s;}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent);}
+.btn-sm.danger:hover{border-color:var(--red);color:var(--red);}
+
+/* Positioning matrix */
+.matrix-wrap{margin-bottom:28px;}
+.matrix-title{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.matrix-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.matrix-table th{text-align:left;padding:8px 12px;font-size:.65rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);background:var(--surface);border-bottom:1px solid var(--border);font-weight:normal;}
+.matrix-table th:first-child{width:180px;}
+.matrix-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:middle;}
+.matrix-table td:first-child{font-weight:normal;color:var(--text);font-size:.8rem;}
+.matrix-table tr:last-child td{border-bottom:none;}
+.matrix-table tr:hover td{background:var(--surface);}
+.matrix-table tr.self td{background:var(--accent-dim);}
+.matrix-table tr.self td:first-child{color:var(--accent);}
+.bar-cell{position:relative;}
+.bar-track{background:var(--surface-2);border-radius:1px;height:10px;position:relative;overflow:hidden;}
+.bar-fill{height:100%;border-radius:1px;transition:width .3s;}
+.bar-label{position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:.6rem;color:var(--text-3);}
+.score-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle;}
+
+/* Gap analysis */
+.gap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:24px;}
+.gap-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:16px 18px;}
+.gap-card-title{font-size:.85rem;color:var(--text);margin-bottom:6px;}
+.gap-card-desc{font-size:.75rem;color:var(--text-2);line-height:1.5;margin-bottom:10px;}
+.gap-priority{font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:1px;}
+.gap-high{background:var(--red-dim);color:var(--red);border:1px solid var(--red);}
+.gap-med{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange);}
+.gap-low{background:var(--green-dim);color:var(--green);border:1px solid var(--green);}
+.gap-action{margin-top:8px;font-size:.72rem;color:var(--text-3);}
+
+/* Alternatif pages tab */
+.altpages-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.altpage-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:16px 18px;}
+.altpage-title{font-size:.88rem;color:var(--text);margin-bottom:4px;}
+.altpage-url{font-size:.7rem;color:var(--text-3);font-family:"Courier New",monospace;margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.altpage-desc{font-size:.75rem;color:var(--text-2);line-height:1.45;margin-bottom:10px;}
+.altpage-footer{display:flex;align-items:center;justify-content:space-between;}
+.status-badge{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:1px;}
+.status-idea{background:var(--surface-2);color:var(--text-3);border:1px solid var(--border);}
+.status-draft{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(26,79,122,.2);}
+.status-live{background:var(--green-dim);color:var(--green);border:1px solid rgba(45,106,63,.2);}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:24px;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:28px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;}
+.modal h2{font-family:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-size:1.1rem;font-weight:normal;margin-bottom:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-group.full{grid-column:1/-1;}
+.form-group label{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);}
+.form-group input,.form-group select,.form-group textarea{font-size:.82rem;padding:7px 10px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text);font-family:inherit;outline:none;transition:border-color .15s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);}
+.form-group textarea{resize:vertical;min-height:70px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+.section-divider{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin:16px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border);grid-column:1/-1;}
+
+/* Empty state */
+.empty{text-align:center;padding:48px 24px;color:var(--text-3);}
+.empty-icon{font-size:2rem;margin-bottom:12px;display:block;}
+.empty p{font-size:.82rem;line-height:1.6;margin-bottom:16px;}
+
+/* Responsive */
+@media(max-width:640px){
+  .header{flex-wrap:wrap;padding:16px 18px 12px;}
+  .content{padding:16px 18px;}
+  .tabs{padding:0 18px;overflow-x:auto;}
+  .comp-grid,.gap-grid,.altpages-grid{grid-template-columns:1fr;}
+  .comp-pros-cons{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:1;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="header-back" href="index.html">← CRM</a>
+  <div class="header-main">
+    <div class="header-title">Competitor Intelligence Hub</div>
+    <div class="header-sub">MOD-15 · Analisis Kompetitor &amp; Positioning</div>
+  </div>
+  <div class="header-actions">
+    <button class="btn" onclick="exportData()">Export JSON</button>
+    <button class="btn btn-primary" onclick="openModal()">+ Tambah Kompetitor</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('profil')">Profil Kompetitor</div>
+  <div class="tab" onclick="switchTab('matrix')">Positioning Matrix</div>
+  <div class="tab" onclick="switchTab('gap')">Gap &amp; Peluang</div>
+  <div class="tab" onclick="switchTab('altpages')">Halaman Alternatif</div>
+</div>
+
+<!-- TAB: PROFIL KOMPETITOR -->
+<div class="content">
+<div class="panel active" id="tab-profil">
+  <div class="stats-bar" id="stats-bar"></div>
+  <div class="filter-bar">
+    <input type="text" id="search-comp" placeholder="Cari nama, standar, region…" oninput="renderProfil()"/>
+    <select id="filter-tier" onchange="renderProfil()">
+      <option value="">Semua Tier</option>
+      <option value="global">Global</option>
+      <option value="regional">Regional</option>
+      <option value="lokal">Lokal</option>
+    </select>
+    <select id="filter-region" onchange="renderProfil()">
+      <option value="">Semua Region</option>
+      <option value="ASEAN">ASEAN</option>
+      <option value="ME">Middle East</option>
+      <option value="SA">South Asia</option>
+      <option value="Africa">Africa</option>
+      <option value="Global">Global</option>
+      <option value="Indonesia">Indonesia</option>
+    </select>
+    <select id="filter-iso" onchange="renderProfil()">
+      <option value="">Semua Standar</option>
+      <option value="ISO 9001">ISO 9001</option>
+      <option value="ISO 14001">ISO 14001</option>
+      <option value="ISO 45001">ISO 45001</option>
+      <option value="ISO 27001">ISO 27001</option>
+      <option value="ISO 37001">ISO 37001</option>
+      <option value="ISO 22000">ISO 22000</option>
+    </select>
+  </div>
+  <div class="comp-grid" id="comp-grid"></div>
+</div>
+
+<!-- TAB: POSITIONING MATRIX -->
+<div class="panel" id="tab-matrix">
+  <div class="matrix-wrap">
+    <div class="matrix-title">Perbandingan Positioning — Arafarnusa.com vs Kompetitor</div>
+    <div style="overflow-x:auto;">
+      <table class="matrix-table" id="matrix-table">
+        <thead>
+          <tr>
+            <th>Perusahaan</th>
+            <th>Harga (IDR/proyek)</th>
+            <th>Jangkauan</th>
+            <th>Spesialisasi</th>
+            <th>Kehadiran Online</th>
+            <th>Respons Speed</th>
+          </tr>
+        </thead>
+        <tbody id="matrix-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div style="font-size:.72rem;color:var(--text-3);margin-top:8px;">
+    <strong style="color:var(--accent);">Kita</strong> = Arafarnusa.com · Skor 1–10 berdasarkan estimasi &amp; riset
+  </div>
+</div>
+
+<!-- TAB: GAP & PELUANG -->
+<div class="panel" id="tab-gap">
+  <p style="font-size:.82rem;color:var(--text-2);margin-bottom:20px;line-height:1.6;">
+    Analisis celah dari profil kompetitor — di mana mereka lemah adalah peluang untuk Arafarnusa.com.
+  </p>
+  <div class="gap-grid" id="gap-grid"></div>
+</div>
+
+<!-- TAB: HALAMAN ALTERNATIF -->
+<div class="panel" id="tab-altpages">
+  <p style="font-size:.82rem;color:var(--text-2);margin-bottom:16px;line-height:1.6;">
+    Halaman <em>"Alternatif untuk [Kompetitor]"</em> dan <em>"Arafarnusa vs [Kompetitor]"</em> adalah sumber traffic bernilai tinggi — pengunjungnya sudah dalam mode evaluasi aktif.
+  </p>
+  <div style="display:flex;gap:10px;margin-bottom:18px;">
+    <button class="btn btn-primary" onclick="generateAltPages()">Generate dari Kompetitor</button>
+  </div>
+  <div class="altpages-grid" id="altpages-grid"></div>
+</div>
+</div>
+
+<!-- MODAL: TAMBAH/EDIT KOMPETITOR -->
+<div class="modal-bg" id="modal-bg" onclick="closeModalBg(event)">
+  <div class="modal">
+    <h2 id="modal-title">Tambah Kompetitor Baru</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nama Perusahaan *</label>
+        <input id="f-name" type="text" placeholder="PT Konsultan Mutu Nusantara"/>
+      </div>
+      <div class="form-group">
+        <label>Website</label>
+        <input id="f-website" type="text" placeholder="konsultanmutu.com"/>
+      </div>
+      <div class="form-group">
+        <label>Ikon (emoji)</label>
+        <input id="f-icon" type="text" placeholder="🏢" maxlength="4"/>
+      </div>
+      <div class="form-group">
+        <label>Tier Kompetitor</label>
+        <select id="f-tier">
+          <option value="lokal">Lokal (Indonesia)</option>
+          <option value="regional">Regional (Asia)</option>
+          <option value="global">Global</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Region / Pasar</label>
+        <input id="f-regions" type="text" placeholder="Indonesia, ASEAN (pisahkan koma)"/>
+      </div>
+      <div class="form-group full">
+        <label>Standar ISO yang Ditawarkan</label>
+        <input id="f-standards" type="text" placeholder="ISO 9001, ISO 14001, ISO 45001 (pisahkan koma)"/>
+      </div>
+      <div class="section-divider">Analisis</div>
+      <div class="form-group full">
+        <label>Deskripsi Singkat</label>
+        <textarea id="f-desc" placeholder="Spesialis di bidang apa, fokus industri apa, keunikan layanan…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Kekuatan (+ poin)</label>
+        <textarea id="f-pros" placeholder="Harga murah, jaringan luas, brand dikenal…" style="min-height:60px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Kelemahan (− poin)</label>
+        <textarea id="f-cons" placeholder="Respons lambat, tidak bisa bahasa lokal, harga tidak transparan…" style="min-height:60px;"></textarea>
+      </div>
+      <div class="section-divider">Estimasi Harga &amp; Skor</div>
+      <div class="form-group">
+        <label>Harga Minimum (IDR juta)</label>
+        <input id="f-price-min" type="number" placeholder="15"/>
+      </div>
+      <div class="form-group">
+        <label>Harga Maksimum (IDR juta)</label>
+        <input id="f-price-max" type="number" placeholder="80"/>
+      </div>
+      <div class="form-group">
+        <label>Skor Online Presence (1–10)</label>
+        <input id="f-score-online" type="number" min="1" max="10" placeholder="7"/>
+      </div>
+      <div class="form-group">
+        <label>Skor Respons Speed (1–10)</label>
+        <input id="f-score-speed" type="number" min="1" max="10" placeholder="6"/>
+      </div>
+      <div class="form-group">
+        <label>Skor Jangkauan (1–10)</label>
+        <input id="f-score-reach" type="number" min="1" max="10" placeholder="5"/>
+      </div>
+      <div class="form-group">
+        <label>Skor Spesialisasi (1–10)</label>
+        <input id="f-score-spec" type="number" min="1" max="10" placeholder="8"/>
+      </div>
+      <div class="form-group full">
+        <label>Sumber Informasi</label>
+        <input id="f-source" type="text" placeholder="LinkedIn, website, ulasan klien…"/>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Batal</button>
+      <button class="btn btn-primary" onclick="saveComp()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORE = 'crm_competitors';
+const ALTPAGES_STORE = 'crm_altpages';
+
+const SEED = [
+  {
+    id:'c1', name:'SGS Indonesia', website:'sgs.com/id', icon:'🌐', tier:'global',
+    regions:['Indonesia','ASEAN','Global'],
+    standards:['ISO 9001','ISO 14001','ISO 45001','ISO 27001','ISO 22000'],
+    desc:'Lembaga inspeksi dan sertifikasi global terbesar. Hadir di 140+ negara, divisi konsultasi terpisah dari divisi sertifikasi.',
+    pros:'Brand dikenal global, jaringan auditor sangat luas, multi-standar dalam satu atap.',
+    cons:'Harga sangat premium, respons lambat untuk UKM, tidak fleksibel untuk proyek kecil, birokrasi besar.',
+    priceMin:150, priceMax:500, scoreOnline:9, scoreSpeed:4, scoreReach:10, scoreSpec:7,
+    source:'Website resmi, LinkedIn', updatedAt:'2026-07-15'
+  },
+  {
+    id:'c2', name:'Bureau Veritas Konsultasi', website:'bureauveritas.com', icon:'🔵', tier:'global',
+    regions:['Indonesia','ASEAN','Global'],
+    standards:['ISO 9001','ISO 14001','ISO 45001','ISO 22000'],
+    desc:'Kelompok BV dengan layanan konsultasi pre-audit dan training ISO. Fokus industri maritim, minyak & gas, manufaktur.',
+    pros:'Kuat di industri berat (O&G, maritim), dipercaya perusahaan multinasional, training berkualitas.',
+    cons:'Tidak aktif di digital marketing, harga tidak transparan, minim layanan untuk ASEAN non-Indonesia.',
+    priceMin:100, priceMax:400, scoreOnline:6, scoreSpeed:5, scoreReach:9, scoreSpec:8,
+    source:'LinkedIn, proposal publik', updatedAt:'2026-07-20'
+  },
+  {
+    id:'c3', name:'PT Mutu Agung Lestari', website:'mutuagung.com', icon:'🏭', tier:'regional',
+    regions:['Indonesia','ASEAN'],
+    standards:['ISO 9001','ISO 14001','ISO 45001','ISO 37001','ISO 22000'],
+    desc:'Konsultan ISO lokal besar dengan >20 tahun pengalaman. Juga memiliki lembaga sertifikasi sendiri (PT Mutu Certification International).',
+    pros:'Nama dikenal di pasar Indonesia, memiliki CB sendiri, tim besar, pengalaman panjang.',
+    cons:'Konflik kepentingan (konsultan + CB satu group), harga di atas rata-rata, website lama, respons lambat.',
+    priceMin:50, priceMax:200, scoreOnline:5, scoreSpeed:5, scoreReach:7, scoreSpec:7,
+    source:'Referral industri, website', updatedAt:'2026-07-10'
+  },
+  {
+    id:'c4', name:'PT Indotama Konsultan ISO', website:'indotamakonsultan.id', icon:'📋', tier:'lokal',
+    regions:['Indonesia'],
+    standards:['ISO 9001','ISO 14001','ISO 45001'],
+    desc:'Konsultan ISO kecil-menengah berbasis Jakarta. Aktif menawarkan via grup WhatsApp dan Facebook. Harga sangat kompetitif untuk UKM.',
+    pros:'Harga paling murah di segmen UKM, proses cepat, informal dan mudah diajak bicara.',
+    cons:'Kualitas tidak konsisten, tidak ada SLA, portofolio tidak transparan, tidak ada kehadiran LinkedIn profesional.',
+    priceMin:8, priceMax:35, scoreOnline:3, scoreSpeed:8, scoreReach:2, scoreSpec:4,
+    source:'Google search, grup WA industri', updatedAt:'2026-08-01'
+  },
+  {
+    id:'c5', name:'Intertek Consulting Asia', website:'intertek.com', icon:'⚙️', tier:'global',
+    regions:['ASEAN','Middle East','Global'],
+    standards:['ISO 9001','ISO 14001','ISO 45001','ISO 27001'],
+    desc:'Divisi konsultasi dari grup Intertek. Kuat di pre-audit training dan gap analysis, terutama untuk ekspor ke pasar Eropa.',
+    pros:'Kuat di ekspor compliance, diakui pembeli internasional, online presence baik, sertifikasi diterima global.',
+    cons:'Tidak ada kantor Indonesia permanent, harga dalam USD (mahal untuk klien lokal), kurang responsif wilayah ASEAN.',
+    priceMin:80, priceMax:300, scoreOnline:7, scoreSpeed:5, scoreReach:8, scoreSpec:8,
+    source:'Website, expo industri', updatedAt:'2026-06-30'
+  },
+  {
+    id:'c6', name:'Konsultan ISO ASEAN Partners', website:'isoaseanpartners.com', icon:'🌏', tier:'regional',
+    regions:['ASEAN','South Asia'],
+    standards:['ISO 9001','ISO 14001','ISO 37001'],
+    desc:'Jaringan konsultan independen ASEAN. Fokus pada UKM ekspor yang butuh sertifikasi ISO untuk tender pemerintah atau buyer requirement.',
+    pros:'Paham konteks lokal ASEAN, harga transparan, komunikasi bilingual, aktif di LinkedIn.',
+    cons:'Belum punya reputasi kuat di Indonesia, tim kecil, kapasitas terbatas untuk proyek besar.',
+    priceMin:20, priceMax:90, scoreOnline:6, scoreSpeed:7, scoreReach:5, scoreSpec:6,
+    source:'LinkedIn search, blog mereka', updatedAt:'2026-07-25'
+  }
+];
+
+let competitors = [];
+let altPages = [];
+let editId = null;
+
+function load(){
+  const raw = localStorage.getItem(STORE);
+  competitors = raw ? JSON.parse(raw) : null;
+  if(!competitors){ competitors = SEED; save(); }
+  const rawAlt = localStorage.getItem(ALTPAGES_STORE);
+  altPages = rawAlt ? JSON.parse(rawAlt) : [];
+}
+function save(){ localStorage.setItem(STORE, JSON.stringify(competitors)); }
+function saveAlt(){ localStorage.setItem(ALTPAGES_STORE, JSON.stringify(altPages)); }
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>{
+    const tabs=['profil','matrix','gap','altpages'];
+    el.classList.toggle('active', tabs[i]===t);
+  });
+  document.querySelectorAll('.panel').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='matrix') renderMatrix();
+  if(t==='gap') renderGap();
+  if(t==='altpages') renderAltPages();
+}
+
+// ── TAB 1: PROFIL ──────────────────────────────────────────
+function renderProfil(){
+  const q = (document.getElementById('search-comp')?.value||'').toLowerCase();
+  const tier = document.getElementById('filter-tier')?.value||'';
+  const region = document.getElementById('filter-region')?.value||'';
+  const iso = document.getElementById('filter-iso')?.value||'';
+
+  let list = competitors.filter(c=>{
+    if(q && !c.name.toLowerCase().includes(q) && !c.desc.toLowerCase().includes(q)
+        && !c.regions.join().toLowerCase().includes(q)
+        && !c.standards.join().toLowerCase().includes(q)) return false;
+    if(tier && c.tier !== tier) return false;
+    if(region && !c.regions.includes(region)) return false;
+    if(iso && !c.standards.includes(iso)) return false;
+    return true;
+  });
+
+  // Stats
+  const counts = {global:0,regional:0,lokal:0};
+  competitors.forEach(c=>counts[c.tier]=(counts[c.tier]||0)+1);
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat-chip"><strong>${competitors.length}</strong>Total Kompetitor</div>
+    <div class="stat-chip"><strong>${counts.global||0}</strong>Global</div>
+    <div class="stat-chip"><strong>${counts.regional||0}</strong>Regional</div>
+    <div class="stat-chip"><strong>${counts.lokal||0}</strong>Lokal</div>
+    <div class="stat-chip"><strong>${list.length}</strong>Hasil Filter</div>
+  `;
+
+  const grid = document.getElementById('comp-grid');
+  if(!list.length){
+    grid.innerHTML='<div class="empty" style="grid-column:1/-1"><span class="empty-icon">🔍</span><p>Tidak ada kompetitor yang sesuai filter.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = list.map(c=>`
+    <div class="comp-card tier-${c.tier}">
+      <div class="comp-head">
+        <span class="comp-icon">${c.icon||'🏢'}</span>
+        <div class="comp-info">
+          <div class="comp-name">${esc(c.name)}</div>
+          <div class="comp-website">${esc(c.website||'—')}</div>
+        </div>
+        <span class="comp-tier-badge tier-badge-${c.tier}">${c.tier}</span>
+      </div>
+      <div class="comp-meta">
+        ${c.regions.map(r=>`<span class="comp-tag region">${r}</span>`).join('')}
+        ${c.standards.map(s=>`<span class="comp-tag iso">${s}</span>`).join('')}
+      </div>
+      <div class="comp-section">
+        <div class="comp-label">Deskripsi</div>
+        <div class="comp-value">${esc(c.desc)}</div>
+      </div>
+      <div class="comp-pros-cons">
+        <div class="pros">${esc(c.pros)}</div>
+        <div class="cons">${esc(c.cons)}</div>
+      </div>
+      <div class="comp-footer">
+        <div>
+          <div class="comp-price">Harga: <strong>IDR ${c.priceMin||'?'}–${c.priceMax||'?'}jt</strong></div>
+          <div class="comp-date">Update: ${c.updatedAt||'—'}</div>
+        </div>
+        <div class="comp-actions">
+          <button class="btn-sm" onclick="launchSkill('${c.id}','profiling')" title="Generate /competitor-profiling prompt">⚡ Profiling</button>
+          <button class="btn-sm" onclick="launchSkill('${c.id}','alternatives')" title="Generate /competitor-alternatives prompt">📄 Altpages</button>
+          <button class="btn-sm" onclick="editComp('${c.id}')">Edit</button>
+          <button class="btn-sm danger" onclick="deleteComp('${c.id}')">Hapus</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── TAB 2: MATRIX ─────────────────────────────────────────
+const SELF = {
+  name:'Arafarnusa.com', tier:'self',
+  priceMin:15, priceMax:80, scoreOnline:5, scoreSpeed:9, scoreReach:4, scoreSpec:9,
+  isSelf:true
+};
+
+function barCell(score, color){
+  const pct = Math.round((score||0)*10);
+  return `<div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color};"></div></div></div>`;
+}
+
+function renderMatrix(){
+  const list = [SELF, ...competitors].sort((a,b)=>(!a.isSelf&&b.isSelf)?1:0);
+  document.getElementById('matrix-body').innerHTML = list.map(c=>`
+    <tr class="${c.isSelf?'self':''}">
+      <td>${c.isSelf?'<strong>Arafarnusa.com</strong>':esc(c.name)}</td>
+      <td>${c.priceMin||'?'}–${c.priceMax||'?'} jt</td>
+      <td>${barCell(c.scoreReach, c.isSelf?'var(--accent)':'var(--blue)')}</td>
+      <td>${barCell(c.scoreSpec, c.isSelf?'var(--accent)':'var(--blue)')}</td>
+      <td>${barCell(c.scoreOnline, c.isSelf?'var(--accent)':'var(--blue)')}</td>
+      <td>${barCell(c.scoreSpeed, c.isSelf?'var(--accent)':'var(--blue)')}</td>
+    </tr>
+  `).join('');
+}
+
+// ── TAB 3: GAP & PELUANG ──────────────────────────────────
+function renderGap(){
+  const gaps = [
+    {
+      title:'Online Presence & SEO',
+      desc:'Rata-rata kompetitor besar lemah di SEO lokal dan konten ISO Bahasa Indonesia. Peluang untuk mendominasi keyword "konsultan ISO [standar] [industri]" di Google.',
+      priority:'high',
+      action:'→ Aktifkan: penulis-content + ai-seo + programmatic-seo'
+    },
+    {
+      title:'Harga Transparan untuk UKM',
+      desc:'Hampir semua kompetitor global tidak menampilkan harga. UKM Indonesia sangat menghargai transparansi harga. Landing page dengan estimator harga bisa menjadi differentiator kuat.',
+      priority:'high',
+      action:'→ Aktifkan: pricing-strategy + mancalc + scope-generator'
+    },
+    {
+      title:'Respons Cepat & Persona Personal',
+      desc:'Perusahaan besar responsnya 3–5 hari. Arafarnusa.com bisa menawarkan respons dalam hitungan jam — ini differentiator signifikan untuk klien yang butuh kepastian cepat.',
+      priority:'high',
+      action:'→ Aktifkan: cold-email + outreach-engine (MOD-05)'
+    },
+    {
+      title:'Konten Bilingual (ID + EN)',
+      desc:'Kompetitor regional umumnya tidak ada konten Bahasa Indonesia yang berkualitas. Ini peluang untuk ASEAN/ME market yang ada tim Indonesia-nya.',
+      priority:'med',
+      action:'→ Aktifkan: copywriting + penulis-content (bilingual mode)'
+    },
+    {
+      title:'Free Tools sebagai Lead Magnet',
+      desc:'Tidak ada kompetitor yang menawarkan kalkulator mandays atau scope generator gratis online. Ini bisa menjadi traffic magnet dan lead qualifier yang powerful.',
+      priority:'med',
+      action:'→ Aktifkan: free-tool-strategy + mancalc + scope-generator'
+    },
+    {
+      title:'Spesialisasi Standar Niche',
+      desc:'ISO 37001 (Anti-Penyuapan) dan ISO 21502 (Project Management) minim kompetitor. Posisikan sebagai spesialis di standar yang kompetitor besar abaikan.',
+      priority:'med',
+      action:'→ Aktifkan: iso-37001 + iso-21502 + content-strategy (niche pillar)'
+    },
+    {
+      title:'Referral dari Klien Aktif',
+      desc:'Kompetitor besar tidak memiliki program referral terstruktur. Klien yang berhasil sertifikasi ISO bisa menjadi channel akuisisi terbaik dengan reward yang tepat.',
+      priority:'low',
+      action:'→ Aktifkan: referral-program (MOD-10)'
+    },
+    {
+      title:'Competitor Alternatives Pages',
+      desc:'Halaman "Alternatif untuk SGS/BV/Intertek" menyasar calon klien yang sudah evaluasi kompetitor tapi mencari opsi lain. Traffic bernilai tinggi, konversi lebih baik.',
+      priority:'low',
+      action:'→ Buat halaman di tab Halaman Alternatif'
+    }
+  ];
+
+  document.getElementById('gap-grid').innerHTML = gaps.map(g=>`
+    <div class="gap-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div class="gap-card-title">${g.title}</div>
+        <span class="gap-priority gap-${g.priority}">${g.priority==='high'?'Tinggi':g.priority==='med'?'Sedang':'Bonus'}</span>
+      </div>
+      <div class="gap-card-desc">${g.desc}</div>
+      <div class="gap-action">${g.action}</div>
+    </div>
+  `).join('');
+}
+
+// ── TAB 4: HALAMAN ALTERNATIF ─────────────────────────────
+function generateAltPages(){
+  const existing = new Set(altPages.map(p=>p.compId));
+  competitors.forEach(c=>{
+    if(!existing.has(c.id+'-alt')){
+      altPages.push({
+        id: 'alt-'+c.id, compId: c.id+'-alt',
+        type: 'alternative',
+        title: `Alternatif untuk ${c.name}`,
+        url: `arafarnusa.com/alternatif-${slugify(c.name)}`,
+        desc: `Sedang mencari alternatif ${c.name}? Bandingkan layanan, harga, dan cakupan standar ISO dengan Arafarnusa.com.`,
+        status: 'idea', createdAt: today()
+      });
+    }
+    if(!existing.has(c.id+'-vs')){
+      altPages.push({
+        id: 'vs-'+c.id, compId: c.id+'-vs',
+        type: 'comparison',
+        title: `Arafarnusa.com vs ${c.name}`,
+        url: `arafarnusa.com/vs-${slugify(c.name)}`,
+        desc: `Perbandingan langsung: harga, cakupan standar ISO, respons time, dan pengalaman klien.`,
+        status: 'idea', createdAt: today()
+      });
+    }
+  });
+  saveAlt();
+  renderAltPages();
+}
+
+function renderAltPages(){
+  if(!altPages.length){
+    document.getElementById('altpages-grid').innerHTML = `
+      <div class="empty" style="grid-column:1/-1">
+        <span class="empty-icon">📄</span>
+        <p>Belum ada halaman alternatif. Klik <strong>Generate dari Kompetitor</strong> untuk membuat otomatis.</p>
+      </div>`;
+    return;
+  }
+
+  const statusLabel={idea:'Ide',draft:'Draft',live:'Live'};
+  document.getElementById('altpages-grid').innerHTML = altPages.map((p,i)=>`
+    <div class="altpage-card">
+      <div class="altpage-title">${esc(p.title)}</div>
+      <div class="altpage-url">${esc(p.url)}</div>
+      <div class="altpage-desc">${esc(p.desc)}</div>
+      <div class="altpage-footer">
+        <span class="status-badge status-${p.status}">${statusLabel[p.status]}</span>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-sm" onclick="cycleAltStatus(${i})">Ubah Status</button>
+          <button class="btn-sm" onclick="addToTopik(${i})">→ Bank Topik</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function cycleAltStatus(i){
+  const order=['idea','draft','live'];
+  const cur = altPages[i].status;
+  altPages[i].status = order[(order.indexOf(cur)+1)%order.length];
+  saveAlt(); renderAltPages();
+}
+
+function addToTopik(i){
+  const p = altPages[i];
+  const bank = JSON.parse(localStorage.getItem('crm_bank_topik')||'[]');
+  bank.push({
+    id:'t'+(Date.now()),
+    topik: p.title,
+    subtopik: 'Competitor alternative page',
+    standar:'—', format:'Artikel SEO',
+    hook: p.desc,
+    cta:'Konsultasi gratis dengan Arafarnusa',
+    status:'PENDING',
+    createdAt: today()
+  });
+  localStorage.setItem('crm_bank_topik', JSON.stringify(bank));
+  alert(`"${p.title}" berhasil ditambahkan ke Bank Topik (MOD-03).`);
+}
+
+// ── MODAL CRUD ─────────────────────────────────────────────
+function openModal(id){
+  editId = id||null;
+  const modal = document.getElementById('modal-bg');
+  if(id){
+    const c = competitors.find(x=>x.id===id);
+    document.getElementById('modal-title').textContent = 'Edit Kompetitor';
+    document.getElementById('f-name').value = c.name||'';
+    document.getElementById('f-website').value = c.website||'';
+    document.getElementById('f-icon').value = c.icon||'';
+    document.getElementById('f-tier').value = c.tier||'lokal';
+    document.getElementById('f-regions').value = (c.regions||[]).join(', ');
+    document.getElementById('f-standards').value = (c.standards||[]).join(', ');
+    document.getElementById('f-desc').value = c.desc||'';
+    document.getElementById('f-pros').value = c.pros||'';
+    document.getElementById('f-cons').value = c.cons||'';
+    document.getElementById('f-price-min').value = c.priceMin||'';
+    document.getElementById('f-price-max').value = c.priceMax||'';
+    document.getElementById('f-score-online').value = c.scoreOnline||'';
+    document.getElementById('f-score-speed').value = c.scoreSpeed||'';
+    document.getElementById('f-score-reach').value = c.scoreReach||'';
+    document.getElementById('f-score-spec').value = c.scoreSpec||'';
+    document.getElementById('f-source').value = c.source||'';
+  } else {
+    document.getElementById('modal-title').textContent = 'Tambah Kompetitor Baru';
+    ['f-name','f-website','f-icon','f-regions','f-standards','f-desc','f-pros','f-cons','f-price-min','f-price-max','f-score-online','f-score-speed','f-score-reach','f-score-spec','f-source'].forEach(id=>{ document.getElementById(id).value=''; });
+    document.getElementById('f-tier').value = 'lokal';
+    document.getElementById('f-icon').value = '🏢';
+  }
+  modal.classList.add('open');
+}
+
+function closeModal(){ document.getElementById('modal-bg').classList.remove('open'); }
+function closeModalBg(e){ if(e.target===document.getElementById('modal-bg')) closeModal(); }
+
+function saveComp(){
+  const name = document.getElementById('f-name').value.trim();
+  if(!name){ alert('Nama kompetitor wajib diisi.'); return; }
+
+  const data = {
+    name, website: document.getElementById('f-website').value.trim(),
+    icon: document.getElementById('f-icon').value.trim()||'🏢',
+    tier: document.getElementById('f-tier').value,
+    regions: document.getElementById('f-regions').value.split(',').map(s=>s.trim()).filter(Boolean),
+    standards: document.getElementById('f-standards').value.split(',').map(s=>s.trim()).filter(Boolean),
+    desc: document.getElementById('f-desc').value.trim(),
+    pros: document.getElementById('f-pros').value.trim(),
+    cons: document.getElementById('f-cons').value.trim(),
+    priceMin: parseInt(document.getElementById('f-price-min').value)||0,
+    priceMax: parseInt(document.getElementById('f-price-max').value)||0,
+    scoreOnline: parseInt(document.getElementById('f-score-online').value)||5,
+    scoreSpeed: parseInt(document.getElementById('f-score-speed').value)||5,
+    scoreReach: parseInt(document.getElementById('f-score-reach').value)||5,
+    scoreSpec: parseInt(document.getElementById('f-score-spec').value)||5,
+    source: document.getElementById('f-source').value.trim(),
+    updatedAt: today()
+  };
+
+  if(editId){
+    const idx = competitors.findIndex(c=>c.id===editId);
+    if(idx>=0){ competitors[idx]={...competitors[idx],...data}; }
+  } else {
+    data.id = 'c'+Date.now();
+    competitors.push(data);
+  }
+  save(); closeModal(); renderProfil();
+}
+
+function editComp(id){ openModal(id); }
+function deleteComp(id){
+  if(!confirm('Hapus kompetitor ini?')) return;
+  competitors = competitors.filter(c=>c.id!==id);
+  save(); renderProfil();
+}
+
+function exportData(){
+  const blob = new Blob([JSON.stringify({competitors, altPages}, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'competitor-intel-'+today()+'.json'; a.click();
+}
+
+// ── Skill Launch ──────────────────────────────────────────
+function launchSkill(id, type){
+  const c = competitors.find(x=>x.id===id);
+  if(!c) return;
+
+  let title, prompt;
+  if(type==='profiling'){
+    title = '/competitor-profiling — '+c.name;
+    prompt = `/competitor-profiling\n\nBuat profil kompetitor lengkap untuk arafarnusa.com:\n\n## Kompetitor: ${c.name}\n- Website: ${c.website||'—'}\n- Tier: ${c.tier} (${c.tier==='global'?'Perusahaan Global':c.tier==='regional'?'Regional Asia':'Lokal Indonesia'})\n- Region aktif: ${(c.regions||[]).join(', ')}\n- Standar ISO: ${(c.standards||[]).join(', ')}\n- Harga estimasi: IDR ${c.priceMin}–${c.priceMax} juta/proyek\n\n## Data yang sudah diketahui:\nKekuatan: ${c.pros||'—'}\nKelemahan: ${c.cons||'—'}\nDeskripsi: ${c.desc||'—'}\n\n## Yang perlu dianalisis lebih dalam:\n1. Strategi SEO mereka: keyword utama, volume estimasi, topik yang tidak dicover\n2. Pricing model detail (per jam/per proyek/retainer?)\n3. Customer review & testimonial (dari Clutch, Google, LinkedIn)\n4. Cara mereka mendapat klien (inbound vs outbound)\n5. Differensiator dari sudut pandang klien mereka\n\n## Rekomendasi:\n- 3 kelemahan spesifik yang bisa dijadikan differensiator arafarnusa.com\n- Keyword gap: topik yang mereka tidak cover tapi volume tinggi\n- Bagaimana framing arafarnusa.com vs ${c.name} dalam 2-3 kalimat`;
+  } else {
+    title = '/competitor-alternatives — '+c.name;
+    prompt = `/competitor-alternatives\n\nBuat 2 halaman comparison untuk arafarnusa.com:\n\n## Kompetitor: ${c.name}\n- Tier: ${c.tier}\n- Region: ${(c.regions||[]).join(', ')}\n- Standar: ${(c.standards||[]).join(', ')}\n- Harga mereka: IDR ${c.priceMin}–${c.priceMax} juta\n- Kelemahan diketahui: ${c.cons||'—'}\n\n## Halaman 1: "Alternatif untuk ${c.name}"\nURL target: arafarnusa.com/alternatif-${slugify(c.name)}\n\nBuat copy lengkap:\n- H1 menarik yang menjawab intent pencarian\n- Mengapa orang mencari alternatif ${c.name} (pain point mereka)\n- Tabel perbandingan: Arafarnusa vs ${c.name} (harga, respons, cakupan, lokal/global)\n- Mengapa Arafarnusa lebih cocok untuk [segmen]\n- CTA dengan low friction\n\n## Halaman 2: "Arafarnusa.com vs ${c.name}"\nURL target: arafarnusa.com/vs-${slugify(c.name)}\n\nBuat copy yang fair tapi menguntungkan:\n- Perbandingan head-to-head yang jujur\n- Acknowledge kelebihan ${c.name}\n- Jelaskan di mana Arafarnusa lebih baik\n- "Siapa yang cocok pilih Arafarnusa vs ${c.name}"\n- Social proof dari ${c.name?'klien yang pindah':'klien aktif'}\n\nOutput: copy lengkap kedua halaman, siap review dan publish.`;
+  }
+
+  // Show mini prompt modal
+  const existing = document.getElementById('skill-mini-modal');
+  if(existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'skill-mini-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;';
+  modal.innerHTML = `
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:24px;max-width:620px;width:100%;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <strong style="font-family:'Courier New',monospace;font-size:.85rem;color:var(--text);">${esc(title)}</strong>
+        <button onclick="document.getElementById('skill-mini-modal').remove()" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:1.1rem;">×</button>
+      </div>
+      <textarea id="mini-prompt-ta" style="width:100%;font-family:'Courier New',monospace;font-size:.74rem;line-height:1.5;padding:10px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text);resize:vertical;min-height:220px;outline:none;">${esc(prompt)}</textarea>
+      <div style="font-size:.7rem;color:var(--text-3);">Salin prompt → paste di Claude Code CLI</div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;">
+        <button onclick="document.getElementById('skill-mini-modal').remove()" style="font-size:.75rem;padding:7px 14px;border:1px solid var(--border);border-radius:2px;background:var(--surface);color:var(--text-2);cursor:pointer;">Tutup</button>
+        <button id="mini-copy-btn" onclick="miniCopy()" style="font-size:.75rem;padding:7px 14px;border-radius:2px;border:none;background:var(--accent);color:#fff;cursor:pointer;">Salin Prompt</button>
+      </div>
+    </div>`;
+  modal.addEventListener('click', e=>{ if(e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+function miniCopy(){
+  const ta = document.getElementById('mini-prompt-ta');
+  if(!ta) return;
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    const btn = document.getElementById('mini-copy-btn');
+    if(btn){ btn.textContent='✓ Tersalin!'; btn.style.background='var(--green)'; }
+    setTimeout(()=>{ if(btn){ btn.textContent='Salin Prompt'; btn.style.background='var(--accent)'; } }, 2000);
+  });
+}
+
+// ── Helpers ────────────────────────────────────────────────
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+
+// Init
+load();
+renderProfil();
+</script>
+</body>
+</html>
