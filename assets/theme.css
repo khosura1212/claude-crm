@@ -23,10 +23,10 @@
   --text-2:#5B5142;
   --text-3:#8B806C;
 
-  --accent:#B8501E;
-  --accent-hover:#9C4319;
-  --accent-dim:rgba(184,80,30,.10);
-  --accent-2:#8A3B16;
+  --accent:#0284C7;
+  --accent-hover:#0369A1;
+  --accent-dim:rgba(2,132,199,.10);
+  --accent-2:#075985;
 
   --green:#1E7A50;      --green-dim:rgba(30,122,80,.11);
   --blue:#1B5F8F;       --blue-dim:rgba(27,95,143,.11);
@@ -54,47 +54,57 @@
 
   color-scheme:light;
 }
+/* Dark mode intentionally disabled. This block still matches
+   prefers-color-scheme:dark on purpose — it keeps winning the cascade
+   over each page's own leftover inline dark-mode block (which loads
+   earlier in source order) but now just re-asserts the light, sky-blue
+   palette, so OS/browser dark preference can never change the app's
+   appearance. */
 @media(prefers-color-scheme:dark){:root{
-  --bg:#0C1015; --surface:#141922; --surface-2:#1B222C; --surface-hover:#1A212B; --surface-hi:#1B222C;
-  --border:#2A323D; --border-s:#333D49; --border-strong:#3C4753;
-  --text:#EEEFF2; --text-2:#A8B0BC; --text-3:#707A88;
-  --accent:#E17B41; --accent-hover:#EC8C55; --accent-dim:rgba(225,123,65,.16); --accent-2:#F0975E;
-  --green:#3FAE78;   --green-dim:rgba(63,174,120,.15);
-  --blue:#5BA0D6;    --blue-dim:rgba(91,160,214,.15);
-  --orange:#DFA236;  --orange-dim:rgba(223,162,54,.15);
-  --red:#E06C63;     --red-dim:rgba(224,108,99,.15);
-  --purple:#AB84DE;  --purple-dim:rgba(171,132,222,.16);
-  --teal:#3FBDB2;    --teal-dim:rgba(63,189,178,.15);
-  --shadow-xs:0 1px 2px rgba(0,0,0,.35);
-  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 3px 10px rgba(0,0,0,.30);
-  --shadow-md:0 2px 8px rgba(0,0,0,.35),0 12px 28px rgba(0,0,0,.35);
-  --shadow-lg:0 10px 20px rgba(0,0,0,.40),0 28px 56px rgba(0,0,0,.45);
-  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.03);
-  color-scheme:dark;
+  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EDE4; --surface-hover:#FBFAF6; --surface-hi:#FFFFFF;
+  --border:#E3DDCF; --border-s:#D6CDB8; --border-strong:#CFC4AC;
+  --text:#221A10; --text-2:#5B5142; --text-3:#8B806C;
+  --accent:#0284C7; --accent-hover:#0369A1; --accent-dim:rgba(2,132,199,.10); --accent-2:#075985;
+  --green:#1E7A50;   --green-dim:rgba(30,122,80,.11);
+  --blue:#1B5F8F;    --blue-dim:rgba(27,95,143,.11);
+  --orange:#AD720F;  --orange-dim:rgba(173,114,15,.12);
+  --red:#B0332B;     --red-dim:rgba(176,51,43,.11);
+  --purple:#6B3C9C;  --purple-dim:rgba(107,60,156,.11);
+  --teal:#177A73;    --teal-dim:rgba(23,122,115,.11);
+  --shadow-xs:0 1px 2px rgba(30,22,10,.05);
+  --shadow-sm:0 1px 2px rgba(30,22,10,.04),0 3px 8px rgba(30,22,10,.06);
+  --shadow-md:0 2px 6px rgba(30,22,10,.05),0 10px 24px rgba(30,22,10,.08);
+  --shadow-lg:0 8px 16px rgba(30,22,10,.06),0 24px 48px rgba(30,22,10,.14);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.5);
+  color-scheme:light;
 }}
+/* Manual dark toggle intentionally disabled. Kept only so any leftover
+   data-theme="dark" attribute (a page's own old inline toggle script, or
+   a returning visitor's cached localStorage value) still resolves to the
+   light palette instead of a stale dark one. */
 :root[data-theme="dark"]{
-  --bg:#0C1015; --surface:#141922; --surface-2:#1B222C; --surface-hover:#1A212B; --surface-hi:#1B222C;
-  --border:#2A323D; --border-s:#333D49; --border-strong:#3C4753;
-  --text:#EEEFF2; --text-2:#A8B0BC; --text-3:#707A88;
-  --accent:#E17B41; --accent-hover:#EC8C55; --accent-dim:rgba(225,123,65,.16); --accent-2:#F0975E;
-  --green:#3FAE78;   --green-dim:rgba(63,174,120,.15);
-  --blue:#5BA0D6;    --blue-dim:rgba(91,160,214,.15);
-  --orange:#DFA236;  --orange-dim:rgba(223,162,54,.15);
-  --red:#E06C63;     --red-dim:rgba(224,108,99,.15);
-  --purple:#AB84DE;  --purple-dim:rgba(171,132,222,.16);
-  --teal:#3FBDB2;    --teal-dim:rgba(63,189,178,.15);
-  --shadow-xs:0 1px 2px rgba(0,0,0,.35);
-  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 3px 10px rgba(0,0,0,.30);
-  --shadow-md:0 2px 8px rgba(0,0,0,.35),0 12px 28px rgba(0,0,0,.35);
-  --shadow-lg:0 10px 20px rgba(0,0,0,.40),0 28px 56px rgba(0,0,0,.45);
-  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.03);
-  color-scheme:dark;
+  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EDE4; --surface-hover:#FBFAF6; --surface-hi:#FFFFFF;
+  --border:#E3DDCF; --border-s:#D6CDB8; --border-strong:#CFC4AC;
+  --text:#221A10; --text-2:#5B5142; --text-3:#8B806C;
+  --accent:#0284C7; --accent-hover:#0369A1; --accent-dim:rgba(2,132,199,.10); --accent-2:#075985;
+  --green:#1E7A50;   --green-dim:rgba(30,122,80,.11);
+  --blue:#1B5F8F;    --blue-dim:rgba(27,95,143,.11);
+  --orange:#AD720F;  --orange-dim:rgba(173,114,15,.12);
+  --red:#B0332B;     --red-dim:rgba(176,51,43,.11);
+  --purple:#6B3C9C;  --purple-dim:rgba(107,60,156,.11);
+  --teal:#177A73;    --teal-dim:rgba(23,122,115,.11);
+  --shadow-xs:0 1px 2px rgba(30,22,10,.05);
+  --shadow-sm:0 1px 2px rgba(30,22,10,.04),0 3px 8px rgba(30,22,10,.06);
+  --shadow-md:0 2px 6px rgba(30,22,10,.05),0 10px 24px rgba(30,22,10,.08);
+  --shadow-lg:0 8px 16px rgba(30,22,10,.06),0 24px 48px rgba(30,22,10,.14);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.5);
+  color-scheme:light;
 }
 :root[data-theme="light"]{
   --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EDE4; --surface-hover:#FBFAF6; --surface-hi:#FFFFFF;
   --border:#E3DDCF; --border-s:#D6CDB8; --border-strong:#CFC4AC;
   --text:#221A10; --text-2:#5B5142; --text-3:#8B806C;
-  --accent:#B8501E; --accent-hover:#9C4319; --accent-dim:rgba(184,80,30,.10); --accent-2:#8A3B16;
+  --accent:#0284C7; --accent-hover:#0369A1; --accent-dim:rgba(2,132,199,.10); --accent-2:#075985;
   --green:#1E7A50; --green-dim:rgba(30,122,80,.11);
   --blue:#1B5F8F; --blue-dim:rgba(27,95,143,.11);
   --orange:#AD720F; --orange-dim:rgba(173,114,15,.12);
