@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Audit Operations Hub — CRM Konsultan ISO</title>
+<style>
+:root{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D7A4F;--green-dim:rgba(45,122,79,.12);--blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);--orange:#C47A20;--orange-dim:rgba(196,122,32,.12);--red:#C03030;--red-dim:rgba(192,48,48,.12);}
+@media(prefers-color-scheme:dark){:root{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3DAF72;--green-dim:rgba(61,175,114,.12);--blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);--orange:#E09030;--orange-dim:rgba(224,144,48,.12);--red:#E05050;--red-dim:rgba(224,80,80,.12);}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{padding:24px 40px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--accent);text-decoration:none;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);padding:5px 12px;border-radius:3px;}
+.back-link:hover{background:var(--accent-dim);}
+.header-text h1{font-family:"Palatino Linotype",Palatino,serif;font-size:1.5rem;font-weight:normal;}
+.header-text p{font-size:.75rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+.tab-bar{display:flex;padding:20px 40px 0;border-bottom:1px solid var(--border);gap:4px;}
+.tab-btn{background:none;border:none;padding:10px 20px;font-family:inherit;font-size:.82rem;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;padding:28px 40px;}
+.tab-content.active{display:block;}
+.alert-box{border-radius:4px;padding:14px 18px;margin-bottom:20px;font-size:.84rem;line-height:1.6;}
+.alert-red{background:var(--red-dim);border:1px solid var(--red);color:var(--red);}
+.alert-orange{background:var(--orange-dim);border:1px solid var(--orange);color:var(--orange);}
+.alert-green{background:var(--green-dim);border:1px solid var(--green);color:var(--green);}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px;}
+.kpi-card .kv{font-family:"Palatino Linotype",Palatino,serif;font-size:1.7rem;}
+.kpi-card .kl{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-top:4px;}
+.toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.toolbar select,.toolbar input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:3px;font-size:.82rem;font-family:inherit;}
+.btn{background:none;border:1px solid var(--border);color:var(--text-2);padding:7px 14px;border-radius:3px;font-size:.82rem;cursor:pointer;font-family:inherit;transition:background .15s;}
+.btn:hover{background:var(--surface-2);}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-accent:hover{opacity:.9;}
+.btn-sm{padding:4px 10px;font-size:.74rem;}
+.audit-list{display:flex;flex-direction:column;gap:12px;}
+.audit-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px;}
+.audit-title{font-family:"Palatino Linotype",Palatino,serif;font-size:.95rem;font-weight:normal;margin-bottom:6px;}
+.audit-meta{font-size:.74rem;color:var(--text-3);line-height:1.7;margin-bottom:10px;}
+.impartial-ok{font-size:.74rem;padding:3px 10px;border-radius:2px;background:var(--green-dim);color:var(--green);}
+.impartial-warn{font-size:.74rem;padding:3px 10px;border-radius:2px;background:var(--red-dim);color:var(--red);}
+.section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:14px;}
+.finding-table{background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:20px;}
+table{width:100%;border-collapse:collapse;font-size:.82rem;}
+th{text-align:left;padding:9px 14px;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);border-bottom:2px solid var(--border);font-weight:normal;background:var(--surface-2);}
+td{padding:9px 14px;border-bottom:1px solid var(--border);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:28px;max-width:560px;width:90%;max-height:85vh;overflow-y:auto;}
+.modal h2{font-family:"Palatino Linotype",Palatino,serif;font-size:1.2rem;font-weight:normal;margin-bottom:18px;}
+.form-row{margin-bottom:14px;}
+.form-row label{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;}
+.form-row input,.form-row select,.form-row textarea{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:3px;font-size:.85rem;font-family:inherit;}
+.form-row textarea{height:70px;resize:vertical;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-link" href="index.html">← CRM</a>
+  <div class="header-text"><h1>Audit Operations Hub</h1><p>MOD-12 · TSI · Jadwal Audit · Impartiality · Temuan</p></div>
+</header>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="sw('jadwal')">Jadwal Audit</button>
+  <button class="tab-btn" onclick="sw('impartial')">Impartiality Gate</button>
+  <button class="tab-btn" onclick="sw('temuan')">Temuan Audit</button>
+  <button class="tab-btn" onclick="sw('rencana')">Rencana Audit</button>
+</div>
+
+<div class="tab-content active" id="tab-jadwal">
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="toolbar">
+    <select id="filterType" onchange="renderJadwal()"><option value="">Semua Tipe</option><option>Sertifikasi Tahap 1</option><option>Sertifikasi Tahap 2</option><option>Surveilans</option><option>Re-sertifikasi</option></select>
+    <button class="btn btn-accent" style="margin-left:auto" onclick="openAuditModal()">+ Jadwal Audit</button>
+  </div>
+  <div class="audit-list" id="auditList"></div>
+</div>
+
+<div class="tab-content" id="tab-impartial">
+  <div id="impartialAlert"></div>
+  <p class="section-title">Pemeriksaan Impartialitas — ISO/IEC 17021-1 Klausul 5</p>
+  <p style="font-size:.82rem;color:var(--text-2);margin-bottom:18px;line-height:1.7">Periksa apakah organisasi yang akan diaudit pernah atau sedang menerima layanan konsultasi dari arafarnusa.com. Audit terhadap klien konsultasi sendiri dilarang oleh ISO/IEC 17021-1.</p>
+  <div class="toolbar">
+    <input type="text" id="impartialSearch" placeholder="Nama organisasi yang akan diaudit…" style="flex:1;min-width:200px" oninput="checkImpartial()"/>
+  </div>
+  <div id="impartialResult"></div>
+  <div style="margin-top:28px">
+    <p class="section-title">Daftar Klien Konsultasi (Konfllik Potensial)</p>
+    <div id="conflictList"></div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-temuan">
+  <div class="toolbar">
+    <select id="filterGrade" onchange="renderTemuan()"><option value="">Semua Grade</option><option>Major</option><option>Minor</option><option>OFI</option></select>
+    <select id="filterStatus" onchange="renderTemuan()"><option value="">Semua Status</option><option>Open</option><option>Closed</option><option>Verifikasi</option></select>
+    <button class="btn btn-accent" style="margin-left:auto" onclick="openTemuanModal()">+ Temuan</button>
+  </div>
+  <div class="finding-table"><table>
+    <thead><tr><th>Ref</th><th>Klausul</th><th>Deskripsi</th><th>Grade</th><th>Organisasi</th><th>Status</th><th>Aksi</th></tr></thead>
+    <tbody id="temuanBody"></tbody>
+  </table></div>
+</div>
+
+<div class="tab-content" id="tab-rencana">
+  <p class="section-title">Template Rencana Audit</p>
+  <p style="font-size:.82rem;color:var(--text-2);margin-bottom:18px">Generate rencana audit sesuai standar ISO/IEC 17021-1.</p>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:18px">
+    <div class="form-row"><label>Organisasi</label><input id="rpOrg" placeholder="PT Sinar Nusantara"/></div>
+    <div class="form-row"><label>Standar</label>
+      <select id="rpStd"><option>ISO 9001:2015</option><option>ISO 14001:2015</option><option>ISO 45001:2018</option><option>ISO 27001:2022</option><option>ISO 37001:2016</option></select>
+    </div>
+    <div class="form-row"><label>Tipe Audit</label>
+      <select id="rpType"><option>Sertifikasi Tahap 1</option><option>Sertifikasi Tahap 2</option><option>Surveilans</option><option>Re-sertifikasi</option></select>
+    </div>
+    <div class="form-row"><label>Tanggal Audit</label><input id="rpDate" type="date"/></div>
+    <div class="form-row"><label>Auditor</label><input id="rpAuditor" placeholder="Nama auditor TSI"/></div>
+    <button class="btn btn-accent" onclick="genRencana()">Generate Rencana Audit</button>
+  </div>
+  <div id="rencanaOutput" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <p class="section-title" style="margin:0">Rencana Audit</p>
+      <button class="btn btn-sm" onclick="copyRencana()">Salin</button>
+    </div>
+    <pre id="rencanaText" style="font-family:inherit;font-size:.82rem;white-space:pre-wrap;line-height:1.8;color:var(--text-2)"></pre>
+  </div>
+</div>
+
+<div class="modal-overlay" id="auditModal">
+  <div class="modal">
+    <h2>Jadwal Audit</h2>
+    <div class="form-row"><label>Nama Organisasi</label><input id="aOrg" placeholder="PT Sinar Nusantara"/></div>
+    <div class="form-row"><label>Standar</label><input id="aStd" placeholder="ISO 9001:2015"/></div>
+    <div class="form-row"><label>Tipe Audit</label>
+      <select id="aType"><option>Sertifikasi Tahap 1</option><option>Sertifikasi Tahap 2</option><option>Surveilans</option><option>Re-sertifikasi</option></select>
+    </div>
+    <div class="form-row"><label>Tanggal</label><input id="aDate" type="date"/></div>
+    <div class="form-row"><label>Lead Auditor</label><input id="aAuditor" placeholder="Nama auditor"/></div>
+    <div class="form-row"><label>Status</label>
+      <select id="aStatus"><option>Dijadwalkan</option><option>Berlangsung</option><option>Selesai</option><option>Dibatalkan</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAll()">Batal</button>
+      <button class="btn btn-accent" onclick="saveAudit()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="temuanModal">
+  <div class="modal">
+    <h2>Tambah Temuan</h2>
+    <div class="form-row"><label>Organisasi</label><input id="tOrg" placeholder="PT Sinar Nusantara"/></div>
+    <div class="form-row"><label>Klausul</label><input id="tKlausul" placeholder="8.4.1"/></div>
+    <div class="form-row"><label>Deskripsi Temuan</label><textarea id="tDesc" placeholder="Deskripsi ketidaksesuaian…"></textarea></div>
+    <div class="form-row"><label>Grade</label>
+      <select id="tGrade"><option>Major</option><option>Minor</option><option>OFI</option></select>
+    </div>
+    <div class="form-row"><label>Status</label>
+      <select id="tStatus"><option>Open</option><option>Verifikasi</option><option>Closed</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAll()">Batal</button>
+      <button class="btn btn-accent" onclick="saveTemuan()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<footer>Audit Operations Hub · MOD-12 · CRM Konsultan ISO · arafarnusa.com</footer>
+<script>
+const KEY_A='crm_audits',KEY_T='crm_temuan';
+const SEED_A=[
+  {org:'PT Aman Sentosa',std:'ISO 9001:2015',type:'Surveilans',date:'2026-09-10',auditor:'Ahmad Subakti',status:'Dijadwalkan'},
+  {org:'PT Berkah Mandiri',std:'ISO 45001:2018',type:'Sertifikasi Tahap 2',date:'2026-08-25',auditor:'Dewi Lestari',status:'Dijadwalkan'},
+  {org:'CV Kencana Jaya',std:'ISO 14001:2015',type:'Re-sertifikasi',date:'2026-10-05',auditor:'Rudi Hermawan',status:'Dijadwalkan'},
+];
+const SEED_T=[
+  {org:'PT Berkah Mandiri',klausul:'6.1.2',desc:'Identifikasi bahaya tidak mencakup aktivitas kontraktor di area kerja',grade:'Major',status:'Open',ref:'NCR-001-2026'},
+  {org:'PT Berkah Mandiri',klausul:'7.2',desc:'Rekaman pelatihan operator mesin produksi tidak tersedia',grade:'Minor',status:'Verifikasi',ref:'NCR-002-2026'},
+  {org:'CV Kencana Jaya',klausul:'9.1.1',desc:'Metode pemantauan lingkungan tidak terdokumentasi secara lengkap',grade:'Minor',status:'Closed',ref:'NCR-003-2026'},
+];
+
+function loadA(){try{return JSON.parse(localStorage.getItem(KEY_A)||'null')||(localStorage.setItem(KEY_A,JSON.stringify(SEED_A)),SEED_A);}catch(_){return SEED_A;}}
+function loadT(){try{return JSON.parse(localStorage.getItem(KEY_T)||'null')||(localStorage.setItem(KEY_T,JSON.stringify(SEED_T)),SEED_T);}catch(_){return SEED_T;}}
+function loadLeads(){try{return JSON.parse(localStorage.getItem('crm_leads_v2')||'[]');}catch(_){return[];}}
+function saveA(d){localStorage.setItem(KEY_A,JSON.stringify(d));}
+function saveT(d){localStorage.setItem(KEY_T,JSON.stringify(d));}
+
+function renderKPI(){
+  const audits=loadA();
+  const tmn=loadT();
+  document.getElementById('kpiGrid').innerHTML=`
+    <div class="kpi-card"><div class="kv">${audits.filter(a=>a.status==='Dijadwalkan').length}</div><div class="kl">Dijadwalkan</div></div>
+    <div class="kpi-card"><div class="kv" style="color:var(--green)">${audits.filter(a=>a.status==='Selesai').length}</div><div class="kl">Selesai</div></div>
+    <div class="kpi-card"><div class="kv" style="color:var(--red)">${tmn.filter(t=>t.grade==='Major'&&t.status==='Open').length}</div><div class="kl">NCR Major Open</div></div>
+    <div class="kpi-card"><div class="kv" style="color:var(--orange)">${tmn.filter(t=>t.grade==='Minor'&&t.status==='Open').length}</div><div class="kl">NCR Minor Open</div></div>
+  `;
+}
+
+function renderJadwal(){
+  const audits=loadA();
+  const ft=document.getElementById('filterType').value;
+  const filtered=ft?audits.filter(a=>a.type===ft):audits;
+  const consultClients=getConsultClients();
+  document.getElementById('auditList').innerHTML=filtered.map((a,i)=>{
+    const conflict=consultClients.some(c=>a.org.toLowerCase().includes(c.toLowerCase()));
+    const sc={Dijadwalkan:'background:var(--blue-dim);color:var(--blue)',Berlangsung:'background:var(--orange-dim);color:var(--orange)',Selesai:'background:var(--green-dim);color:var(--green)',Dibatalkan:'background:var(--surface-2);color:var(--text-3)'}[a.status]||'';
+    const dd=Math.ceil((new Date(a.date)-new Date())/86400000);
+    return`<div class="audit-card">
+      <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div class="audit-title">${a.org}</div>
+          <div class="audit-meta">${a.std} · ${a.type} · ${new Date(a.date).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})} · Auditor: ${a.auditor}<br>${dd>=0?dd+' hari lagi':'<span style="color:var(--red)">'+Math.abs(dd)+' hari lalu</span>'}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <span style="font-size:.72rem;padding:3px 9px;border-radius:2px;${sc}">${a.status}</span>
+          ${conflict?'<span class="impartial-warn">⚠ KONFLIK IMPARTIALITAS</span>':'<span class="impartial-ok">✓ Impartial</span>'}
+          <button class="btn btn-sm" onclick="deleteAudit(${i})" style="color:var(--red)">Hapus</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<div style="padding:40px;text-align:center;color:var(--text-3)">Tidak ada jadwal audit.</div>';
+}
+
+function getConsultClients(){
+  const cfg=JSON.parse(localStorage.getItem('crm_lead_config')||'{}');
+  const clientStr=cfg.clients||'';
+  const fromLeads=loadLeads().filter(l=>l.status==='KONVERSI').map(l=>l.perusahaan||l.company||'').filter(Boolean);
+  return [...new Set([...clientStr.split(',').map(s=>s.trim()).filter(Boolean),...fromLeads])];
+}
+
+function checkImpartial(){
+  const q=(document.getElementById('impartialSearch').value||'').trim().toLowerCase();
+  const el=document.getElementById('impartialResult');
+  if(!q){el.innerHTML='';return;}
+  const clients=getConsultClients();
+  const conflict=clients.filter(c=>q.includes(c.toLowerCase())||c.toLowerCase().includes(q));
+  if(conflict.length){
+    el.innerHTML=`<div class="alert-box alert-red"><strong>⚠ KONFLIK TERDETEKSI</strong><br>"${document.getElementById('impartialSearch').value}" cocok dengan klien konsultasi: <strong>${conflict.join(', ')}</strong>.<br>Audit terhadap organisasi ini tidak dapat dilakukan sesuai ISO/IEC 17021-1 Klausul 5.</div>`;
+  }else{
+    el.innerHTML=`<div class="alert-box alert-green">✓ Tidak ada konflik impartialitas ditemukan untuk "${document.getElementById('impartialSearch').value}".</div>`;
+  }
+}
+
+function renderImpartial(){
+  const clients=getConsultClients();
+  const el=document.getElementById('conflictList');
+  if(!clients.length){
+    document.getElementById('impartialAlert').innerHTML='<div class="alert-box alert-orange">Belum ada data klien konsultasi. Tambahkan klien di Client Success (MOD-10) atau konfigurasi di Settings.</div>';
+    el.innerHTML='';return;
+  }
+  document.getElementById('impartialAlert').innerHTML='<div class="alert-box alert-orange"><strong>Perhatian:</strong> '+clients.length+' klien konsultasi terdaftar. Audit terhadap organisasi berikut dilarang sesuai ISO/IEC 17021-1.</div>';
+  el.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:4px">'+clients.map(c=>`<div style="padding:10px 16px;border-bottom:1px solid var(--border);font-size:.83rem;display:flex;align-items:center;gap:10px"><span class="impartial-warn">TIDAK BOLEH DIAUDIT</span><span>${c}</span></div>`).join('')+'</div>';
+}
+
+function renderTemuan(){
+  const tmn=loadT();
+  const fg=document.getElementById('filterGrade').value;
+  const fs=document.getElementById('filterStatus').value;
+  const filtered=tmn.filter(t=>{if(fg&&t.grade!==fg)return false;if(fs&&t.status!==fs)return false;return true;});
+  const gradeColor={Major:'var(--red)',Minor:'var(--orange)',OFI:'var(--blue)'};
+  const stColor={Open:'var(--red)',Verifikasi:'var(--orange)',Closed:'var(--green)'};
+  document.getElementById('temuanBody').innerHTML=filtered.map((t,i)=>`<tr>
+    <td style="font-size:.72rem;color:var(--text-3)">${t.ref||'—'}</td>
+    <td><strong>${t.klausul}</strong></td>
+    <td>${t.desc}</td>
+    <td><span style="font-size:.72rem;padding:2px 7px;border-radius:2px;background:${gradeColor[t.grade]+'22'};color:${gradeColor[t.grade]}">${t.grade}</span></td>
+    <td>${t.org}</td>
+    <td><span style="font-size:.72rem;padding:2px 7px;border-radius:2px;background:${stColor[t.status]+'22'};color:${stColor[t.status]}">${t.status}</span></td>
+    <td><button class="btn btn-sm" onclick="cycleStatus(${i})">→</button></td>
+  </tr>`).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:20px">Tidak ada temuan.</td></tr>';
+}
+
+function cycleStatus(i){const tmn=loadT();const cycle={Open:'Verifikasi',Verifikasi:'Closed',Closed:'Open'};tmn[i].status=cycle[tmn[i].status]||'Open';saveT(tmn);renderTemuan();}
+
+function genRencana(){
+  const org=document.getElementById('rpOrg').value.trim()||'[Organisasi]';
+  const std=document.getElementById('rpStd').value;
+  const type=document.getElementById('rpType').value;
+  const date=document.getElementById('rpDate').value?new Date(document.getElementById('rpDate').value).toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'[Tanggal]';
+  const auditor=document.getElementById('rpAuditor').value.trim()||'[Auditor]';
+  const text=`RENCANA AUDIT — ${type.toUpperCase()}
+================================================
+Organisasi  : ${org}
+Standar     : ${std}
+Tipe Audit  : ${type}
+Tanggal     : ${date}
+Lead Auditor: ${auditor}
+Lembaga     : TSI (Sistem Sertifikasi Indonesia)
+================================================
+
+JADWAL KEGIATAN:
+
+08:00 – 08:30  Pertemuan Pembukaan
+                • Perkenalan tim audit
+                • Konfirmasi ruang lingkup dan metode audit
+                • Tinjauan rencana audit
+
+08:30 – 10:00  Audit Dokumen & Rekaman
+                • Review manual mutu / kebijakan
+                • Verifikasi prosedur dan instruksi kerja
+                • Pemeriksaan rekaman relevan
+
+10:00 – 12:00  Audit Lapangan — Area Proses Utama
+                • Observasi proses dan praktik kerja
+                • Wawancara personel
+
+12:00 – 13:00  Istirahat
+
+13:00 – 15:00  Audit Lapangan — Area Pendukung
+                • Kompetensi & pelatihan
+                • Pemantauan & pengukuran
+                • Pengendalian ketidaksesuaian
+
+15:00 – 15:30  Persiapan Laporan Temuan
+
+15:30 – 16:00  Pertemuan Penutup
+                • Presentasi temuan
+                • Konfirmasi tindakan korektif
+                • Penandatanganan laporan
+
+================================================
+Catatan: Rencana ini dapat disesuaikan sesuai kondisi lapangan.
+Dokumen ini disiapkan oleh TSI sesuai ISO/IEC 17021-1.`;
+  document.getElementById('rencanaText').textContent=text;
+  document.getElementById('rencanaOutput').style.display='block';
+}
+function copyRencana(){navigator.clipboard.writeText(document.getElementById('rencanaText').textContent).then(()=>alert('Rencana audit disalin!'));}
+
+function openAuditModal(){['aOrg','aStd','aAuditor'].forEach(id=>document.getElementById(id).value='');document.getElementById('aDate').value=new Date().toISOString().split('T')[0];document.getElementById('auditModal').classList.add('open');}
+function saveAudit(){
+  const audits=loadA();
+  audits.unshift({org:document.getElementById('aOrg').value.trim()||'Organisasi Baru',std:document.getElementById('aStd').value.trim(),type:document.getElementById('aType').value,date:document.getElementById('aDate').value,auditor:document.getElementById('aAuditor').value.trim(),status:document.getElementById('aStatus').value});
+  saveA(audits);closeAll();renderKPI();renderJadwal();
+}
+function deleteAudit(i){if(!confirm('Hapus jadwal audit?'))return;const a=loadA();a.splice(i,1);saveA(a);renderKPI();renderJadwal();}
+function openTemuanModal(){['tOrg','tKlausul','tDesc'].forEach(id=>document.getElementById(id).value='');document.getElementById('temuanModal').classList.add('open');}
+function saveTemuan(){
+  const tmn=loadT();
+  const seq=tmn.length+1;
+  tmn.unshift({org:document.getElementById('tOrg').value.trim()||'Organisasi',klausul:document.getElementById('tKlausul').value.trim(),desc:document.getElementById('tDesc').value.trim()||'Deskripsi temuan',grade:document.getElementById('tGrade').value,status:document.getElementById('tStatus').value,ref:'NCR-'+String(seq).padStart(3,'0')+'-'+new Date().getFullYear()});
+  saveT(tmn);closeAll();renderKPI();renderTemuan();
+}
+function closeAll(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));}
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)closeAll();}));
+function sw(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  ['jadwal','impartial','temuan','rencana'].forEach((t,i)=>document.querySelectorAll('.tab-btn')[i]?.classList[t===id?'add':'remove']('active'));
+  if(id==='impartial')renderImpartial();
+  if(id==='temuan')renderTemuan();
+}
+renderKPI();renderJadwal();
+</script>
+</body></html>
