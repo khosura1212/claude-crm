@@ -1,0 +1,471 @@
+@charset "UTF-8";
+/* ============================================================================
+   CRM ISO — Shared Design System
+   Loaded AFTER each page's own <style> block on purpose: for any selector
+   that also exists in the page's inline CSS, these rules win on source
+   order (equal specificity) or by design (higher specificity / !important
+   used narrowly for typography only). This lets every page get a full
+   visual upgrade without touching its markup or JavaScript.
+   ========================================================================== */
+
+/* ---- 1. Design tokens --------------------------------------------------- */
+:root{
+  --bg:#F7F5F0;
+  --surface:#FFFFFF;
+  --surface-2:#F1EDE4;
+  --surface-hover:#FBFAF6;
+  --surface-hi:#FFFFFF;
+  --border:#E3DDCF;
+  --border-s:#D6CDB8;
+  --border-strong:#CFC4AC;
+
+  --text:#221A10;
+  --text-2:#5B5142;
+  --text-3:#8B806C;
+
+  --accent:#B8501E;
+  --accent-hover:#9C4319;
+  --accent-dim:rgba(184,80,30,.10);
+  --accent-2:#8A3B16;
+
+  --green:#1E7A50;      --green-dim:rgba(30,122,80,.11);
+  --blue:#1B5F8F;       --blue-dim:rgba(27,95,143,.11);
+  --orange:#AD720F;     --orange-dim:rgba(173,114,15,.12);
+  --red:#B0332B;        --red-dim:rgba(176,51,43,.11);
+  --purple:#6B3C9C;     --purple-dim:rgba(107,60,156,.11);
+  --teal:#177A73;       --teal-dim:rgba(23,122,115,.11);
+
+  --shadow-xs:0 1px 2px rgba(30,22,10,.05);
+  --shadow-sm:0 1px 2px rgba(30,22,10,.04),0 3px 8px rgba(30,22,10,.06);
+  --shadow-md:0 2px 6px rgba(30,22,10,.05),0 10px 24px rgba(30,22,10,.08);
+  --shadow-lg:0 8px 16px rgba(30,22,10,.06),0 24px 48px rgba(30,22,10,.14);
+  --shadow-focus:0 0 0 3px var(--accent-dim);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.5);
+
+  --r-sm:6px; --r:10px; --r-lg:14px; --r-xl:18px; --r-full:999px;
+  --r-2:10px; /* alias used by a couple of pages that already define --r */
+
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --font-mono:'JetBrains Mono','SF Mono','Courier New',monospace;
+
+  --sidebar-w:268px;
+  --sidebar-w-collapsed:76px;
+  --topbar-h:60px;
+
+  color-scheme:light;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0C1015; --surface:#141922; --surface-2:#1B222C; --surface-hover:#1A212B; --surface-hi:#1B222C;
+  --border:#2A323D; --border-s:#333D49; --border-strong:#3C4753;
+  --text:#EEEFF2; --text-2:#A8B0BC; --text-3:#707A88;
+  --accent:#E17B41; --accent-hover:#EC8C55; --accent-dim:rgba(225,123,65,.16); --accent-2:#F0975E;
+  --green:#3FAE78;   --green-dim:rgba(63,174,120,.15);
+  --blue:#5BA0D6;    --blue-dim:rgba(91,160,214,.15);
+  --orange:#DFA236;  --orange-dim:rgba(223,162,54,.15);
+  --red:#E06C63;     --red-dim:rgba(224,108,99,.15);
+  --purple:#AB84DE;  --purple-dim:rgba(171,132,222,.16);
+  --teal:#3FBDB2;    --teal-dim:rgba(63,189,178,.15);
+  --shadow-xs:0 1px 2px rgba(0,0,0,.35);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 3px 10px rgba(0,0,0,.30);
+  --shadow-md:0 2px 8px rgba(0,0,0,.35),0 12px 28px rgba(0,0,0,.35);
+  --shadow-lg:0 10px 20px rgba(0,0,0,.40),0 28px 56px rgba(0,0,0,.45);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.03);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0C1015; --surface:#141922; --surface-2:#1B222C; --surface-hover:#1A212B; --surface-hi:#1B222C;
+  --border:#2A323D; --border-s:#333D49; --border-strong:#3C4753;
+  --text:#EEEFF2; --text-2:#A8B0BC; --text-3:#707A88;
+  --accent:#E17B41; --accent-hover:#EC8C55; --accent-dim:rgba(225,123,65,.16); --accent-2:#F0975E;
+  --green:#3FAE78;   --green-dim:rgba(63,174,120,.15);
+  --blue:#5BA0D6;    --blue-dim:rgba(91,160,214,.15);
+  --orange:#DFA236;  --orange-dim:rgba(223,162,54,.15);
+  --red:#E06C63;     --red-dim:rgba(224,108,99,.15);
+  --purple:#AB84DE;  --purple-dim:rgba(171,132,222,.16);
+  --teal:#3FBDB2;    --teal-dim:rgba(63,189,178,.15);
+  --shadow-xs:0 1px 2px rgba(0,0,0,.35);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 3px 10px rgba(0,0,0,.30);
+  --shadow-md:0 2px 8px rgba(0,0,0,.35),0 12px 28px rgba(0,0,0,.35);
+  --shadow-lg:0 10px 20px rgba(0,0,0,.40),0 28px 56px rgba(0,0,0,.45);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.03);
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EDE4; --surface-hover:#FBFAF6; --surface-hi:#FFFFFF;
+  --border:#E3DDCF; --border-s:#D6CDB8; --border-strong:#CFC4AC;
+  --text:#221A10; --text-2:#5B5142; --text-3:#8B806C;
+  --accent:#B8501E; --accent-hover:#9C4319; --accent-dim:rgba(184,80,30,.10); --accent-2:#8A3B16;
+  --green:#1E7A50; --green-dim:rgba(30,122,80,.11);
+  --blue:#1B5F8F; --blue-dim:rgba(27,95,143,.11);
+  --orange:#AD720F; --orange-dim:rgba(173,114,15,.12);
+  --red:#B0332B; --red-dim:rgba(176,51,43,.11);
+  --purple:#6B3C9C; --purple-dim:rgba(107,60,156,.11);
+  --teal:#177A73; --teal-dim:rgba(23,122,115,.11);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.5);
+  color-scheme:light;
+}
+
+/* ---- 2. Typography reset (deliberately !important — the one global,
+   uncontested change every page needs; dozens of per-file selectors hardcode
+   Trebuchet/Palatino directly, so only a blanket rule guarantees uniformity) */
+*,*::before,*::after{
+  font-family:var(--font-sans) !important;
+}
+code,pre,kbd,.code-block,.mono,.font-mono,textarea.code,.stack-table code,.matrix-cell code{
+  font-family:var(--font-mono) !important;
+}
+
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth;}
+body{
+  background:var(--bg) !important;
+  color:var(--text) !important;
+  font-size:14.5px;
+  line-height:1.5;
+  transition:background .2s ease,color .2s ease;
+}
+h1,h2,h3,h4,h5,h6{font-weight:700 !important;letter-spacing:-.01em;}
+a{color:var(--accent);}
+::selection{background:var(--accent);color:#fff;}
+
+/* Scrollbars */
+*{scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent;}
+*::-webkit-scrollbar{width:10px;height:10px;}
+*::-webkit-scrollbar-track{background:transparent;}
+*::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:99px;border:2px solid var(--bg);}
+*::-webkit-scrollbar-thumb:hover{background:var(--text-3);}
+
+/* Focus visibility (accessibility) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
+textarea:focus-visible,.btn:focus-visible,[tabindex]:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;
+}
+
+/* ---- 3. Old in-page headers — hidden once the shared shell renders -----
+   NOTE: deliberately NOT using :first-of-type here. shell.js inserts the
+   new topbar as body's first child, which would make a positional
+   selector stop matching the original header entirely. A plain child
+   combinator targets it regardless of where it ends up in sibling order. */
+html.crm-has-shell body>header,
+html.crm-has-shell body>.header{
+  display:none !important;
+}
+
+/* ---- 4. App shell: sidebar --------------------------------------------- */
+.app-sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);z-index:60;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  box-shadow:var(--shadow-sm);
+  transition:transform .25s ease;
+}
+.app-sidebar-brand{
+  display:flex;align-items:center;gap:10px;padding:18px 18px 16px;
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.app-sidebar-brand .mark{
+  width:34px;height:34px;border-radius:var(--r-sm);flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;font-size:14px;box-shadow:var(--shadow-sm);
+}
+.app-sidebar-brand .name{font-weight:800;font-size:.92rem;color:var(--text);line-height:1.2;}
+.app-sidebar-brand .sub{font-size:.68rem;color:var(--text-3);letter-spacing:.04em;text-transform:uppercase;margin-top:2px;}
+.app-sidebar-scroll{flex:1;overflow-y:auto;padding:12px 10px 18px;}
+.app-nav-group{margin-bottom:4px;}
+.app-nav-label{
+  font-size:.65rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--text-3);padding:14px 10px 6px;
+}
+.app-nav-link{
+  display:flex;align-items:center;gap:10px;padding:8px 10px;margin:1px 0;
+  border-radius:var(--r-sm);color:var(--text-2);text-decoration:none;
+  font-size:.83rem;font-weight:500;position:relative;
+  transition:background .12s ease,color .12s ease;
+}
+.app-nav-link .ic{font-size:.95rem;width:20px;text-align:center;flex-shrink:0;filter:grayscale(.15);}
+.app-nav-link .lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.app-nav-link .badge-num{
+  font-size:.63rem;color:var(--text-3);background:var(--surface-2);
+  border-radius:99px;padding:1px 6px;flex-shrink:0;
+}
+.app-nav-link:hover{background:var(--surface-2);color:var(--text);}
+.app-nav-link.active{background:var(--accent-dim);color:var(--accent);font-weight:700;}
+.app-nav-link.active::before{
+  content:'';position:absolute;left:-10px;top:50%;transform:translateY(-50%);
+  width:3px;height:18px;border-radius:0 3px 3px 0;background:var(--accent);
+}
+.app-sidebar-foot{
+  padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;
+  font-size:.68rem;color:var(--text-3);display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+
+/* ---- 5. App shell: topbar ------------------------------------------------ */
+.app-topbar{
+  position:sticky;top:0;z-index:50;height:var(--topbar-h);
+  display:flex;align-items:center;gap:14px;padding:0 22px;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(10px) saturate(140%);
+  -webkit-backdrop-filter:blur(10px) saturate(140%);
+  border-bottom:1px solid var(--border);
+}
+.app-hamburger{
+  display:none;width:34px;height:34px;border-radius:var(--r-sm);border:1px solid var(--border);
+  background:var(--surface);color:var(--text-2);align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;font-size:1rem;
+}
+.app-crumb{display:flex;align-items:baseline;gap:8px;min-width:0;flex:1;}
+.app-crumb .home{color:var(--text-3);font-size:.78rem;text-decoration:none;flex-shrink:0;}
+.app-crumb .home:hover{color:var(--accent);}
+.app-crumb .sep{color:var(--text-3);font-size:.78rem;flex-shrink:0;}
+.app-crumb .title{font-weight:700;font-size:.95rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.app-crumb .sub{font-size:.72rem;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none;}
+.app-topbar-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.app-icon-btn{
+  width:34px;height:34px;border-radius:var(--r-sm);border:1px solid var(--border);
+  background:var(--surface);color:var(--text-2);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.95rem;transition:background .12s ease,border-color .12s ease,color .12s ease,transform .1s ease;
+}
+.app-icon-btn:hover{border-color:var(--accent);color:var(--accent);}
+.app-icon-btn:active{transform:scale(.94);}
+.app-overlay{
+  position:fixed;inset:0;background:rgba(10,8,4,.45);z-index:55;opacity:0;pointer-events:none;
+  transition:opacity .2s ease;
+}
+.app-overlay.show{opacity:1;pointer-events:auto;}
+
+html.crm-has-shell body{padding-left:var(--sidebar-w);min-height:100vh;}
+html.crm-has-shell body>header,html.crm-has-shell body>.header{padding-left:0;}
+
+@media(max-width:900px){
+  html.crm-has-shell body{padding-left:0;}
+  .app-sidebar{transform:translateX(-100%);}
+  html.crm-sidebar-open .app-sidebar{transform:translateX(0);}
+  .app-hamburger{display:flex;}
+}
+
+/* ---- 6. Mini bar (pages that already ship their own sidebar/app-shell,
+   e.g. prospek-global / prospek-lokal / arsitektur). Positioned fixed so it
+   never disturbs the host page's own 100vh/overflow:hidden layout math;
+   compensation rules below reserve the matching space. -------------------- */
+.app-mini-bar{
+  position:fixed;top:0;left:0;right:0;z-index:70;height:44px;
+  display:flex;align-items:center;gap:10px;padding:0 16px;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  font-size:.78rem;box-shadow:var(--shadow-sm);
+}
+.app-mini-bar .home{
+  display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:700;
+  padding:4px 10px;border-radius:var(--r-sm);border:1px solid var(--accent);
+  transition:background .12s ease;flex-shrink:0;
+}
+.app-mini-bar .home:hover{background:var(--accent-dim);}
+.app-mini-bar .crumb{color:var(--text-3);flex-shrink:0;}
+.app-mini-bar .title{color:var(--text);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.app-mini-bar .spacer{flex:1;}
+
+html.crm-mini-bar body{padding-top:44px !important;box-sizing:border-box;}
+html.crm-mini-bar .app{height:calc(100vh - 44px) !important;}
+html.crm-mini-bar .sidebar{height:calc(100vh - 44px) !important;}
+html.crm-mini-bar .toc{top:44px !important;height:calc(100vh - 44px) !important;}
+@media(max-width:640px){
+  .app-mini-bar .title{max-width:120px;}
+}
+
+/* ---- 7. Buttons ---------------------------------------------------------- */
+.btn,button.btn,.btn-sm,.btn.sm,.btn-outline,.btn-primary,.btn-accent,.btn-danger,.btn-green,
+.btn-blue,.btn-red,.btn-add,.btn-del,.btn-save,.btn-cancel,.btn-x,.btn-theme,
+.btn.primary,.btn.danger,.btn.teal,input[type=submit],input[type=button]{
+  font-weight:600 !important;
+  border-radius:var(--r-sm) !important;
+  letter-spacing:.01em;
+  transition:background .14s ease,border-color .14s ease,color .14s ease,box-shadow .14s ease,transform .08s ease !important;
+  cursor:pointer;
+}
+.btn,button.btn{
+  padding:8px 16px !important;
+  font-size:.82rem !important;
+  border:1px solid var(--border) !important;
+  background:var(--surface) !important;
+  color:var(--text-2) !important;
+  box-shadow:var(--shadow-xs);
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn:hover,button.btn:hover{border-color:var(--accent) !important;color:var(--accent) !important;box-shadow:var(--shadow-sm);}
+.btn:active,button.btn:active{transform:translateY(1px);}
+.btn:disabled,button.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;transform:none;}
+
+.btn-primary,.btn.primary,.btn-accent{
+  background:linear-gradient(180deg,var(--accent),var(--accent-hover)) !important;
+  border-color:var(--accent-hover) !important;
+  color:#fff !important;
+  box-shadow:0 1px 2px rgba(0,0,0,.08),0 4px 10px var(--accent-dim);
+}
+.btn-primary:hover,.btn.primary:hover,.btn-accent:hover{
+  filter:brightness(1.06);color:#fff !important;box-shadow:0 2px 6px rgba(0,0,0,.1),0 6px 16px var(--accent-dim);
+}
+.btn-outline{background:transparent !important;border:1px solid var(--border-strong) !important;color:var(--text-2) !important;box-shadow:none;}
+.btn-outline:hover{border-color:var(--accent) !important;color:var(--accent) !important;background:var(--accent-dim) !important;}
+
+.btn-danger,.btn.danger,.btn-red,.btn-del{
+  background:var(--surface) !important;border-color:var(--red) !important;color:var(--red) !important;box-shadow:none;
+}
+.btn-danger:hover,.btn.danger:hover,.btn-red:hover,.btn-del:hover{background:var(--red-dim) !important;color:var(--red) !important;}
+.btn-green,.btn-save{background:linear-gradient(180deg,var(--green),color-mix(in srgb, var(--green) 82%, black)) !important;border-color:var(--green) !important;color:#fff !important;}
+.btn-blue{background:linear-gradient(180deg,var(--blue),color-mix(in srgb, var(--blue) 82%, black)) !important;border-color:var(--blue) !important;color:#fff !important;}
+.btn.teal{background:linear-gradient(180deg,var(--teal),color-mix(in srgb, var(--teal) 82%, black)) !important;border-color:var(--teal) !important;color:#fff !important;}
+.btn-cancel,.btn-x{background:transparent !important;border-color:var(--border) !important;color:var(--text-3) !important;box-shadow:none;}
+.btn-cancel:hover,.btn-x:hover{color:var(--text) !important;border-color:var(--border-strong) !important;}
+
+.btn-sm,.btn.sm{padding:5px 11px !important;font-size:.74rem !important;}
+.btn-theme{width:34px;height:34px;padding:0 !important;justify-content:center;}
+
+/* ---- 8. Cards / KPI tiles / panels --------------------------------------- */
+.card,.kpi-card,.kpi,.stat-chip,.magnet-card,.client-card,.skill-card,.chart-box,
+.config-section,.config-panel,.scoring-table,.checkin-list,.referral-list,
+.velocity-table,.panel-box,.article-card,.det-body,.mod-body{
+  background:var(--surface) !important;
+  border:1px solid var(--border) !important;
+  border-radius:var(--r) !important;
+  box-shadow:var(--shadow-xs);
+}
+a.card{text-decoration:none;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease !important;}
+a.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--accent-hover) !important;}
+.card-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:40px;height:40px;border-radius:var(--r-sm);
+  background:var(--accent-dim);font-size:1.15rem !important;margin-bottom:14px;
+}
+.card-title{font-weight:700 !important;font-size:1rem !important;}
+.card-meta{color:var(--accent) !important;font-weight:600;}
+
+/* Generic KPI tile layout — used as-is by pages (like the dashboard) that
+   don't already define their own .kpi-grid/.kpi-card base rules; pages that
+   DO define their own simply keep winning on their own per-property values. */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+.kpi-card{padding:18px 20px;}
+.kpi-card .kv{font-size:1.9rem;}
+.kpi-card .kl{margin-top:4px;}
+
+.kpi-card:hover,.kpi:hover,.stat-chip:hover{box-shadow:var(--shadow-sm);border-color:var(--border-strong) !important;}
+.kpi-card .kv,.kpi-value,.stat-chip .num{font-weight:800 !important;letter-spacing:-.02em;}
+.kpi-card .kl,.kpi-label,.stat-chip .lbl{font-weight:600 !important;}
+
+/* ---- 9. Tables ------------------------------------------------------------ */
+table{border-collapse:separate !important;border-spacing:0 !important;width:100%;}
+th{
+  background:var(--surface-2) !important;
+  color:var(--text-3) !important;
+  font-weight:700 !important;
+  font-size:.68rem !important;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--border) !important;
+  padding:11px 14px !important;
+}
+th:first-child{border-top-left-radius:var(--r-sm);}
+th:last-child{border-top-right-radius:var(--r-sm);}
+td{border-bottom:1px solid var(--border) !important;padding:11px 14px !important;}
+tr:last-child td{border-bottom:none;}
+tbody tr{transition:background .1s ease;}
+tbody tr:hover td{background:var(--surface-hover) !important;}
+.table-wrap,.velocity-table,.scoring-table{border-radius:var(--r) !important;overflow:hidden;border:1px solid var(--border) !important;box-shadow:var(--shadow-xs);}
+.table-wrap table,.velocity-table table,.scoring-table table{border:none !important;}
+
+/* ---- 10. Badges / tags / status dots -------------------------------------- */
+.badge,[class*="badge-"],.badge.aktif,.badge.cuti,.badge.draft,.badge.empty,.badge.high,
+.badge.idea,.badge.live,.badge.low,.badge.medium,.badge.partial,.badge.published,
+.badge.rich,.badge.selesai,.standar-tag,.tag,.cert-badge{
+  font-weight:700 !important;
+  font-size:.66rem !important;
+  padding:3px 9px !important;
+  border-radius:var(--r-full) !important;
+  letter-spacing:.03em;
+  display:inline-flex;align-items:center;gap:4px;
+  border:1px solid transparent;
+}
+.status-dot{box-shadow:0 0 0 3px transparent;transition:box-shadow .15s ease;}
+.status-dot.ok{box-shadow:0 0 0 3px var(--green-dim);}
+
+/* ---- 11. Tabs -------------------------------------------------------------- */
+.tab-bar,.tabs{
+  gap:2px !important;
+  background:var(--surface-2);
+  padding:4px !important;
+  border-radius:var(--r) !important;
+  border:1px solid var(--border) !important;
+  display:inline-flex !important;
+  width:max-content;max-width:100%;overflow-x:auto;
+}
+.tab-btn,.tab{
+  border-radius:var(--r-sm) !important;
+  font-weight:600 !important;
+  border-bottom:none !important;
+  margin-bottom:0 !important;
+  white-space:nowrap;
+}
+.tab-btn.active,.tab.active{
+  background:var(--surface) !important;
+  color:var(--accent) !important;
+  box-shadow:var(--shadow-xs);
+  border-bottom:none !important;
+}
+.tab-btn:hover:not(.active),.tab:hover:not(.active){background:var(--surface-hover) !important;color:var(--text) !important;}
+
+/* ---- 12. Forms ------------------------------------------------------------- */
+input[type=text],input[type=email],input[type=tel],input[type=url],input[type=number],
+input[type=date],input[type=password],input[type=search],select,textarea{
+  background:var(--surface) !important;
+  border:1px solid var(--border-s) !important;
+  border-radius:var(--r-sm) !important;
+  padding:8px 12px !important;
+  color:var(--text) !important;
+  box-shadow:var(--shadow-inset);
+  transition:border-color .14s ease,box-shadow .14s ease;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none !important;
+  border-color:var(--accent) !important;
+  box-shadow:var(--shadow-focus) !important;
+}
+input::placeholder,textarea::placeholder{color:var(--text-3);opacity:.8;}
+.checkbox-row input[type=checkbox],input[type=checkbox],input[type=radio]{accent-color:var(--accent);width:15px;height:15px;}
+.form-group label,.form-row label,.detail-field label,.config-row label{
+  font-weight:700 !important;color:var(--text-3) !important;
+}
+
+/* ---- 13. Modals ------------------------------------------------------------ */
+.modal-overlay,.modal-bg{background:rgba(10,8,4,.5) !important;backdrop-filter:blur(3px);}
+.modal{
+  border-radius:var(--r-lg) !important;
+  border:1px solid var(--border) !important;
+  box-shadow:var(--shadow-lg) !important;
+  animation:crm-modal-in .16s ease;
+}
+@keyframes crm-modal-in{from{opacity:0;transform:translateY(8px) scale(.98);}to{opacity:1;transform:none;}}
+.modal h2,.modal-title,.modal-header{font-weight:800 !important;}
+.modal-footer,.modal-actions,.modal-foot{border-top:1px solid var(--border) !important;}
+
+/* ---- 14. Toast -------------------------------------------------------------- */
+.toast{
+  border-radius:var(--r) !important;
+  box-shadow:var(--shadow-lg) !important;
+  font-weight:600 !important;
+  background:var(--text) !important;
+  color:var(--bg) !important;
+}
+
+/* ---- 15. Misc polish -------------------------------------------------------- */
+.section-title{font-weight:800 !important;}
+.empty-state{border:1px dashed var(--border-strong) !important;border-radius:var(--r) !important;}
+.score-bar,.bar-track,.health-bar-wrap{border-radius:var(--r-full) !important;overflow:hidden;background:var(--surface-2) !important;}
+.score-fill,.bar-fill,.health-bar,.funnel-bar{border-radius:var(--r-full) !important;}
+.funnel-bar{border-radius:var(--r-sm) !important;}
+hr.divider{border-top:1px solid var(--border) !important;}
+footer{color:var(--text-3) !important;}
+::-moz-selection{background:var(--accent);color:#fff;}
+
+/* Print: keep it usable */
+@media print{
+  .app-sidebar,.app-topbar,.app-mini-bar,.app-hamburger,.app-overlay{display:none !important;}
+  html.crm-has-shell body{padding-left:0 !important;}
+}
