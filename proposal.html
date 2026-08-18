@@ -67,8 +67,14 @@ tr:hover td{background:var(--surface);}
 .section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:14px;}
 footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/theme.css">
 </head>
 <body>
+<script src="assets/shell.js" defer></script>
+
 <header>
   <a class="back-link" href="index.html">← CRM</a>
   <div class="header-text"><h1>Proposal & Pricing Suite</h1><p>MOD-07 · Proposal Generator · Pricing Calculator · Tracker</p></div>
@@ -302,7 +308,8 @@ function renderTracker(){
 }
 function openPropModal(id=''){document.getElementById('ePropId').value=id;document.getElementById('propModal').classList.add('open');}
 function closeP(){document.getElementById('propModal').classList.remove('open');}
-document.getElementById('propModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeP();}=e.curred('peditP(id){const p=loadP().find(x=>x.id===id);if(!p)return;sv('ePropId',id);sv('pNama',p.klien||'');sv('pStandarT',p.standar||'');sv('pNilai',p.nilai||'');sv('pTanggal',p.tanggal||'');sv('pStatus',p.status||'DIKIRIM');sv('pCatatan',p.catatan||'');openPropModal(id);}
+document.getElementById('propModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeP();});
+function editP(id){const p=loadP().find(x=>x.id===id);if(!p)return;sv('ePropId',id);sv('pNama',p.klien||'');sv('pStandarT',p.standar||'');sv('pNilai',p.nilai||'');sv('pTanggal',p.tanggal||'');sv('pStatus',p.status||'DIKIRIM');sv('pCatatan',p.catatan||'');openPropModal(id);}
 function delP(id){if(!confirm('Hapus?'))return;saveP(loadP().filter(x=>x.id!==id));renderTracker();}
 function saveProp(){
   const entry={klien:v('pNama'),standar:v('pStandarT'),nilai:parseInt(v('pNilai')||'0'),tanggal:v('pTanggal'),status:v('pStatus'),catatan:v('pCatatan')};
