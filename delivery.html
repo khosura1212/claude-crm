@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Delivery Tracker — CRM Konsultan ISO</title>
+<style>
+:root{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D7A4F;--green-dim:rgba(45,122,79,.12);--blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);--orange:#C47A20;--orange-dim:rgba(196,122,32,.12);--red:#C03030;--red-dim:rgba(192,48,48,.12);}
+@media(prefers-color-scheme:dark){:root{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3DAF72;--green-dim:rgba(61,175,114,.12);--blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);--orange:#E09030;--orange-dim:rgba(224,144,48,.12);--red:#E05050;--red-dim:rgba(224,80,80,.12);}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{padding:24px 40px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--accent);text-decoration:none;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);padding:5px 12px;border-radius:3px;}
+.back-link:hover{background:var(--accent-dim);}
+.header-text h1{font-family:"Palatino Linotype",Palatino,serif;font-size:1.5rem;font-weight:normal;}
+.header-text p{font-size:.75rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+.tab-bar{display:flex;padding:20px 40px 0;border-bottom:1px solid var(--border);gap:4px;}
+.tab-btn{background:none;border:none;padding:10px 20px;font-family:inherit;font-size:.82rem;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;padding:28px 40px;}
+.tab-content.active{display:block;}
+.toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.toolbar select,.toolbar input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:3px;font-size:.82rem;font-family:inherit;}
+.btn{background:none;border:1px solid var(--border);color:var(--text-2);padding:7px 14px;border-radius:3px;font-size:.82rem;cursor:pointer;font-family:inherit;transition:background .15s;}
+.btn:hover{background:var(--surface-2);}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-accent:hover{opacity:.9;}
+.btn-sm{padding:4px 10px;font-size:.74rem;}
+.project-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;margin-bottom:14px;overflow:hidden;}
+.project-header{padding:14px 18px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;}
+.project-header:hover{background:var(--surface-2);}
+.project-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1rem;font-weight:normal;flex:1;}
+.project-meta{font-size:.74rem;color:var(--text-3);margin-top:4px;}
+.status-badge{font-size:.68rem;padding:3px 9px;border-radius:2px;white-space:nowrap;}
+.status-aktif{background:var(--green-dim);color:var(--green);}
+.status-hold{background:var(--orange-dim);color:var(--orange);}
+.status-selesai{background:var(--blue-dim);color:var(--blue);}
+.progress-bar{height:5px;background:var(--border);overflow:hidden;}
+.progress-fill{height:100%;background:var(--green);transition:width .3s;}
+.milestones{padding:14px 18px;border-top:1px solid var(--border);display:none;}
+.milestones.open{display:block;}
+.milestone-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);}
+.milestone-row:last-child{border-bottom:none;}
+.ms-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;}
+.ms-check.done{background:var(--green);border-color:var(--green);color:#fff;}
+.ms-label{flex:1;font-size:.84rem;}
+.ms-date{font-size:.72rem;color:var(--text-3);}
+.ms-overdue{color:var(--red);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:28px;max-width:560px;width:90%;max-height:85vh;overflow-y:auto;}
+.modal h2{font-family:"Palatino Linotype",Palatino,serif;font-size:1.2rem;font-weight:normal;margin-bottom:18px;}
+.form-row{margin-bottom:14px;}
+.form-row label{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;}
+.form-row input,.form-row select,.form-row textarea{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:3px;font-size:.85rem;font-family:inherit;}
+.form-row textarea{height:70px;resize:vertical;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+.section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:14px;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px;}
+.kpi-card .kv{font-family:"Palatino Linotype",Palatino,serif;font-size:1.7rem;}
+.kpi-card .kl{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-top:4px;}
+footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-link" href="index.html">← CRM</a>
+  <div class="header-text"><h1>Delivery Tracker</h1><p>MOD-09 · Proyek Aktif · Milestone · Deliverable</p></div>
+</header>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="sw('proyek')">Proyek Aktif</button>
+  <button class="tab-btn" onclick="sw('timeline')">Timeline</button>
+  <button class="tab-btn" onclick="sw('deliverable')">Deliverable</button>
+</div>
+
+<div class="tab-content active" id="tab-proyek">
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="toolbar">
+    <select id="filterStatus" onchange="renderProyek()"><option value="">Semua Status</option><option>AKTIF</option><option>HOLD</option><option>SELESAI</option></select>
+    <select id="filterStd" onchange="renderProyek()"><option value="">Semua Standar</option><option>ISO 9001</option><option>ISO 14001</option><option>ISO 45001</option><option>ISO 27001</option><option>ISO 37001</option></select>
+    <button class="btn btn-accent" style="margin-left:auto" onclick="openAddProject()">+ Tambah Proyek</button>
+  </div>
+  <div id="proyekList"></div>
+</div>
+
+<div class="tab-content" id="tab-timeline">
+  <p class="section-title">Milestone Mendatang (30 Hari)</p>
+  <div id="timelineList"></div>
+</div>
+
+<div class="tab-content" id="tab-deliverable">
+  <p class="section-title">Deliverable per Proyek</p>
+  <div id="deliverableList"></div>
+</div>
+
+<div class="modal-overlay" id="projectModal">
+  <div class="modal">
+    <h2 id="modalTitle">Tambah Proyek</h2>
+    <div class="form-row"><label>Nama Klien</label><input id="pClient" placeholder="PT Sinar Nusantara"/></div>
+    <div class="form-row"><label>Standar ISO</label>
+      <select id="pStd"><option>ISO 9001</option><option>ISO 14001</option><option>ISO 45001</option><option>ISO 27001</option><option>ISO 37001</option><option>ISO 17021-1</option></select>
+    </div>
+    <div class="form-row"><label>Status</label>
+      <select id="pStatus"><option>AKTIF</option><option>HOLD</option><option>SELESAI</option></select>
+    </div>
+    <div class="form-row"><label>Tanggal Mulai</label><input id="pStart" type="date"/></div>
+    <div class="form-row"><label>Target Sertifikasi</label><input id="pTarget" type="date"/></div>
+    <div class="form-row"><label>Nilai Kontrak (USD)</label><input id="pValue" type="number" placeholder="8000"/></div>
+    <div class="form-row"><label>Catatan</label><textarea id="pNote" placeholder="Informasi tambahan…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Batal</button>
+      <button class="btn btn-accent" onclick="saveProject()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<footer>Delivery Tracker · MOD-09 · CRM Konsultan ISO · arafarnusa.com</footer>
+<script>
+const KEY='crm_delivery';
+let editIdx=null;
+const today=new Date();
+const fmt=d=>new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+const daysDiff=d=>Math.ceil((new Date(d)-today)/86400000);
+
+const DEF_MILESTONES=['Gap Analysis','Kick-off Meeting','Penyusunan Dokumen','Implementasi','Internal Audit','Management Review','Audit Sertifikasi Tahap 1','Audit Sertifikasi Tahap 2','Penerbitan Sertifikat'];
+const DELIVERABLES=['Laporan Gap Analysis','Manual Mutu','Prosedur Sistem','Instruksi Kerja','Rekaman / Form','Laporan Internal Audit','Notulen Management Review','Corrective Action Report'];
+
+const SEED=[
+  {client:'PT Sinar Nusantara',std:'ISO 9001',status:'AKTIF',start:'2026-03-01',target:'2026-09-30',value:8000,note:'Klien UMKM — retail e-commerce',milestones:[
+    {label:'Gap Analysis',done:true,date:'2026-03-15'},
+    {label:'Kick-off Meeting',done:true,date:'2026-03-20'},
+    {label:'Penyusunan Dokumen',done:true,date:'2026-05-30'},
+    {label:'Implementasi',done:false,date:'2026-07-31'},
+    {label:'Internal Audit',done:false,date:'2026-08-20'},
+    {label:'Management Review',done:false,date:'2026-09-05'},
+    {label:'Audit Sertifikasi Tahap 1',done:false,date:'2026-09-15'},
+    {label:'Audit Sertifikasi Tahap 2',done:false,date:'2026-09-25'},
+    {label:'Penerbitan Sertifikat',done:false,date:'2026-09-30'},
+  ],deliverables:['Laporan Gap Analysis','Manual Mutu','Prosedur Sistem','Instruksi Kerja']},
+  {client:'CV Teknologi Maju',std:'ISO 27001',status:'AKTIF',start:'2026-05-01',target:'2026-12-31',value:12000,note:'Perusahaan IT — Semarang',milestones:[
+    {label:'Gap Analysis',done:true,date:'2026-05-15'},
+    {label:'Kick-off Meeting',done:true,date:'2026-05-20'},
+    {label:'Penyusunan Dokumen',done:false,date:'2026-07-31'},
+    {label:'Implementasi',done:false,date:'2026-09-30'},
+    {label:'Internal Audit',done:false,date:'2026-11-01'},
+    {label:'Management Review',done:false,date:'2026-11-15'},
+    {label:'Audit Sertifikasi Tahap 1',done:false,date:'2026-12-10'},
+    {label:'Audit Sertifikasi Tahap 2',done:false,date:'2026-12-20'},
+    {label:'Penerbitan Sertifikat',done:false,date:'2026-12-31'},
+  ],deliverables:['Laporan Gap Analysis','Statement of Applicability','Register Aset','Kebijakan ISMS']},
+  {client:'PT Indah Hijau',std:'ISO 14001',status:'HOLD',start:'2026-01-15',target:'2026-10-31',value:7500,note:'On hold — tunggu restrukturisasi internal klien',milestones:[
+    {label:'Gap Analysis',done:true,date:'2026-02-01'},
+    {label:'Kick-off Meeting',done:false,date:'2026-08-01'},
+    {label:'Penyusunan Dokumen',done:false,date:'2026-09-15'},
+  ],deliverables:['Laporan Gap Analysis']},
+];
+
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'null')||(localStorage.setItem(KEY,JSON.stringify(SEED)),SEED);}catch(_){return SEED;}}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d));}
+
+function renderKPI(){
+  const projects=load();
+  const aktif=projects.filter(p=>p.status==='AKTIF').length;
+  const selesai=projects.filter(p=>p.status==='SELESAI').length;
+  const totalVal=projects.reduce((s,p)=>s+(+p.value||0),0);
+  const avgProgress=projects.length?Math.round(projects.reduce((s,p)=>{const ms=p.milestones||[];return s+(ms.length?ms.filter(m=>m.done).length/ms.length*100:0);},0)/projects.length):0;
+  document.getElementById('kpiGrid').innerHTML=`
+    <div class="kpi-card"><div class="kv" style="color:var(--green)">${aktif}</div><div class="kl">Proyek Aktif</div></div>
+    <div class="kpi-card"><div class="kv" style="color:var(--blue)">${selesai}</div><div class="kl">Selesai</div></div>
+    <div class="kpi-card"><div class="kv">USD ${(totalVal/1000).toFixed(0)}k</div><div class="kl">Total Nilai Kontrak</div></div>
+    <div class="kpi-card"><div class="kv" style="color:var(--accent)">${avgProgress}%</div><div class="kl">Avg. Progress</div></div>
+  `;
+}
+
+function renderProyek(){
+  const projects=load();
+  const fs=document.getElementById('filterStatus').value;
+  const fst=document.getElementById('filterStd').value;
+  const filtered=projects.filter(p=>{
+    if(fs&&p.status!==fs)return false;
+    if(fst&&p.std!==fst)return false;
+    return true;
+  });
+  const el=document.getElementById('proyekList');
+  el.innerHTML=filtered.map((p,fi)=>{
+    const ri=projects.indexOf(p);
+    const ms=p.milestones||[];
+    const done=ms.filter(m=>m.done).length;
+    const pct=ms.length?Math.round(done/ms.length*100):0;
+    const sc={'AKTIF':'status-aktif','HOLD':'status-hold','SELESAI':'status-selesai'}[p.status]||'status-aktif';
+    const dd=daysDiff(p.target);
+    return`<div class="project-card">
+      <div class="project-header" onclick="toggleMS(this)">
+        <div style="flex:1">
+          <div class="project-title">${p.client}</div>
+          <div class="project-meta">${p.std} · Mulai ${fmt(p.start)} · Target ${fmt(p.target)} · ${dd<0?'<span style="color:var(--red)">Terlambat '+Math.abs(dd)+' hari</span>':'<span style="color:var(--text-3)">'+dd+' hari lagi</span>'}</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+            <div style="flex:1;height:5px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--green)"></div></div>
+            <span style="font-size:.74rem;color:var(--text-3)">${pct}% (${done}/${ms.length})</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+          <span class="status-badge ${sc}">${p.status}</span>
+          <span style="font-size:.78rem;color:var(--text-2)">USD ${(+p.value||0).toLocaleString()}</span>
+          <button class="btn btn-sm" onclick="event.stopPropagation();editProject(${ri})">Edit</button>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="milestones" id="ms-${ri}">
+        ${ms.map((m,mi)=>`<div class="milestone-row">
+          <div class="ms-check ${m.done?'done':''}" onclick="toggleMilestone(${ri},${mi})">
+            ${m.done?'✓':''}
+          </div>
+          <div class="ms-label" style="${m.done?'text-decoration:line-through;opacity:.6':''}">${m.label}</div>
+          <div class="ms-date ${daysDiff(m.date)<0&&!m.done?'ms-overdue':''}">${fmt(m.date)}</div>
+        </div>`).join('')}
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn btn-sm" onclick="deleteProject(${ri})">Hapus Proyek</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<div style="padding:40px;text-align:center;color:var(--text-3)">Tidak ada proyek ditemukan.</div>';
+}
+
+function toggleMS(el){const ms=el.nextElementSibling.nextElementSibling;ms.classList.toggle('open');}
+function toggleMilestone(pi,mi){
+  const projects=load();
+  projects[pi].milestones[mi].done=!projects[pi].milestones[mi].done;
+  save(projects);renderKPI();renderProyek();
+}
+function deleteProject(i){if(!confirm('Hapus proyek ini?'))return;const d=load();d.splice(i,1);save(d);renderKPI();renderProyek();}
+
+function renderTimeline(){
+  const projects=load();
+  const upcoming=[];
+  projects.forEach(p=>{
+    (p.milestones||[]).forEach(m=>{
+      const dd=daysDiff(m.date);
+      if(!m.done&&dd>=0&&dd<=30)upcoming.push({...m,client:p.client,std:p.std,dd});
+    });
+  });
+  upcoming.sort((a,b)=>a.dd-b.dd);
+  const el=document.getElementById('timelineList');
+  if(!upcoming.length){el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text-3)">Tidak ada milestone dalam 30 hari ke depan.</div>';return;}
+  el.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:4px">'+
+    upcoming.map(m=>`<div class="milestone-row" style="padding:12px 18px">
+      <div class="ms-check" style="border-color:var(--orange);background:var(--orange-dim)">○</div>
+      <div class="ms-label">
+        <div style="font-size:.85rem">${m.label}</div>
+        <div style="font-size:.72rem;color:var(--text-3)">${m.client} · ${m.std}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:.78rem">${fmt(m.date)}</div>
+        <div style="font-size:.72rem;color:${m.dd<=7?'var(--red)':'var(--text-3)'}">${m.dd===0?'Hari ini':m.dd+' hari lagi'}</div>
+      </div>
+    </div>`).join('') + '</div>';
+}
+
+function renderDeliverable(){
+  const projects=load().filter(p=>p.status==='AKTIF');
+  document.getElementById('deliverableList').innerHTML=projects.map(p=>`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;margin-bottom:14px;padding:16px">
+      <div style="font-family:'Palatino Linotype',Palatino,serif;font-size:1rem;margin-bottom:10px">${p.client} <span style="font-size:.78rem;color:var(--text-3);font-family:inherit">· ${p.std}</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        ${(p.deliverables||[]).map(d=>`<span style="font-size:.78rem;padding:4px 10px;border-radius:2px;background:var(--green-dim);color:var(--green)">✓ ${d}</span>`).join('')}
+        ${DELIVERABLES.filter(d=>!(p.deliverables||[]).includes(d)).map(d=>`<span style="font-size:.78rem;padding:4px 10px;border-radius:2px;background:var(--surface-2);color:var(--text-3)">${d}</span>`).join('')}
+      </div>
+    </div>
+  `).join('')||'<div style="padding:40px;text-align:center;color:var(--text-3)">Tidak ada proyek aktif.</div>';
+}
+
+function openAddProject(){
+  editIdx=null;
+  document.getElementById('modalTitle').textContent='Tambah Proyek';
+  ['pClient','pNote','pValue'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pStart').value=new Date().toISOString().split('T')[0];
+  document.getElementById('pTarget').value='';
+  document.getElementById('projectModal').classList.add('open');
+}
+function editProject(i){
+  editIdx=i;const p=load()[i];
+  document.getElementById('modalTitle').textContent='Edit Proyek';
+  document.getElementById('pClient').value=p.client||'';
+  document.getElementById('pStd').value=p.std||'ISO 9001';
+  document.getElementById('pStatus').value=p.status||'AKTIF';
+  document.getElementById('pStart').value=p.start||'';
+  document.getElementById('pTarget').value=p.target||'';
+  document.getElementById('pValue').value=p.value||'';
+  document.getElementById('pNote').value=p.note||'';
+  document.getElementById('projectModal').classList.add('open');
+}
+function closeModal(){document.getElementById('projectModal').classList.remove('open');}
+function saveProject(){
+  const projects=load();
+  const p={
+    client:document.getElementById('pClient').value.trim()||'Klien Baru',
+    std:document.getElementById('pStd').value,
+    status:document.getElementById('pStatus').value,
+    start:document.getElementById('pStart').value,
+    target:document.getElementById('pTarget').value,
+    value:+document.getElementById('pValue').value||0,
+    note:document.getElementById('pNote').value.trim(),
+    milestones:editIdx!==null?projects[editIdx].milestones:DEF_MILESTONES.map(label=>({label,done:false,date:document.getElementById('pTarget').value})),
+    deliverables:editIdx!==null?projects[editIdx].deliverables:[],
+  };
+  if(editIdx!==null)projects[editIdx]=p;else projects.unshift(p);
+  save(projects);closeModal();renderKPI();renderProyek();
+}
+function sw(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  ['proyek','timeline','deliverable'].forEach((t,i)=>document.querySelectorAll('.tab-btn')[i]?.classList[t===id?'add':'remove']('active'));
+  if(id==='timeline')renderTimeline();
+  if(id==='deliverable')renderDeliverable();
+}
+document.getElementById('projectModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+renderKPI();renderProyek();
+</script>
+</body></html>
