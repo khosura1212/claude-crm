@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Knowledge Base — CRM Konsultan ISO</title>
+<style>
+:root{--bg:#F0EDE6;--surface:#E8E4DA;--surface-2:#DDD8CE;--border:#C8BFB0;--text:#1A1510;--text-2:#5A5048;--text-3:#8A7E72;--accent:#B84F1E;--accent-dim:rgba(184,79,30,.12);--green:#2D7A4F;--green-dim:rgba(45,122,79,.12);--blue:#1A5F8A;--blue-dim:rgba(26,95,138,.12);--orange:#C47A20;--orange-dim:rgba(196,122,32,.12);}
+@media(prefers-color-scheme:dark){:root{--bg:#0F1820;--surface:#182230;--surface-2:#1E2A3A;--border:#2A3A4A;--text:#E2DDD4;--text-2:#95A8BA;--text-3:#607080;--accent:#D06528;--accent-dim:rgba(208,101,40,.15);--green:#3DAF72;--green-dim:rgba(61,175,114,.12);--blue:#4A9FD0;--blue-dim:rgba(74,159,208,.12);--orange:#E09030;--orange-dim:rgba(224,144,48,.12);}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Trebuchet MS",Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{padding:24px 40px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--accent);text-decoration:none;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);padding:5px 12px;border-radius:3px;}
+.back-link:hover{background:var(--accent-dim);}
+.header-text h1{font-family:"Palatino Linotype",Palatino,serif;font-size:1.5rem;font-weight:normal;}
+.header-text p{font-size:.75rem;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+.tab-bar{display:flex;padding:20px 40px 0;border-bottom:1px solid var(--border);gap:4px;}
+.tab-btn{background:none;border:none;padding:10px 20px;font-family:inherit;font-size:.82rem;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;padding:28px 40px;}
+.tab-content.active{display:block;}
+.search-wrap{max-width:600px;margin-bottom:24px;}
+.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:3px;font-size:.9rem;font-family:inherit;}
+.iso-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:28px;}
+.iso-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px;cursor:pointer;transition:border-color .15s;}
+.iso-card:hover{border-color:var(--accent);}
+.iso-card.active{border-color:var(--accent);background:var(--accent-dim);}
+.iso-name{font-family:"Palatino Linotype",Palatino,serif;font-size:1rem;font-weight:normal;margin-bottom:6px;}
+.iso-desc{font-size:.78rem;color:var(--text-2);line-height:1.5;margin-bottom:10px;}
+.iso-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.tag{font-size:.68rem;padding:2px 7px;border-radius:2px;background:var(--accent-dim);color:var(--accent);}
+.tag.blue{background:var(--blue-dim);color:var(--blue);}
+.detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:24px;max-width:800px;}
+.detail-panel h2{font-family:"Palatino Linotype",Palatino,serif;font-size:1.2rem;font-weight:normal;margin-bottom:16px;}
+.clause-list{list-style:none;}
+.clause-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:.84rem;display:flex;gap:12px;}
+.clause-item:last-child{border-bottom:none;}
+.clause-num{font-weight:bold;color:var(--accent);width:50px;flex-shrink:0;}
+.faq-list{max-width:700px;}
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:4px;margin-bottom:10px;overflow:hidden;}
+.faq-q{padding:14px 18px;cursor:pointer;font-size:.88rem;display:flex;align-items:center;justify-content:space-between;}
+.faq-q:hover{background:var(--surface-2);}
+.faq-a{display:none;padding:14px 18px;font-size:.83rem;color:var(--text-2);line-height:1.7;border-top:1px solid var(--border);}
+.faq-a.open{display:block;}
+.section-title{font-family:"Palatino Linotype",Palatino,serif;font-size:1.05rem;font-weight:normal;color:var(--text-2);margin-bottom:14px;}
+.btn{background:none;border:1px solid var(--border);color:var(--text-2);padding:7px 14px;border-radius:3px;font-size:.82rem;cursor:pointer;font-family:inherit;transition:background .15s;}
+.btn:hover{background:var(--surface-2);}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent);}
+.second-brain{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px;max-width:600px;}
+.second-brain h3{font-family:"Palatino Linotype",Palatino,serif;font-size:1rem;font-weight:normal;margin-bottom:12px;}
+.input-row{display:flex;gap:8px;margin-bottom:10px;}
+.input-row input{flex:1;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:3px;font-size:.85rem;font-family:inherit;}
+.sb-log{max-height:200px;overflow-y:auto;margin-top:12px;}
+.sb-entry{font-size:.78rem;padding:6px 0;border-bottom:1px solid var(--border);color:var(--text-2);}
+footer{margin-top:auto;padding:16px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-link" href="index.html">← CRM</a>
+  <div class="header-text"><h1>Knowledge Base</h1><p>MOD-13 · Standar ISO · FAQ · Second Brain</p></div>
+</header>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="sw('standar')">Standar ISO</button>
+  <button class="tab-btn" onclick="sw('faq')">FAQ Klien</button>
+  <button class="tab-btn" onclick="sw('brain')">Second Brain</button>
+</div>
+
+<div class="tab-content active" id="tab-standar">
+  <div class="search-wrap"><input type="text" placeholder="Cari standar atau topik…" oninput="filterISO(this.value)"/></div>
+  <div class="iso-grid" id="isoGrid"></div>
+  <div id="isoDetail" style="display:none"></div>
+</div>
+
+<div class="tab-content" id="tab-faq">
+  <p class="section-title">FAQ — Pertanyaan Umum Klien ISO</p>
+  <div class="faq-list" id="faqList"></div>
+</div>
+
+<div class="tab-content" id="tab-brain">
+  <p class="section-title">Second Brain — Arsip Artikel & Insight</p>
+  <div class="second-brain">
+    <h3>Kirim URL ke Second Brain via n8n</h3>
+    <p style="font-size:.78rem;color:var(--text-3);margin-bottom:12px">Masukkan URL artikel/paper ISO, akan diproses Jina AI → Claude → Google Docs secara otomatis.</p>
+    <div class="input-row">
+      <input type="text" id="sbUrl" placeholder="https://example.com/artikel-iso-9001"/>
+      <button class="btn btn-accent" onclick="sendToSB()">Kirim</button>
+    </div>
+    <div id="sbStatus" style="font-size:.78rem;color:var(--text-3)"></div>
+  </div>
+  <div style="margin-top:24px">
+    <p class="section-title">Arsip Lokal</p>
+    <div class="sb-log" id="sbLog"></div>
+  </div>
+</div>
+
+<footer>Knowledge Base · MOD-13 · CRM Konsultan ISO · arafarnusa.com</footer>
+<script>
+const ISO_DATA=[
+  {name:'ISO 9001:2015',area:'Quality Management',scope:'Sistem manajemen mutu untuk semua jenis dan ukuran organisasi.',clauses:[
+    {num:'4',label:'Konteks Organisasi — isu internal/eksternal, kebutuhan pihak berkepentingan'},
+    {num:'5',label:'Kepemimpinan — komitmen top manajemen, kebijakan mutu, tanggung jawab'},
+    {num:'6',label:'Perencanaan — risiko & peluang, sasaran mutu, rencana perubahan'},
+    {num:'7',label:'Dukungan — sumber daya, kompetensi, kesadaran, komunikasi, dokumen'},
+    {num:'8',label:'Operasi — perencanaan & pengendalian, desain, pembelian, produksi'},
+    {num:'9',label:'Evaluasi Kinerja — pemantauan, audit internal, tinjauan manajemen'},
+    {num:'10',label:'Peningkatan — ketidaksesuaian, tindakan korektif, peningkatan berkelanjutan'},
+  ],tags:['Manufacturing','Service','Healthcare','Construction']},
+  {name:'ISO 14001:2015',area:'Environmental Management',scope:'Sistem manajemen lingkungan untuk meminimalkan dampak lingkungan.',clauses:[
+    {num:'4',label:'Konteks — isu lingkungan, kepatuhan, dan harapan pihak berkepentingan'},
+    {num:'5',label:'Kepemimpinan — komitmen, kebijakan lingkungan, peran & tanggung jawab'},
+    {num:'6',label:'Perencanaan — aspek lingkungan, kewajiban kepatuhan, risiko'},
+    {num:'7',label:'Dukungan — sumber daya, kompetensi, komunikasi, informasi terdokumentasi'},
+    {num:'8',label:'Operasi — pengendalian proses, skenario darurat, rantai pasok'},
+    {num:'9',label:'Evaluasi — pemantauan, audit internal, evaluasi kepatuhan'},
+    {num:'10',label:'Peningkatan — ketidaksesuaian, tindakan korektif, peningkatan berkelanjutan'},
+  ],tags:['Manufacturing','Agriculture','Energy','Mining']},
+  {name:'ISO 45001:2018',area:'Occupational H&S',scope:'Sistem manajemen keselamatan dan kesehatan kerja untuk mencegah cedera dan penyakit kerja.',clauses:[
+    {num:'4',label:'Konteks — isu K3, harapan pekerja dan pihak berkepentingan'},
+    {num:'5',label:'Kepemimpinan & partisipasi pekerja'},
+    {num:'6',label:'Perencanaan — identifikasi bahaya, penilaian risiko, peluang K3'},
+    {num:'7',label:'Dukungan — sumber daya, kompetensi, komunikasi, konsultasi'},
+    {num:'8',label:'Operasi — pengendalian bahaya, manajemen perubahan, kontraktor'},
+    {num:'9',label:'Evaluasi — pemantauan insiden, kepatuhan, audit internal'},
+    {num:'10',label:'Peningkatan — investigasi insiden, tindakan korektif'},
+  ],tags:['Construction','Mining','Manufacturing','Oil & Gas']},
+  {name:'ISO 27001:2022',area:'Information Security',scope:'Sistem manajemen keamanan informasi untuk melindungi aset informasi.',clauses:[
+    {num:'4',label:'Konteks organisasi dan kebutuhan keamanan informasi'},
+    {num:'5',label:'Kepemimpinan dan komitmen keamanan informasi'},
+    {num:'6',label:'Perencanaan — penilaian risiko, rencana penanganan risiko'},
+    {num:'7',label:'Dukungan — sumber daya, awareness, komunikasi'},
+    {num:'8',label:'Operasi — penilaian risiko, penanganan risiko, Statement of Applicability'},
+    {num:'9',label:'Evaluasi kinerja ISMS'},
+    {num:'10',label:'Peningkatan — nonkonformitas, tindakan korektif'},
+    {num:'A',label:'Annex A — 93 kontrol keamanan (ISO 27001:2022)'},
+  ],tags:['IT','Finance','Healthcare','Telecom']},
+  {name:'ISO 37001:2016',area:'Anti-Bribery',scope:'Sistem manajemen anti-penyuapan untuk mencegah, mendeteksi, dan menangani penyuapan.',clauses:[
+    {num:'4',label:'Konteks — eksposur risiko suap, harapan pemangku kepentingan'},
+    {num:'5',label:'Kepemimpinan — kebijakan anti-suap, fungsi kepatuhan anti-suap'},
+    {num:'6',label:'Perencanaan — penilaian risiko suap, tujuan anti-suap'},
+    {num:'7',label:'Dukungan — due diligence, pelatihan, whistleblowing'},
+    {num:'8',label:'Operasi — pengendalian keuangan, non-keuangan, hadiah & donasi'},
+    {num:'9',label:'Evaluasi — pemantauan, audit, tinjauan manajemen'},
+    {num:'10',label:'Peningkatan — investigasi, tindakan korektif'},
+  ],tags:['Government','Finance','Construction','Procurement']},
+  {name:'ISO 17021-1:2015',area:'Certification Bodies',scope:'Persyaratan lembaga yang memberikan audit dan sertifikasi sistem manajemen.',clauses:[
+    {num:'4',label:'Prinsip umum — impartialitas, kompetensi, tanggung jawab'},
+    {num:'5',label:'Persyaratan umum — legalitas, manajemen impartialitas, tanggung jawab hukum'},
+    {num:'6',label:'Persyaratan struktural — komite impartialitas, keputusan sertifikasi'},
+    {num:'7',label:'Persyaratan sumber daya — kompetensi auditor, transfer sertifikasi'},
+    {num:'8',label:'Persyaratan informasi — informasi publik, dokumen sertifikasi'},
+    {num:'9',label:'Persyaratan proses — audit tahap 1 & 2, survailan, re-sertifikasi'},
+    {num:'10',label:'Persyaratan sistem manajemen — dokumen, rekaman, tindakan korektif'},
+  ],tags:['Certification Body','Accreditation','TSI','CB']},
+];
+
+const FAQ=[
+  {q:'Berapa lama proses sertifikasi ISO 9001?',a:'Rata-rata 6–12 bulan tergantung kesiapan organisasi. Proses mencakup: gap analysis (1 bulan), penyusunan dokumen (2–3 bulan), implementasi (2–3 bulan), internal audit, management review, lalu audit sertifikasi tahap 1 & 2.'},
+  {q:'Apa perbedaan audit tahap 1 dan tahap 2?',a:'Audit Tahap 1 (dokumentasi): auditor mereview kesiapan sistem manajemen, kelengkapan dokumen, dan pemahaman klausul ISO. Audit Tahap 2 (implementasi): auditor memverifikasi apakah sistem manajemen sudah diimplementasikan dan efektif di lapangan.'},
+  {q:'Apakah perusahaan kecil bisa sertifikasi ISO 9001?',a:'Ya, ISO 9001 berlaku untuk semua ukuran organisasi. Bahkan UMKM sangat dianjurkan, karena meningkatkan kredibilitas bisnis, efisiensi operasi, dan akses ke tender pemerintah/korporat yang mensyaratkan ISO.'},
+  {q:'Berapa biaya sertifikasi ISO 9001?',a:'Biaya terdiri dari: (1) Biaya jasa konsultasi: USD 3.000–8.000 tergantung ukuran perusahaan. (2) Biaya audit dari lembaga sertifikasi: USD 1.500–5.000. Kami menggunakan pricing berbasis PPP — perusahaan Indonesia mendapat rate lebih kompetitif.'},
+  {q:'Apa itu impartialitas dalam ISO 17021-1?',a:'Impartialitas adalah prinsip kritis lembaga sertifikasi (CB) — auditor tidak boleh mengaudit organisasi yang pernah mereka konsultasi dalam 2 tahun terakhir. Ini untuk memastikan objektivitas proses audit dan menghindari konflik kepentingan.'},
+  {q:'Apa perbedaan ISO 27001:2013 dan ISO 27001:2022?',a:'ISO 27001:2022 memperbarui struktur Annex A dari 114 kontrol (14 domain) menjadi 93 kontrol (4 tema: Organisasional, People, Fisik, Teknologi). Organisasi yang sudah sertifikasi 2013 harus migrasi ke 2022 sebelum Oktober 2025.'},
+  {q:'Apakah ISO 45001 wajib di Indonesia?',a:'ISO 45001 tidak wajib, namun peraturan K3 Indonesia (PP 50/2012 tentang SMK3) memiliki persyaratan serupa. Banyak perusahaan BUMN, kontraktor pertambangan, dan minyak & gas mewajibkan ISO 45001 dalam kontrak.'},
+  {q:'Berapa lama sertifikat ISO berlaku?',a:'Sertifikat ISO berlaku 3 tahun dengan audit surveillance tahunan (tahun ke-1 dan ke-2). Di tahun ke-3 dilakukan audit re-sertifikasi. Jika tidak lulus surveillance, sertifikat dapat disuspend atau dicabut.'},
+];
+
+function renderISO(data){
+  document.getElementById('isoGrid').innerHTML=data.map((iso,i)=>`
+    <div class="iso-card" id="icard-${i}" onclick="showDetail(${i})">
+      <div class="iso-name">${iso.name}</div>
+      <div class="iso-desc" style="font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px">${iso.area}</div>
+      <div class="iso-desc">${iso.scope}</div>
+      <div class="iso-tags">${(iso.tags||[]).slice(0,3).map(t=>`<span class="tag blue">${t}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+function showDetail(i){
+  const iso=ISO_DATA[i];
+  document.querySelectorAll('.iso-card').forEach((c,idx)=>c.classList.toggle('active',idx===i));
+  const panel=document.getElementById('isoDetail');
+  panel.style.display='block';
+  panel.innerHTML=`<div class="detail-panel">
+    <h2>${iso.name} — ${iso.area}</h2>
+    <p style="font-size:.84rem;color:var(--text-2);margin-bottom:16px;line-height:1.7">${iso.scope}</p>
+    <p style="font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px">Struktur Klausul</p>
+    <ul class="clause-list">${iso.clauses.map(c=>`<li class="clause-item"><span class="clause-num">${c.num}</span><span>${c.label}</span></li>`).join('')}</ul>
+    <div style="margin-top:16px"><p style="font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px">Industri Umum</p>
+    <div class="iso-tags">${(iso.tags||[]).map(t=>`<span class="tag blue">${t}</span>`).join('')}</div></div>
+  </div>`;
+}
+
+function filterISO(q){
+  const filtered=ISO_DATA.filter(iso=>!q||iso.name.toLowerCase().includes(q.toLowerCase())||iso.area.toLowerCase().includes(q.toLowerCase())||iso.scope.toLowerCase().includes(q.toLowerCase())||(iso.tags||[]).some(t=>t.toLowerCase().includes(q.toLowerCase())));
+  renderISO(filtered);
+  document.getElementById('isoDetail').style.display='none';
+}
+
+function renderFAQ(){
+  document.getElementById('faqList').innerHTML=FAQ.map((f,i)=>`
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(${i})">
+        <span>${f.q}</span><span id="faq-arrow-${i}">+</span>
+      </div>
+      <div class="faq-a" id="faq-a-${i}">${f.a}</div>
+    </div>
+  `).join('');
+}
+
+function toggleFAQ(i){
+  const a=document.getElementById('faq-a-'+i);
+  const arrow=document.getElementById('faq-arrow-'+i);
+  const open=a.classList.toggle('open');
+  arrow.textContent=open?'−':'+';
+}
+
+const SB_KEY='crm_second_brain_log';
+function loadSBLog(){try{return JSON.parse(localStorage.getItem(SB_KEY)||'[]');}catch(_){return[];}}
+function saveSBLog(d){localStorage.setItem(SB_KEY,JSON.stringify(d));}
+
+function sendToSB(){
+  const url=document.getElementById('sbUrl').value.trim();
+  if(!url){document.getElementById('sbStatus').textContent='Masukkan URL terlebih dahulu.';return;}
+  const cfg=JSON.parse(localStorage.getItem('crm_settings')||'{}');
+  const sbWebhook=cfg.secondBrainWebhook||'';
+  document.getElementById('sbStatus').textContent='Mengirim ke Second Brain…';
+  if(sbWebhook){
+    fetch(sbWebhook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url,ts:new Date().toISOString()})}).then(()=>{
+      logSB(url,'Terkirim ke n8n');document.getElementById('sbStatus').textContent='✓ Terkirim. Cek Google Docs dalam beberapa menit.';document.getElementById('sbUrl').value='';
+    }).catch(()=>{logSB(url,'Disimpan lokal (webhook gagal)');document.getElementById('sbStatus').textContent='⚠ Webhook tidak tersambung. Disimpan lokal.';document.getElementById('sbUrl').value='';});
+  }else{
+    logSB(url,'Disimpan lokal (webhook belum dikonfigurasi)');
+    document.getElementById('sbStatus').textContent='⚠ Webhook Second Brain belum dikonfigurasi. Silakan atur di Settings. URL disimpan lokal.';
+    document.getElementById('sbUrl').value='';
+  }
+}
+
+function logSB(url,note){
+  const log=loadSBLog();
+  log.unshift({url,note,ts:new Date().toISOString()});
+  if(log.length>50)log.length=50;
+  saveSBLog(log);renderSBLog();
+}
+
+function renderSBLog(){
+  const log=loadSBLog();
+  const el=document.getElementById('sbLog');
+  if(!log.length){el.innerHTML='<div style="padding:12px;font-size:.78rem;color:var(--text-3)">Belum ada arsip.</div>';return;}
+  el.innerHTML=log.map(e=>`<div class="sb-entry"><span style="color:var(--text-3)">${new Date(e.ts).toLocaleDateString('id-ID')} — </span><span style="color:var(--blue)">${e.url}</span><br><span style="font-size:.72rem;color:var(--text-3)">${e.note}</span></div>`).join('');
+}
+
+function sw(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  ['standar','faq','brain'].forEach((t,i)=>document.querySelectorAll('.tab-btn')[i]?.classList[t===id?'add':'remove']('active'));
+}
+renderISO(ISO_DATA);renderFAQ();renderSBLog();
+</script>
+</body></html>
