@@ -37,12 +37,20 @@ header p{font-size:.8rem;color:var(--text-3);letter-spacing:.07em;text-transform
 .card-meta{margin-top:12px;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);}
 footer{margin-top:auto;padding:20px 40px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-3);}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/theme.css">
 </head>
 <body>
+<script src="assets/shell.js" defer></script>
+
 <header>
   <h1>Aplikasi CRM — Konsultan ISO</h1>
   <p>Manajemen Prospek &amp; Pipeline Konsultasi · 20 Modul · 40 Marketing Skills</p>
 </header>
+
+<div class="kpi-grid" id="dashKpi" style="padding:24px 40px 0;"></div>
 
 <div class="phase-section">
   <div class="phase-label">Fase 1 — Market Intelligence & Pipeline</div>
@@ -177,7 +185,7 @@ footer{margin-top:auto;padding:20px 40px;border-top:1px solid var(--border);font
 </div>
 
 <div class="phase-section">
-  <div class="phase-label">Fase 4 — Intelligence & Growth</div>
+  <div class="phase-label">Fase 6 — Revenue & Growth Intelligence</div>
 </div>
 <div class="grid">
   <a class="card" href="forecast.html">
@@ -207,5 +215,32 @@ footer{margin-top:auto;padding:20px 40px;border-top:1px solid var(--border);font
 </div>
 
 <footer>Aplikasi CRM · 20 Modul · Konsultan ISO · arafarnusa.com</footer>
+<script>
+(function(){
+  function loadJSON(key){ try{ var v = JSON.parse(localStorage.getItem(key)||'null'); return Array.isArray(v) ? v : []; }catch(e){ return []; } }
+  var leads = loadJSON('crm_leads_v2');
+  var clients = loadJSON('crm_clients');
+  var projects = loadJSON('crm_delivery');
+  var converted = leads.filter(function(l){ return l.status === 'KONVERSI'; }).length;
+  var avgHealth = clients.length ? Math.round(clients.reduce(function(s,c){ return s+(+c.health||0); },0)/clients.length) : null;
+  var activeProjects = projects.filter(function(p){ return p.status === 'AKTIF'; }).length;
+  var healthColor = avgHealth===null ? 'var(--text-3)' : avgHealth>=80 ? 'var(--green)' : avgHealth>=60 ? 'var(--orange)' : 'var(--red)';
+
+  // Metrics chosen so every number here is computed with the exact same
+  // formula the source module itself uses (leads.length, KONVERSI count,
+  // clients.length, AKTIF project count, avg of .health) — so nothing on
+  // this dashboard can ever read differently than its own detail page.
+  var tiles = [
+    { v: leads.length, l: 'Total Leads', c: 'var(--accent)' },
+    { v: converted, l: 'Leads Konversi', c: 'var(--green)' },
+    { v: clients.length, l: 'Klien Aktif', c: 'var(--blue)' },
+    { v: activeProjects, l: 'Proyek Berjalan', c: 'var(--purple)' },
+    { v: avgHealth===null ? '—' : avgHealth, l: 'Avg Health Score', c: healthColor }
+  ];
+  document.getElementById('dashKpi').innerHTML = tiles.map(function(t){
+    return '<div class="kpi-card"><div class="kv" style="color:'+t.c+'">'+t.v+'</div><div class="kl">'+t.l+'</div></div>';
+  }).join('');
+})();
+</script>
 </body>
 </html>
