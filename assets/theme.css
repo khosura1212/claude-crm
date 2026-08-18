@@ -23,10 +23,10 @@
   --text-2:#5B5142;
   --text-3:#8B806C;
 
-  --accent:#0284C7;
-  --accent-hover:#0369A1;
-  --accent-dim:rgba(2,132,199,.10);
-  --accent-2:#075985;
+  --accent:#0EA5E9;
+  --accent-hover:#0284C7;
+  --accent-dim:rgba(14,165,233,.12);
+  --accent-2:#0369A1;
 
   --green:#1E7A50;      --green-dim:rgba(30,122,80,.11);
   --blue:#1B5F8F;       --blue-dim:rgba(27,95,143,.11);
@@ -64,7 +64,7 @@
   --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EDE4; --surface-hover:#FBFAF6; --surface-hi:#FFFFFF;
   --border:#E3DDCF; --border-s:#D6CDB8; --border-strong:#CFC4AC;
   --text:#221A10; --text-2:#5B5142; --text-3:#8B806C;
-  --accent:#0284C7; --accent-hover:#0369A1; --accent-dim:rgba(2,132,199,.10); --accent-2:#075985;
+  --accent:#0EA5E9; --accent-hover:#0284C7; --accent-dim:rgba(14,165,233,.12); --accent-2:#0369A1;
   --green:#1E7A50;   --green-dim:rgba(30,122,80,.11);
   --blue:#1B5F8F;    --blue-dim:rgba(27,95,143,.11);
   --orange:#AD720F;  --orange-dim:rgba(173,114,15,.12);
@@ -86,7 +86,7 @@
   --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EDE4; --surface-hover:#FBFAF6; --surface-hi:#FFFFFF;
   --border:#E3DDCF; --border-s:#D6CDB8; --border-strong:#CFC4AC;
   --text:#221A10; --text-2:#5B5142; --text-3:#8B806C;
-  --accent:#0284C7; --accent-hover:#0369A1; --accent-dim:rgba(2,132,199,.10); --accent-2:#075985;
+  --accent:#0EA5E9; --accent-hover:#0284C7; --accent-dim:rgba(14,165,233,.12); --accent-2:#0369A1;
   --green:#1E7A50;   --green-dim:rgba(30,122,80,.11);
   --blue:#1B5F8F;    --blue-dim:rgba(27,95,143,.11);
   --orange:#AD720F;  --orange-dim:rgba(173,114,15,.12);
@@ -104,7 +104,7 @@
   --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#F1EDE4; --surface-hover:#FBFAF6; --surface-hi:#FFFFFF;
   --border:#E3DDCF; --border-s:#D6CDB8; --border-strong:#CFC4AC;
   --text:#221A10; --text-2:#5B5142; --text-3:#8B806C;
-  --accent:#0284C7; --accent-hover:#0369A1; --accent-dim:rgba(2,132,199,.10); --accent-2:#075985;
+  --accent:#0EA5E9; --accent-hover:#0284C7; --accent-dim:rgba(14,165,233,.12); --accent-2:#0369A1;
   --green:#1E7A50; --green-dim:rgba(30,122,80,.11);
   --blue:#1B5F8F; --blue-dim:rgba(27,95,143,.11);
   --orange:#AD720F; --orange-dim:rgba(173,114,15,.12);
